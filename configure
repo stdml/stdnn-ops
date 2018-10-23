@@ -24,6 +24,7 @@ fi
 
 # append_cmake_flag USE_OPENBLAS 1
 # append_cmake_flag BUILD_TESTS 0
+append_cmake_flag BUILD_PACKAGES 1
 
 append_cmake_flag CMAKE_BUILD_TYPE Release
 

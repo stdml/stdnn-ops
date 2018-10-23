@@ -3,6 +3,7 @@
 /bin
 /cmake-build
 /lib
+/local
 /release
 cmake_install.cmake
 CMakeCache.txt
@@ -10,6 +11,7 @@ CMakeFiles/
 CPackConfig.cmake
 CPackSourceConfig.cmake
 CTestTestfile.cmake
+install_manifest.txt
 libstdtensor-prefix
 Makefile
 Testing
