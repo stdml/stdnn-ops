@@ -1,0 +1,3 @@
+// TODO: use c++20 contract when it is ready
+#pragma once
+#include <experimental/bits/contract.hpp>

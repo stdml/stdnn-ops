@@ -1,0 +1,7 @@
+#pragma once
+#include <nn/common.hpp>
+
+#include <nn/bits/layers/activation.hpp>
+#include <nn/bits/layers/conv.hpp>
+#include <nn/bits/layers/dense.hpp>
+#include <nn/bits/layers/pool.hpp>

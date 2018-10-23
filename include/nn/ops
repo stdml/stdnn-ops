@@ -1,0 +1,15 @@
+#pragma once
+#include <nn/common.hpp>
+
+#include <nn/bits/ops/add.hpp>
+#include <nn/bits/ops/bias.hpp>
+#include <nn/bits/ops/conv.hpp>
+#include <nn/bits/ops/im2col.hpp>
+#include <nn/bits/ops/matmul.hpp>
+#include <nn/bits/ops/noop.hpp>
+#include <nn/bits/ops/pointwise.hpp>
+#include <nn/bits/ops/pool.hpp>
+#include <nn/bits/ops/read.hpp>
+#include <nn/bits/ops/softmax.hpp>
+#include <nn/bits/ops/top.hpp>
+#include <nn/bits/ops/xentropy.hpp>

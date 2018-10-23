@@ -1,0 +1,31 @@
+nn ops
+
+static traits:
+    Order: hwc, chw, nhwc, nchw, pooling_algo_max, pooling_algo_mean
+
+dynamic traits:
+    padding, ksize, stride, rate
+
+add
+mul_vm
+mul_mv
+mul_mm
+
+inc<nhwc>
+inc<nchw>
+
+conv2d<Order>(?, ?, ?)
+conv2d<nhwc>(padding, stride, rate)
+conv2d<nchw>(padding, stride, rate)
+
+pool<Order, Func>(stride)
+
+relu
+lrelu
+softplus
+
+softmax
+xentropy
+xentropy_sparse
+
+batch<op>

@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+PREFIX=$(pwd)/local
+
+CMAKE_FLAGS=-DCMAKE_INSTALL_PREFIX=${PREFIX}
+
+append_cmake_flag() {
+    CMAKE_FLAGS="${CMAKE_FLAGS} -D$1=$2"
+}
+
+if [ ! -z ${GTEST_GIT_URL} ]; then
+    echo "Using GTEST_GIT_URL=${GTEST_GIT_URL}"
+
+    append_cmake_flag GTEST_GIT_URL ${GTEST_GIT_URL}
+fi
+
+if [ ! -z ${STDTENSOR_GIT_URL} ]; then
+    echo "Using STDTENSOR_GIT_URL=${STDTENSOR_GIT_URL}"
+    append_cmake_flag STDTENSOR_GIT_URL ${STDTENSOR_GIT_URL}
+fi
+
+# append_cmake_flag USE_OPENCV 1
+
+# append_cmake_flag USE_OPENBLAS 1
+# append_cmake_flag BUILD_TESTS 0
+
+append_cmake_flag CMAKE_BUILD_TYPE Release
+
+main() {
+    echo "Using CMAKE_FLAGS=${CMAKE_FLAGS}"
+    cmake . ${CMAKE_FLAGS}
+}
+
+main

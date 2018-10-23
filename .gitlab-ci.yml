@@ -1,0 +1,16 @@
+# https://docs.gitlab.com/ce/ci/yaml/README.html
+
+image: ubuntu:bionic
+
+stages:
+- build
+
+job1:
+  stage: build
+  script:
+  - apt update
+  # https://packages.ubuntu.com/bionic/build-essential
+  # https://packages.ubuntu.com/bionic/cmake
+  # https://packages.ubuntu.com/bionic/git
+  - apt install -y build-essential cmake git
+  - ./configure && make && make test
