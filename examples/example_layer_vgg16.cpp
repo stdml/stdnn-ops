@@ -130,7 +130,6 @@ int main(int argc, char *argv[])
                 for (auto k : range(3)) { x.at(0, i, j, k) -= mean[k]; }
             }
         }
-
 #endif
     }
 

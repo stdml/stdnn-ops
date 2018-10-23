@@ -1,0 +1,4 @@
+#pragma once
+#include <nn/common.hpp>
+
+#include <nn/bits/models/sequential.hpp>
