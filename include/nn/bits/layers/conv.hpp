@@ -14,16 +14,16 @@ template <typename TensorOrder> class conv_layer_trait;
 template <>
 class conv_layer_trait<ops::nhwc> : public ops::conv_infer<ops::nhwc>
 {
-  protected:
     using conv_infer::conv_infer;
+    using image_order = nn::ops::nhwc;
 
+  protected:
     struct ksize_trait;
     using ksize_t = std::experimental::new_type<shape<2>, ksize_trait>;
 
     const ksize_t ksize_;
     const size_t n_filters_;
 
-    using image_order = nn::ops::nhwc;
     using conv_op = nn::ops::conv<image_order>;
 
   public:
@@ -42,7 +42,7 @@ class conv_layer_trait<ops::nhwc> : public ops::conv_infer<ops::nhwc>
 
     shape<4> filter_shape(const shape<4> &x) const
     {
-        const auto [_n, _h, _w, c] = x.dims;
+        const auto c = ops::channel_size<image_order>(x);
         const auto [r, s] = ksize_.dims;
         return shape<4>(r, s, c, n_filters_);
     }
