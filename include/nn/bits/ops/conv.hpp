@@ -10,12 +10,46 @@
 
 namespace nn::ops
 {
+template <typename dim_t> class linear_conv_trait
+{
+    static constexpr dim_t default_rate = 1;
+    static constexpr dim_t default_stride = 1;
+    static constexpr dim_t default_pad_lr = 0;
+
+    const dim_t pad_l_;
+    const dim_t pad_r_;
+    const dim_t rate_;
+    const dim_t stride_;
+
+  public:
+    linear_conv_trait() : linear_conv_trait(default_pad_lr) {}
+
+    linear_conv_trait(dim_t pad_lr) : linear_conv_trait(pad_lr, default_stride)
+    {
+    }
+
+    linear_conv_trait(dim_t pad_lr, dim_t stride)
+        : linear_conv_trait(pad_lr, stride, default_rate)
+    {
+    }
+
+    linear_conv_trait(dim_t pad_lr, dim_t stride, dim_t rate)
+        : pad_l_(pad_lr), pad_r_(pad_lr), rate_(rate), stride_(stride)
+    {
+    }
+
+    dim_t operator()(dim_t n, dim_t k) const
+    {
+        return linear_sample_trait(k, stride_, rate_, pad_l_, pad_r_)(n);
+    }
+};
+
 template <typename TensorOrder> class conv_trait;
-template <typename TensorOrder, typename FilterOrder = rscd> class conv_infer;
-template <typename TensorOrder, typename FilterOrder = rscd> class conv;
 
 template <> class conv_trait<hw>
 {
+    using conv_trait_1d_t = linear_conv_trait<size_t>;
+
   protected:
     struct padding_trait;
     struct stride_trait;
@@ -33,17 +67,8 @@ template <> class conv_trait<hw>
     const stride_t stride_;
     const rate_t rate_;
 
-    static size_t output_size(const size_t input_size, const size_t kernel_size,
-                              const size_t pad, const size_t stride,
-                              const size_t rate)
-    {
-        const size_t padded_size = input_size + 2 * pad;
-        contract_assert(kernel_size >= 1);
-        const size_t patch_size = (kernel_size - 1) * rate + 1;
-        contract_assert(padded_size >= patch_size);
-        contract_assert((padded_size - patch_size) % stride == 0);
-        return (padded_size - patch_size) / stride + 1;
-    }
+    const conv_trait_1d_t h_trait_;
+    const conv_trait_1d_t w_trait_;
 
   public:
     static padding_t padding(int r, int s) { return padding_t(r, s); };
@@ -64,61 +89,42 @@ template <> class conv_trait<hw>
 
     conv_trait(const padding_t &padding, const stride_t &stride,
                const rate_t &rate)
-        : padding_(padding), stride_(stride), rate_(rate)
+        : padding_(padding),
+          stride_(stride),
+          rate_(rate),
+          h_trait_(padding.dims[0], stride.dims[0], rate.dims[0]),
+          w_trait_(padding.dims[1], stride.dims[1], rate.dims[1])
     {
+    }
+
+    template <typename image_order, typename filter_order>
+    shape<4> infer(const shape<4> &x, const shape<4> &y) const
+    {
+        const auto n = batch_size<image_order>(x);
+        const auto hw = image_shape<image_order>(x);
+        const auto c = channel_size<image_order>(x);
+
+        const auto rs = filter_shape<filter_order>(y);
+        contract_assert(filter_in_channel_size<filter_order>(y) == c);
+        const auto d = filter_out_channel_size<filter_order>(y);
+
+        const auto h_ = h_trait_(std::get<0>(hw.dims), std::get<0>(rs.dims));
+        const auto w_ = w_trait_(std::get<1>(hw.dims), std::get<1>(rs.dims));
+
+        return batched_image_shape<image_order>(n, shape<2>(h_, w_), d);
     }
 };
 
-template <> class conv_infer<nhwc, rscd> : public conv_trait<hw>
+template <typename TensorOrder = nhwc, typename FilterOrder = rscd> class conv;
+
+template <> class conv<nhwc, rscd> : public conv_trait<hw>
 {
     using conv_trait::conv_trait;
 
   public:
     shape<4> operator()(const shape<4> &x, const shape<4> &y) const
     {
-        const auto [n, h, w, c] = x.dims;
-        const auto [r, s, _c, d] = y.dims;
-        contract_assert(c == _c);
-
-        const auto [pad_h, pad_w] = padding_.dims;
-        const auto [stride_h, stride_w] = stride_.dims;
-        const auto [rate_h, rate_w] = rate_.dims;
-
-        const size_t h_ = output_size(h, r, pad_h, stride_h, rate_h);
-        const size_t w_ = output_size(w, s, pad_w, stride_w, rate_w);
-        return shape<4>(n, h_, w_, d);
-    }
-};
-
-template <> class conv_infer<nchw, rscd> : public conv_trait<hw>
-{
-    using conv_trait::conv_trait;
-
-  public:
-    shape<4> operator()(const shape<4> &x, const shape<4> &y) const
-    {
-        const auto [n, c, h, w] = x.dims;
-        const auto [r, s, _c, d] = y.dims;
-        contract_assert(c == _c);
-
-        const auto [pad_h, pad_w] = padding_.dims;
-        const auto [stride_h, stride_w] = stride_.dims;
-        const auto [rate_h, rate_w] = rate_.dims;
-
-        const size_t h_ = output_size(h, r, pad_h, stride_h, rate_h);
-        const size_t w_ = output_size(w, s, pad_w, stride_w, rate_w);
-        return shape<4>(n, d, h_, w_);
-    }
-};
-
-template <> class conv<nhwc, rscd> : public conv_infer<nhwc, rscd>
-{
-    using conv_infer::conv_infer;
-
-  public:
-    shape<4> operator()(const shape<4> &x, const shape<4> &y) const
-    {
-        return conv_infer::operator()(x, y);
+        return conv_trait::infer<nhwc, rscd>(x, y);
     }
 
     template <typename R>
@@ -148,14 +154,14 @@ template <> class conv<nhwc, rscd> : public conv_infer<nhwc, rscd>
     }
 };
 
-template <> class conv<nchw, rscd> : public conv_infer<nchw, rscd>
+template <> class conv<nchw, dcrs> : public conv_trait<hw>
 {
-    using conv_infer::conv_infer;
+    using conv_trait::conv_trait;
 
   public:
     shape<4> operator()(const shape<4> &x, const shape<4> &y) const
     {
-        return conv_infer::operator()(x, y);
+        return conv_trait::infer<nchw, dcrs>(x, y);
     }
 
     template <typename R>
@@ -163,6 +169,23 @@ template <> class conv<nchw, rscd> : public conv_infer<nchw, rscd>
                     const ttl::tensor_view<R, 4> &x,
                     const ttl::tensor_view<R, 4> &y) const
     {
+        using upper_op = im2col<hw, rshw>;
+        const auto [r, s] = filter_shape<rscd>(y.shape()).dims;
+        const auto upper = internal::make_batched(
+            upper_op(upper_op::ksize(r, s),
+                     upper_op::padding(padding_.dims[0], padding_.dims[1]),
+                     upper_op::stride(stride_.dims[0], stride_.dims[1]),
+                     upper_op::rate(rate_.dims[0], rate_.dims[1])));
+        ttl::tensor<R, 5> x_upper(upper(image_shape<nchw>(x.shape())));
+
+        const auto n = channel_size<nchw>(z.shape());
+        for (auto l : range(n)) {
+            upper(ref(x_upper), view(x[l]));
+            nn::engines::linag<R>::mm(
+                as_matrix<1, 3, ttl::tensor_view<R, 2>>(y),
+                as_matrix<3, 3, ttl::tensor_view<R, 2>>(x_upper),
+                as_matrix<1, 3, ttl::tensor_ref<R, 2>>(z[l]));
+        }
     }
 };
 

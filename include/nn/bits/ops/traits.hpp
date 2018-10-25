@@ -3,6 +3,7 @@
 
 namespace nn::ops
 {
+// image orders
 struct nhwc;
 struct nchw;
 
@@ -10,7 +11,9 @@ struct chw;
 struct hwc;
 struct hw;
 
-struct rscd;  // for conv kernel order
+// filter orders
+struct rscd;
+struct dcrs;
 
 // for im2col output
 struct hwrs;
@@ -60,15 +63,37 @@ template <typename order, ttl::rank_t r> shape<2> image_shape(const shape<r> &x)
 
 template <typename T> ttl::rank_t filter_height_position;
 template <> constexpr ttl::rank_t filter_height_position<rscd> = 0;
+template <> constexpr ttl::rank_t filter_height_position<dcrs> = 2;
 
 template <typename T> ttl::rank_t filter_width_position;
 template <> constexpr ttl::rank_t filter_width_position<rscd> = 1;
+template <> constexpr ttl::rank_t filter_width_position<dcrs> = 3;
+
+template <typename T> ttl::rank_t filter_in_channel_position;
+template <> constexpr ttl::rank_t filter_in_channel_position<rscd> = 2;
+template <> constexpr ttl::rank_t filter_in_channel_position<dcrs> = 1;
+
+template <typename T> ttl::rank_t filter_out_channel_position;
+template <> constexpr ttl::rank_t filter_out_channel_position<rscd> = 3;
+template <> constexpr ttl::rank_t filter_out_channel_position<dcrs> = 0;
 
 template <typename order, ttl::rank_t r>
 shape<2> filter_shape(const shape<r> &s)
 {
     return shape<2>(std::get<filter_height_position<order>>(s.dims),
                     std::get<filter_width_position<order>>(s.dims));
+}
+
+template <typename order, ttl::rank_t r>
+shape<4>::dimension_type filter_in_channel_size(const shape<r> &s)
+{
+    return std::get<filter_in_channel_position<order>>(s.dims);
+}
+
+template <typename order, ttl::rank_t r>
+shape<4>::dimension_type filter_out_channel_size(const shape<r> &s)
+{
+    return std::get<filter_out_channel_position<order>>(s.dims);
 }
 
 namespace internal
@@ -104,6 +129,15 @@ template <> struct conv_filter_shape_impl<rscd> {
     }
 };
 
+// template <> struct conv_filter_shape_impl<rscd> {
+//     using dim_t = shape<4>::dimension_type;
+//     shape<4> operator()(dim_t c, const shape<2> &shp, dim_t d) const
+//     {
+//         const auto [r, s] = shp.dims;
+//         return shape<4>(r, s, c, d);
+//     }
+// };
+
 }  // namespace internal
 
 template <typename order>
@@ -117,6 +151,6 @@ template <typename order>
 shape<4> conv_filter_shape(shape<4>::dimension_type c, const shape<2> &shp,
                            shape<4>::dimension_type d)
 {
-    return internal::batched_image_shape_impl<order>()(c, shp, d);
+    return internal::conv_filter_shape_impl<order>()(c, shp, d);
 }
 }  // namespace nn::ops

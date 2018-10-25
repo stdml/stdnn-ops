@@ -70,8 +70,14 @@ template <typename dim_t> class linear_sample_trait
     }
 
     linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_lr)
-        : pad_l_(pad_lr),
-          pad_r_(pad_lr),
+        : linear_sample_trait(ksize, stride, rate, pad_lr, pad_lr)
+    {
+    }
+
+    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_l,
+                        dim_t pad_r)
+        : pad_l_(pad_l),
+          pad_r_(pad_r),
           rate_(rate),
           stride_(stride),
           ksize_(ksize)
@@ -79,7 +85,8 @@ template <typename dim_t> class linear_sample_trait
         contract_assert(rate_ >= 1);
         contract_assert(stride_ >= 1);
         contract_assert(ksize_ >= 1);
-        contract_assert(pad_lr >= 0);
+        contract_assert(pad_l >= 0);
+        contract_assert(pad_r >= 0);
     }
 
     /*! Compute the output size from input size. */
