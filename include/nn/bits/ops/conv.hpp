@@ -183,8 +183,8 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
             upper(ref(x_upper), view(x[l]));
             nn::engines::linag<R>::mm(
                 as_matrix<1, 3, ttl::tensor_view<R, 2>>(y),
-                as_matrix<3, 3, ttl::tensor_view<R, 2>>(x_upper),
-                as_matrix<1, 3, ttl::tensor_ref<R, 2>>(z[l]));
+                as_matrix<3, 2, ttl::tensor_view<R, 2>>(x_upper),
+                as_matrix<1, 2, ttl::tensor_ref<R, 2>>(z[l]));
         }
     }
 };
