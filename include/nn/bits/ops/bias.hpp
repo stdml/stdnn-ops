@@ -36,7 +36,7 @@ template <typename Op> class apply_bias<nhwc, Op>
   public:
     shape<4> operator()(const shape<4> &x, const shape<1> &y) const
     {
-        contract_assert(x.dims[3] == y.dims[0]);
+        contract_assert(ops::channel_size<nhwc>(x) == y.dims[0]);
         return x;
     }
 
@@ -63,7 +63,7 @@ template <typename Op> class apply_bias<nchw, Op>
   public:
     shape<4> operator()(const shape<4> &x, const shape<1> &y) const
     {
-        contract_assert(x.dims[1] == y.dims[0]);
+        contract_assert(ops::channel_size<nchw>(x) == y.dims[0]);
         return x;
     }
 

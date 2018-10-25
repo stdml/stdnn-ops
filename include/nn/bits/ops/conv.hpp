@@ -126,15 +126,10 @@ template <> class conv<nhwc, rscd> : public conv_infer<nhwc, rscd>
                     const ttl::tensor_view<R, 4> &x,
                     const ttl::tensor_view<R, 4> &y) const
     {
-        const auto [n, h, w, c] = x.shape().dims;
-        const auto [r, s, _c, d] = y.shape().dims;
-        const auto [_n, h_, w_, _d] = z.shape().dims;
-        contract_assert(_n == n);
-        contract_assert(_c == c);
-        contract_assert(_d == d);
         // [n, h, w, c], [r, s, c, d] -> [n, h', w', d]
         // [n, h', w', r, s, c], [r, s, c, d] -> [n, h', w', d]
         // [n, h, w, c] -> [n, h', w', r, s, c]
+        const auto [r, s] = filter_shape<rscd>(y.shape()).dims;
 
         using upper_op = im2col<hwc, hwrsc>;
         const auto upper = internal::make_batched(

@@ -117,6 +117,14 @@ template <> class pool<pool_max, hwc> : public pool_trait<hw>
     }
 };
 
+template <typename order, typename PoolTrait>
+shape<4> pooled_shape(const shape<4> &x, const PoolTrait &pt)
+{
+    return batched_image_shape<order>(batch_size<order>(x),
+                                      pt(image_shape<order>(x)),
+                                      channel_size<order>(x));
+}
+
 template <> class pool<pool_max, nhwc> : public pool_trait<hw>
 {
     using pool_trait::pool_trait;
@@ -124,9 +132,7 @@ template <> class pool<pool_max, nhwc> : public pool_trait<hw>
   public:
     shape<4> operator()(const shape<4> &x) const
     {
-        const auto [n, h, w, c] = x.dims;
-        const auto [h_, w_] = pool_trait::operator()(shape<2>(h, w)).dims;
-        return shape<4>(n, h_, w_, c);
+        return pooled_shape<nhwc, pool_trait<hw>>(x, *this);
     }
 
     template <typename R>
@@ -145,9 +151,7 @@ template <> class pool<pool_max, nchw> : public pool_trait<hw>
 
     shape<4> operator()(const shape<4> &x) const
     {
-        const auto [n, c, h, w] = x.dims;
-        const auto [h_, w_] = pool_trait::operator()(shape<2>(h, w)).dims;
-        return shape<4>(n, c, h_, w_);
+        return pooled_shape<nchw, pool_trait<hw>>(x, *this);
     }
 
     template <typename R>
