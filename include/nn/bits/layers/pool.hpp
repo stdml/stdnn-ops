@@ -1,5 +1,4 @@
 #pragma once
-
 #include <nn/bits/layers/call.hpp>
 #include <nn/bits/layers/layer.hpp>
 #include <nn/bits/ops/pool.hpp>
@@ -8,14 +7,11 @@
 namespace nn::layers
 {
 
-template <typename PoolMethod, typename TensorOrder> class pool;
-
-template <>
-class pool<ops::pool_max, ops::nhwc> : public ops::pool_trait<ops::hw>
+template <typename pool_method, typename image_order = nn::ops::nhwc>
+class pool : public ops::pool_trait<ops::hw>
 {
     using pool_trait::pool_trait;
-
-    using pool_op = nn::ops::pool<nn::ops::pool_max, nn::ops::nhwc>;
+    using pool_op = nn::ops::pool<pool_method, image_order>;
 
   public:
     template <typename R> auto operator()(const ttl::tensor_ref<R, 4> &x) const

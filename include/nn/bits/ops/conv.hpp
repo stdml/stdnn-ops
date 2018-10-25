@@ -115,7 +115,7 @@ template <> class conv_trait<hw>
     }
 };
 
-template <typename TensorOrder = nhwc, typename FilterOrder = rscd> class conv;
+template <typename image_order = nhwc, typename filter_order = rscd> class conv;
 
 template <> class conv<nhwc, rscd> : public conv_trait<hw>
 {
@@ -170,15 +170,14 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
                     const ttl::tensor_view<R, 4> &y) const
     {
         using upper_op = im2col<hw, rshw>;
-        const auto [r, s] = filter_shape<rscd>(y.shape()).dims;
+        const auto [r, s] = filter_shape<dcrs>(y.shape()).dims;
         const auto upper = internal::make_batched(
             upper_op(upper_op::ksize(r, s),
                      upper_op::padding(padding_.dims[0], padding_.dims[1]),
                      upper_op::stride(stride_.dims[0], stride_.dims[1]),
                      upper_op::rate(rate_.dims[0], rate_.dims[1])));
-        ttl::tensor<R, 5> x_upper(upper(image_shape<nchw>(x.shape())));
-
-        const auto n = channel_size<nchw>(z.shape());
+        ttl::tensor<R, 5> x_upper(upper(x.shape().template subshape<1>()));
+        const auto n = batch_size<nchw>(z.shape());
         for (auto l : range(n)) {
             upper(ref(x_upper), view(x[l]));
             nn::engines::linag<R>::mm(

@@ -6,7 +6,6 @@ namespace nn::ops
 // image orders
 struct nhwc;
 struct nchw;
-
 struct chw;
 struct hwc;
 struct hw;
@@ -18,7 +17,6 @@ struct dcrs;
 // for im2col output
 struct hwrs;
 struct hwrsc;
-
 struct rshw;
 
 template <typename T> ttl::rank_t batch_position;
@@ -129,14 +127,14 @@ template <> struct conv_filter_shape_impl<rscd> {
     }
 };
 
-// template <> struct conv_filter_shape_impl<rscd> {
-//     using dim_t = shape<4>::dimension_type;
-//     shape<4> operator()(dim_t c, const shape<2> &shp, dim_t d) const
-//     {
-//         const auto [r, s] = shp.dims;
-//         return shape<4>(r, s, c, d);
-//     }
-// };
+template <> struct conv_filter_shape_impl<dcrs> {
+    using dim_t = shape<4>::dimension_type;
+    shape<4> operator()(dim_t c, const shape<2> &shp, dim_t d) const
+    {
+        const auto [r, s] = shp.dims;
+        return shape<4>(d, c, r, s);
+    }
+};
 
 }  // namespace internal
 

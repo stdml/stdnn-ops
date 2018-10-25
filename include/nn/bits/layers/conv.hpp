@@ -46,7 +46,7 @@ class conv_layer_trait : public ops::conv_trait<ops::hw>
     }
 };
 
-template <typename image_order, typename filter_order = ops::rscd,
+template <typename image_order = ops::nhwc, typename filter_order = ops::rscd,
           typename Act = nn::ops::noop>
 class conv : public conv_layer_trait
 {
