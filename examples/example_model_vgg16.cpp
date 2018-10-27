@@ -22,7 +22,7 @@ class vgg16_model
     using image_order = nn::ops::nhwc;
     using filter_order = nn::ops::rscd;
     using relu = nn::ops::pointwise<nn::ops::relu>;
-    using conv_layer = nn::layers::conv<image_order, filter_order, relu>;
+    using conv_layer = nn::layers::conv<image_order, filter_order, true, relu>;
     using pool = nn::layers::pool<nn::ops::pool_max, image_order>;
     using dense_relu = nn::layers::dense<relu>;
     using dense = nn::layers::dense<>;

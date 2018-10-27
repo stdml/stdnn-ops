@@ -47,8 +47,32 @@ class conv_layer_trait : public ops::conv_trait<ops::hw>
 };
 
 template <typename image_order = ops::nhwc, typename filter_order = ops::rscd,
-          typename Act = nn::ops::noop>
-class conv : public conv_layer_trait
+          bool with_bias = true, typename Act = nn::ops::noop>
+class conv;
+
+template <typename image_order, typename filter_order, typename Act>
+class conv<image_order, filter_order, false, Act> : public conv_layer_trait
+{
+    using conv_layer_trait::conv_layer_trait;
+    using conv_op = nn::ops::conv<image_order, filter_order>;
+
+  public:
+    template <typename R, typename Winit = ops::noop>
+    auto operator()(const ttl::tensor_ref<R, 4> &x,
+                    const Winit &w_init = Winit()) const
+    {
+        auto w = ops::new_parameter<ttl::tensor<R, 4>>(
+            filter_shape<image_order, filter_order>(x.shape()), w_init);
+        auto y = ops::new_result<ttl::tensor<R, 4>>(
+            conv_op(padding_, stride_, rate_), x, *w);
+
+        Act()(ref(*y), view(*y));
+        return make_layer(y, w);
+    }
+};
+
+template <typename image_order, typename filter_order, typename Act>
+class conv<image_order, filter_order, true, Act> : public conv_layer_trait
 {
     using conv_layer_trait::conv_layer_trait;
     using conv_op = nn::ops::conv<image_order, filter_order>;
