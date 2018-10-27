@@ -75,7 +75,7 @@ template <> class pool<pool_max, hw> : public pool_trait<hw>
 
         for (auto i_ : range(h_)) {
             for (auto j_ : range(w_)) {
-                R yy = std::numeric_limits<R>::min();
+                R yy = std::numeric_limits<R>::lowest();
                 for (auto u : range(r)) {
                     for (auto v : range(s)) {
                         yy = std::max(yy,
@@ -103,7 +103,7 @@ template <> class pool<pool_max, hwc> : public pool_trait<hw>
         for (auto k : range(c)) {
             for (auto i_ : range(h_)) {
                 for (auto j_ : range(w_)) {
-                    R yy = std::numeric_limits<R>::min();
+                    R yy = std::numeric_limits<R>::lowest();
                     for (auto u : range(r)) {
                         for (auto v : range(s)) {
                             yy = std::max(yy, x.at(h_sample_(i_, u),
