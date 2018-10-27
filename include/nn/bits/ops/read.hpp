@@ -97,7 +97,7 @@ class readfile
             fs.read(reinterpret_cast<char *>(dims), r * sizeof(uint32_t));
             for (auto i : range(r)) {
                 internal::idx_format::swap_byte_endian(dims[i]);
-                contract_assert(dims[i] == y.shape().dims[i]);
+                contract_assert_eq(dims[i], y.shape().dims[i]);
             }
         }
         fs.read(reinterpret_cast<char *>(y.data()),
