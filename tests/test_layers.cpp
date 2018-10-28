@@ -1,8 +1,6 @@
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <nn/layers>
-
-#include "testing.hpp"
 
 template <typename dense> void test_dense_layer()
 {

@@ -1,8 +1,6 @@
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <nn/ops>
-
-#include "testing.hpp"
 
 TEST(traits_test, test_1)
 {

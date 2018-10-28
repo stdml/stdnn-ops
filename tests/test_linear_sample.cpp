@@ -1,11 +1,9 @@
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <nn/ops>
 #include <stdtensor>
 
 #include <nn/bits/ops/linear_sample.hpp>
-
-#include "testing.hpp"
 
 void test_linear_sample_ksr_nm(int ksize, int stride, int rate, int n, int m)
 {

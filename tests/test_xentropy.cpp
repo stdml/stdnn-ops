@@ -1,11 +1,9 @@
 #include <cmath>
 
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <nn/ops>
 #include <stdtensor>
-
-#include "testing.hpp"
 
 TEST(xentropy_test, test_1)
 {

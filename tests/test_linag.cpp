@@ -1,11 +1,9 @@
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <algorithm>
 
 #include <nn/ops>
 #include <stdtensor>
-
-#include "testing.hpp"
 
 void test_mm(int k, int m, int n)
 {

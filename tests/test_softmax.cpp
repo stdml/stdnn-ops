@@ -1,9 +1,7 @@
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <nn/ops>
 #include <stdtensor>
-
-#include "testing.hpp"
 
 template <typename R> struct test_softmax {
     void operator()()
