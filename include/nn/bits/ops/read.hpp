@@ -35,8 +35,7 @@ We adopt the idx format originally defined at
          |                                   |
          +--------+--------+--------+--------+
 */
-
-void swap_byte_endian(uint32_t &x)
+inline void swap_byte_endian(uint32_t &x)
 {
     uint8_t *p = reinterpret_cast<uint8_t *>(&x);
     std::swap(p[0], p[3]);
