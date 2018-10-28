@@ -2,7 +2,7 @@
 #include <string>
 #include <vector>
 
-namespace nn::model
+namespace nn::models
 {
 template <typename ctx_t> class name_scope_t_
 {
@@ -46,4 +46,4 @@ class name_prefix_ctx_t
 };
 
 using namescope_t = name_scope_t_<name_prefix_ctx_t>;
-}  // namespace nn::model
+}  // namespace nn::models
