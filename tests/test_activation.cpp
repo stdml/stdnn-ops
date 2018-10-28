@@ -1,9 +1,7 @@
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <nn/layers>
 #include <stdtensor>
-
-#include "testing.hpp"
 
 TEST(activation_test, test1)
 {

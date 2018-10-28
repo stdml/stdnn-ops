@@ -24,8 +24,9 @@ template <typename R>
 auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
 {
     using image_order = nn::ops::nhwc;
+    using filter_order = nn::ops::rscd;
     using relu = nn::ops::pointwise<nn::ops::relu>;
-    using conv = nn::layers::conv<image_order, relu>;
+    using conv = nn::layers::conv<image_order, filter_order, true, relu>;
     using pool = nn::layers::pool<nn::ops::pool_max, image_order>;
     using dense_relu = nn::layers::dense<relu>;
     using dense = nn::layers::dense<>;
@@ -130,7 +131,6 @@ int main(int argc, char *argv[])
                 for (auto k : range(3)) { x.at(0, i, j, k) -= mean[k]; }
             }
         }
-
 #endif
     }
 

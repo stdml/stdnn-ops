@@ -35,8 +35,7 @@ We adopt the idx format originally defined at
          |                                   |
          +--------+--------+--------+--------+
 */
-
-void swap_byte_endian(uint32_t &x)
+inline void swap_byte_endian(uint32_t &x)
 {
     uint8_t *p = reinterpret_cast<uint8_t *>(&x);
     std::swap(p[0], p[3]);
@@ -97,7 +96,7 @@ class readfile
             fs.read(reinterpret_cast<char *>(dims), r * sizeof(uint32_t));
             for (auto i : range(r)) {
                 internal::idx_format::swap_byte_endian(dims[i]);
-                contract_assert(dims[i] == y.shape().dims[i]);
+                contract_assert_eq(dims[i], y.shape().dims[i]);
             }
         }
         fs.read(reinterpret_cast<char *>(y.data()),

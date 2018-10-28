@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <experimental/range>
 
+#include <gtest/gtest.h>
+
 #include <nn/ops>
 #include <stdtensor>
 

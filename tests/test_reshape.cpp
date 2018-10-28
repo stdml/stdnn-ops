@@ -1,9 +1,7 @@
-#include <gtest/gtest.h>
+#include "testing.hpp"
 
 #include <nn/ops>
 #include <stdtensor>
-
-#include "testing.hpp"
 
 using nn::shape;
 using nn::ops::as_mat_shape;
