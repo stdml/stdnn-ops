@@ -3,6 +3,7 @@
 #include <nn/bits/layers/layer.hpp>
 #include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/bn.hpp>
+#include <nn/bits/ops/noop.hpp>
 #include <nn/bits/ops/traits.hpp>
 
 namespace nn::layers
