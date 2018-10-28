@@ -1,4 +1,6 @@
 #pragma once
+#include <cmath>
+
 #include <experimental/bits/contract.hpp>
 
 #include <nn/bits/ops/traits.hpp>
