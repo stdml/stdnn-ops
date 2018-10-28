@@ -40,10 +40,24 @@ class name_prefix_ctx_t
         return ss;
     }
 
+    std::string operator()(const std::string &name) const
+    {
+        std::string ss = this->operator*();
+        if (!ss.empty()) { ss += sep_; }
+        return ss + name;
+    }
+
+    template <typename F> auto with(const std::string &prefix, const F &f)
+    {
+        name_scope_t_<name_prefix_ctx_t> _(prefix, *this);
+        return f();
+    }
+
   private:
     std::string sep_;
     std::vector<std::string> names_;
 };
 
-using namescope_t = name_scope_t_<name_prefix_ctx_t>;
+using namescope = name_prefix_ctx_t;
+
 }  // namespace nn::models
