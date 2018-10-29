@@ -14,11 +14,6 @@ template <typename R, ttl::rank_t r> void fill(const ttl::tensor<R, r> &t, R x)
     std::fill(t.data(), t.data() + t.shape().size(), x);
 }
 
-template <typename R, ttl::rank_t r> R sum(const ttl::tensor<R, r> &t)
-{
-    return std::accumulate(t.data(), t.data() + t.shape().size(), (R)0);
-}
-
 template <typename R> struct assert_eq;
 
 template <> struct assert_eq<float> {

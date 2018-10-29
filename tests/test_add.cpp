@@ -22,5 +22,5 @@ TEST(add_test, test1)
 
     op(ref(z), view(x), view(y));
 
-    ASSERT_EQ(sum(z), (int)(n * h * w * c * 3));
+    ASSERT_EQ(nn::ops::summaries::sum()(view(z)), (int)(n * h * w * c * 3));
 }

@@ -40,7 +40,7 @@ TEST(summary_test, test_1)
         nn::ops::scalar_summaries<
             nn::ops::summaries::min, nn::ops::summaries::max,
             nn::ops::summaries::mean, nn::ops::summaries::var,
-            nn::ops::summaries::std>
+            nn::ops::summaries::std, nn::ops::summaries::adj_diff_sum>
             op;
         ttl::tensor<float, 1> y(op(x.shape()));
         op(ref(y), view(x));
@@ -49,5 +49,6 @@ TEST(summary_test, test_1)
         ASSERT_FLOAT_EQ(y.data()[2], (float)((n - 1) / 2.0));
         ASSERT_FLOAT_EQ(y.data()[3], (float)(8.25));
         ASSERT_FLOAT_EQ(y.data()[4], (float)(2.8722813232690143));
+        ASSERT_FLOAT_EQ(y.data()[5], (float)(n - 1));
     }
 }

@@ -17,7 +17,8 @@ template <typename R> struct xentropy {
 
     R operator()(const R *x, const R *y) const
     {
-        return -std::inner_product(x, x + size, y, (R)0, std::plus<R>(),
+        return -std::inner_product(x, x + size, y, static_cast<R>(0),
+                                   std::plus<R>(),
                                    [](R x, R y) { return x * std::log(y); });
     }
 };
