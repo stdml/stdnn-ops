@@ -1,10 +1,10 @@
 #pragma once
 #include <nn/common.hpp>
 
-#include <nn/bits/ops/add.hpp>
 #include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/concat.hpp>
 #include <nn/bits/ops/conv.hpp>
+#include <nn/bits/ops/elementary.hpp>
 #include <nn/bits/ops/im2col.hpp>
 #include <nn/bits/ops/matmul.hpp>
 #include <nn/bits/ops/noop.hpp>

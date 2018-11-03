@@ -4,16 +4,6 @@
 
 namespace nn::layers
 {
-class input
-{
-  public:
-    template <typename T> auto operator()(const T &x) const
-    {
-        auto y = new ttl::tensor<typename T::value_type, T::rank>(x.shape());
-        std::copy(x.data(), x.data() + x.shape().size(), y->data());
-        return make_layer(y);
-    }
-};
 
 namespace internal
 {
@@ -74,7 +64,7 @@ template <typename F, typename G> composed<F, G> compose(const F &f, const G &g)
 
 template <typename Op> class sequential;
 
-template <typename Op = nn::layers::input>
+template <typename Op = nn::layers::identity>
 sequential<Op> make_sequential(const Op &op = Op())
 {
     return sequential<Op>(op);
