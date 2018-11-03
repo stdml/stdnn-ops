@@ -6,8 +6,7 @@
 
 namespace nn::ops
 {
-// TODO: use std::identity since c++20
-struct std_identity {
+struct scalar_identity {
     template <typename R> R operator()(const R &x) const { return x; }
 };
 
@@ -22,7 +21,7 @@ template <> class transpose<nchw, nhwc>
         return shape<4>(n, c, h, w);
     }
 
-    template <typename R, typename S, typename F = std_identity>
+    template <typename R, typename S, typename F = scalar_identity>
     void operator()(const ttl::tensor_ref<R, 4> &y,
                     const ttl::tensor_view<S, 4> &x, const F &f = F()) const
     {
@@ -49,7 +48,7 @@ template <> class transpose<nhwc, nchw>
         return shape<4>(n, h, w, c);
     }
 
-    template <typename R, typename S, typename F = std_identity>
+    template <typename R, typename S, typename F = scalar_identity>
     void operator()(const ttl::tensor_ref<R, 4> &y,
                     const ttl::tensor_view<S, 4> &x, const F &f = F()) const
     {
