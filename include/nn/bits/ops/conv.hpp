@@ -44,7 +44,7 @@ template <typename dim_t> class linear_conv_trait
     }
 };
 
-template <typename TensorOrder> class conv_trait;
+template <typename image_order> class conv_trait;
 
 template <> class conv_trait<hw>
 {
