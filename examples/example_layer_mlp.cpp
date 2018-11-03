@@ -41,7 +41,7 @@ void example_mlp()
     show_signature(*l5, *l4);
 
     auto y_ = ttl::tensor<float, 2>((*l5).shape());
-    const auto loss = nn::ops::xentropy<2>();
+    const auto loss = nn::ops::xentropy();
 
     auto l = ttl::tensor<float, 1>(loss((*l5).shape(), y_.shape()));
     show_signature(l, *l4, y_);
