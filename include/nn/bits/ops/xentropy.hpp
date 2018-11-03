@@ -4,7 +4,7 @@
 #include <numeric>
 
 #include <experimental/contract>
-#include <stdtensor>
+#include <nn/bits/ops/reshape.hpp>
 
 namespace nn::ops
 {
@@ -17,21 +17,23 @@ template <typename R> struct xentropy {
 
     R operator()(const R *x, const R *y) const
     {
-        return -std::inner_product(x, x + size, y, (R)0, std::plus<R>(),
+        return -std::inner_product(x, x + size, y, static_cast<R>(0),
+                                   std::plus<R>(),
                                    [](R x, R y) { return x * std::log(y); });
     }
 };
 }  // namespace internal
 
-template <ttl::rank_t r> class xentropy;
-
-template <> class xentropy<1>
+class xentropy
 {
   public:
-    shape<0> operator()(const shape<1> &x, const shape<1> &y) const
+    template <ttl::rank_t r>
+    shape<r - 1> operator()(const shape<r> &x, const shape<r> &y) const
     {
         contract_assert(x == y);
-        return x.template subshape<1>();
+        std::array<typename shape<r - 1>::dimension_type, r - 1> dims;
+        std::copy(x.dims.begin(), x.dims.end() - 1, dims.begin());
+        return shape<r - 1>(dims);
     }
 
     template <typename R, ttl::rank_t r>
@@ -39,30 +41,12 @@ template <> class xentropy<1>
                     const ttl::tensor_view<R, r> &x,
                     const ttl::tensor_view<R, r> &y) const
     {
-        static_assert(r == 1);
-        const auto k = x.shape().size();
-        z.data()[0] = (internal::xentropy<R>(k))(x.data(), y.data());
-    }
-};
-
-template <ttl::rank_t r> class xentropy
-{
-  public:
-    shape<r - 1> operator()(const shape<r> &x, const shape<r> &y) const
-    {
-        contract_assert(x == y);
-        return x.template subshape<1>();
-    }
-
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, r - 1> &z,
-                    const ttl::tensor_view<R, r> &x,
-                    const ttl::tensor_view<R, r> &y) const
-    {
-        static_assert(r == 2);  // TODO: support higher ranks
-        const auto [n, k] = x.shape().dims;
+        const auto x_flat = as_matrix<r - 1, 1, ttl::tensor_view<R, 2>>(x);
+        const auto y_flat = as_matrix<r - 1, 1, ttl::tensor_view<R, 2>>(y);
+        const auto [n, k] = x_flat.shape().dims;
         for (auto i : range(n)) {
-            z.at(i) = (internal::xentropy<R>(k))(x[i].data(), y[i].data());
+            z.data()[i] =
+                (internal::xentropy<R>(k))(x_flat[i].data(), y_flat[i].data());
         }
     }
 };

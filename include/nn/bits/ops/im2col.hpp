@@ -8,7 +8,7 @@
 
 namespace nn::ops
 {
-template <typename TensorOrder> class im2col_trait;
+template <typename image_order> class im2col_trait;
 
 template <> class im2col_trait<hw>
 {
@@ -79,7 +79,7 @@ template <> class im2col_trait<hw>
     }
 };
 
-template <typename TensorOrder, typename ColOrder> class im2col;
+template <typename image_order, typename ColOrder> class im2col;
 
 template <> class im2col<hw, hwrs> : public im2col_trait<hw>
 {

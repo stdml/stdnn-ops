@@ -20,9 +20,12 @@ template <typename R> struct softmax {
     void operator()(R *output, const R *input) const
     {
         for (auto i : range(size)) {
-            R tot = 0;
-            for (auto j : range(size)) { tot += std::exp(input[j] - input[i]); }
-            output[i] = std::max(eps, (R)1.0 / tot);
+            const R tot =
+                std::accumulate(input, input + size, static_cast<R>(0),
+                                [xi = input[i]](R acc, R xj) {
+                                    return acc + std::exp(xj - xi);
+                                });
+            output[i] = std::max(eps, static_cast<R>(1) / tot);
         }
     }
 };
@@ -71,7 +74,8 @@ class softmax
 
     template <typename R, ttl::rank_t r>
     void operator()(const ttl::tensor_ref<R, r> &y,
-                    const ttl::tensor_view<R, r> &x, R eps = 1e-6) const
+                    const ttl::tensor_view<R, r> &x,
+                    R eps = static_cast<R>(1e-6)) const
     {
         (softmax_impl<r, R>(eps))(y, x);
     }

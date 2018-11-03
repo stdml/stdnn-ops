@@ -28,8 +28,8 @@ struct sum {
     template <typename R, ttl::rank_t r>
     R operator()(const ttl::tensor_view<R, r> &x) const
     {
-        return std::accumulate(x.data(), x.data() + x.shape().size(), (R)0,
-                               std::plus<R>());
+        return std::accumulate(x.data(), x.data() + x.shape().size(),
+                               static_cast<R>(0));
     }
 };
 
@@ -41,41 +41,20 @@ struct mean {
     }
 };
 
-#ifdef HAVE_transform_reduce
-struct variance_impl_tr {
+struct variance {
     template <typename R, ttl::rank_t r>
     R operator()(const ttl::tensor_view<R, r> &x) const
     {
         static_assert(std::is_floating_point<R>::value);
-        const R m = sum()(x) / x.shape().size();
-        const R n_var =
-            std::transform_reduce(x.data(), x.data() + x.shape().size(), (R)0,
-                                  std::plus<R>(), [m](R xi) {
-                                      const R d = xi - m;
-                                      return d * d;
-                                  });
+        const R n_var = std::accumulate(
+            x.data(), x.data() + x.shape().size(), static_cast<R>(0),
+            [m = sum()(x) / x.shape().size()](R acc, R xi) {
+                const R d = xi - m;
+                return acc + d * d;
+            });
         return n_var / x.shape().size();
     }
 };
-#endif
-
-struct variance_impl_old {
-    template <typename R, ttl::rank_t r>
-    R operator()(const ttl::tensor_view<R, r> &x) const
-    {
-        static_assert(std::is_floating_point<R>::value);
-        const auto n = x.shape().size();
-        const R m = sum()(x) / n;
-        R n_var = 0;
-        for (auto i : range(n)) {
-            const R d = x.data()[i] - m;
-            n_var += d * d;
-        }
-        return n_var / n;
-    }
-};
-
-using variance = variance_impl_old;
 
 struct standard_deviation {
     template <typename R, ttl::rank_t r>
@@ -90,11 +69,9 @@ struct adj_diff_sum {
     template <typename R, ttl::rank_t r>
     R operator()(const ttl::tensor_view<R, r> &x) const
     {
-        R y = 0;
-        for (auto i : range(x.shape().size() - 1)) {
-            y += std::fabs(x.data()[i + 1] - x.data()[i]);
-        }
-        return y;
+        return std::inner_product(x.data() + 1, x.data() + x.shape().size(),
+                                  x.data(), static_cast<R>(0), std::plus<R>(),
+                                  [](R x2, R x1) { return std::abs(x2 - x1); });
     }
 };
 

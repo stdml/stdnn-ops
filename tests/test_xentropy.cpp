@@ -17,7 +17,7 @@ TEST(xentropy_test, test_1)
             fill(x, (R)1.0);
             fill(y, e);
 
-            const auto loss = nn::ops::xentropy<1>();
+            const auto loss = nn::ops::xentropy();
             const auto z = ttl::tensor<R, 0>(loss(x.shape(), y.shape()));
 
             loss(ref(z), view(x), view(y));
@@ -33,8 +33,9 @@ TEST(xentropy_test, test_1)
             fill(x, (R)1.0);
             fill(y, e);
 
-            const auto loss = nn::ops::xentropy<2>();
+            const auto loss = nn::ops::xentropy();
             const auto z = ttl::tensor<R, 1>(loss(x.shape(), y.shape()));
+            ASSERT_EQ(z.shape(), nn::shape<1>(2));
 
             loss(ref(z), view(x), view(y));
             for (int i = 0; i < n; ++i) { ASSERT_FLOAT_EQ(z.at(i), -k); }

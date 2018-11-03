@@ -8,7 +8,7 @@
 namespace nn::ops
 {
 
-template <typename TensorOrder, typename Op> class apply_bias;
+template <typename image_order, typename Op> class apply_bias;
 
 template <typename Op> class apply_bias<hw, Op>
 {

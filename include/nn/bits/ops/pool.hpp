@@ -10,8 +10,8 @@ namespace nn::ops
 struct pool_max;
 struct pool_mean;
 
-template <typename PoolMethod, typename TensorOrder> class pool;
-template <typename TensorOrder> class pool_trait;
+template <typename PoolMethod, typename image_order> class pool;
+template <typename image_order> class pool_trait;
 
 template <> class pool_trait<hw>
 {
