@@ -3,6 +3,7 @@
 
 #include <nn/bits/layers/activation.hpp>
 #include <nn/bits/layers/bn.hpp>
+#include <nn/bits/layers/concat.hpp>
 #include <nn/bits/layers/conv.hpp>
 #include <nn/bits/layers/dense.hpp>
 #include <nn/bits/layers/elementary.hpp>
