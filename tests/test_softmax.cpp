@@ -3,6 +3,20 @@
 #include <nn/ops>
 #include <stdtensor>
 
+TEST(softmax_test, test_1)
+{
+    const auto x = ttl::tensor<float, 1>(2);
+    x.data()[0] = 0;
+    x.data()[1] = 1;
+    const auto y = ttl::tensor<float, 1>(x.shape());
+    nn::ops::softmax()(ref(y), view(x));
+
+    const float e = std::exp(1);
+
+    ASSERT_FLOAT_EQ(y.data()[0], 1.0 / (1 + e));
+    ASSERT_FLOAT_EQ(y.data()[1], e / (1 + e));
+}
+
 template <typename R> struct test_softmax {
     void operator()()
     {

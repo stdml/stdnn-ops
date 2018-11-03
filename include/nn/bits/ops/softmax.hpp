@@ -23,7 +23,7 @@ template <typename R> struct softmax {
             const R tot =
                 std::accumulate(input, input + size, static_cast<R>(0),
                                 [xi = input[i]](R acc, R xj) {
-                                    return acc + std::exp(xi - xj);
+                                    return acc + std::exp(xj - xi);
                                 });
             output[i] = std::max(eps, static_cast<R>(1) / tot);
         }
