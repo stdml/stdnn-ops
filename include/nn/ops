@@ -6,11 +6,11 @@
 #include <nn/bits/ops/conv.hpp>
 #include <nn/bits/ops/elementary.hpp>
 #include <nn/bits/ops/im2col.hpp>
+#include <nn/bits/ops/io.hpp>
 #include <nn/bits/ops/matmul.hpp>
 #include <nn/bits/ops/noop.hpp>
 #include <nn/bits/ops/pointwise.hpp>
 #include <nn/bits/ops/pool.hpp>
-#include <nn/bits/ops/read.hpp>
 #include <nn/bits/ops/softmax.hpp>
 #include <nn/bits/ops/summary.hpp>
 #include <nn/bits/ops/top.hpp>
