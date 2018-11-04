@@ -89,7 +89,7 @@ class conv<image_order, filter_order, true, Act> : public conv_layer_trait
         auto y = ops::new_result<ttl::tensor<R, 4>>(
             conv_op(padding_, stride_, rate_), x, *w);
 
-        using add_bias = nn::ops::apply_bias<nn::ops::nhwc, std::plus<R>>;
+        using add_bias = nn::ops::apply_bias<image_order, std::plus<R>>;
         auto b = ops::new_parameter<ttl::tensor<R, 1>>(bias_shape(x.shape()),
                                                        b_init);
         add_bias()(ref(*y), view(*y), view(*b));
