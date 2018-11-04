@@ -103,4 +103,38 @@ class readfile
                 sizeof(R) * y.shape().size());
     }
 };
+
+class writefile
+{
+    std::string filename_;
+
+  public:
+    writefile(const std::string &filename) : filename_(filename) {}
+
+    template <typename R, ttl::rank_t r>
+    void operator()(const ttl::tensor_view<R, r> &x) const
+    {
+        std::ofstream fs(filename_, std::ios::binary);
+        {
+            char magic[4];
+            magic[0] = 0;
+            magic[1] = 0;
+            magic[2] = internal::idx_format::idx_type<R>::type;
+            magic[3] = r;
+            fs.write(magic, 4);
+        }
+        {
+            uint32_t dims[r];
+            for (auto i : range(r)) {
+                dims[i] = x.shape().dims[i];
+                internal::idx_format::swap_byte_endian(dims[i]);
+            }
+            fs.write(reinterpret_cast<const char *>(dims),
+                     sizeof(uint32_t) * r);
+        }
+        fs.write(reinterpret_cast<const char *>(x.data()),
+                 sizeof(R) * x.shape().size());
+    }
+};
+
 }  // namespace nn::ops
