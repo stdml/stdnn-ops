@@ -2,6 +2,8 @@
 #include <sstream>
 #include <string>
 
+#include <nn/bits/engines/linag.hpp>
+
 namespace _build_info
 {
 // http://nadeausoftware.com/articles/2012/01/c_c_tip_how_use_compiler_predefined_macros_detect_operating_system
@@ -49,7 +51,7 @@ constexpr bool have_openblas =
 
 constexpr const char *openblas_version =
 #ifdef OPENBLAS_VERSION
-#OPENBLAS_VERSION
+    OPENBLAS_VERSION
 #else
     ""
 #endif
