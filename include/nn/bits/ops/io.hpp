@@ -5,6 +5,8 @@
 
 #include <experimental/contract>
 
+#include <bits/std_scalar_type_encoding.hpp>
+
 #include <nn/bits/ops/io_tar.hpp>
 #include <nn/common.hpp>
 
@@ -44,31 +46,7 @@ inline void swap_byte_endian(uint32_t &x)
     std::swap(p[1], p[2]);
 }
 
-template <typename> struct idx_type;
-
-template <> struct idx_type<uint8_t> {
-    static constexpr uint8_t type = 0x08;
-};
-
-template <> struct idx_type<int8_t> {
-    static constexpr uint8_t type = 0x09;
-};
-
-template <> struct idx_type<int16_t> {
-    static constexpr uint8_t type = 0x0B;
-};
-
-template <> struct idx_type<int32_t> {
-    static constexpr uint8_t type = 0x0C;
-};
-
-template <> struct idx_type<float> {
-    static constexpr uint8_t type = 0x0D;
-};
-
-template <> struct idx_type<double> {
-    static constexpr uint8_t type = 0x0E;
-};
+using encoding = ttl::internal::idx_format::encoding;
 
 }  // namespace internal::idx_format
 
@@ -90,7 +68,7 @@ class readfile
             contract_assert(magic[1] == 0);
             const uint8_t type = magic[2];
             const uint8_t rank = magic[3];
-            contract_assert(type == internal::idx_format::idx_type<R>::type);
+            contract_assert(type == internal::idx_format::encoding::value<R>());
             contract_assert(rank == r);
         }
         {
@@ -121,7 +99,7 @@ class writefile
             char magic[4];
             magic[0] = 0;
             magic[1] = 0;
-            magic[2] = internal::idx_format::idx_type<R>::type;
+            magic[2] = internal::idx_format::encoding::value<R>();
             magic[3] = r;
             fs.write(magic, 4);
         }
@@ -172,7 +150,7 @@ class readtar
             contract_assert(magic[1] == 0);
             const uint8_t type = magic[2];
             const uint8_t rank = magic[3];
-            contract_assert(type == internal::idx_format::idx_type<R>::type);
+            contract_assert(type == internal::idx_format::encoding::value<R>());
             contract_assert(rank == r);
         }
         {
