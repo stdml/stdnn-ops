@@ -21,11 +21,14 @@ EXTERNALPROJECT_ADD(gbench-repo
 
 LINK_DIRECTORIES(${PREFIX}/lib)
 
+ADD_CUSTOM_TARGET(benchmarks)
+
 FIND_PACKAGE(Threads REQUIRED)
 FUNCTION(ADD_BENCH target)
     ADD_EXECUTABLE(${target} ${ARGN})
     TARGET_LINK_LIBRARIES(${target} benchmark benchmark_main Threads::Threads)
-    ADD_DEPENDENCIES(${target} gbench-repo)
+    ADD_DEPENDENCIES(${target} gbench-repo libstdtensor)
+    ADD_DEPENDENCIES(benchmarks ${target})
 ENDFUNCTION()
 
 ADD_BENCH(bench-1 tests/bench_pool.cpp)
