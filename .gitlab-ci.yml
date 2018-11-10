@@ -14,3 +14,4 @@ job1:
   # https://packages.ubuntu.com/bionic/git
   - apt install -y build-essential cmake git
   - ./configure && make && make test
+  - ./bin/bench-1
