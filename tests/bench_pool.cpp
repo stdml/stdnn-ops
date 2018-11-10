@@ -7,12 +7,11 @@ template <int d1, int d2, int d3, int k, int p, int s, typename image_order,
 struct bench_pool {
     static void run(benchmark::State &state)
     {
-        ttl::tensor<float, 4> x(1, d1, d2, d3);
-        ttl::tensor<float, 4> y(x.shape());
-
         using pool = nn::ops::pool<pool_algo, image_order>;
-        const auto op =
-            pool(pool::ksize(k, k), pool::padding(p, p), pool::stride(s, s));
+        const auto op = pool(pool::ksize(k, k), pool::stride(s, s));
+
+        ttl::tensor<float, 4> x(1, d1, d2, d3);
+        ttl::tensor<float, 4> y(op(x.shape()));
 
         for (auto _ : state) { op(ref(y), view(x)); }
     }
