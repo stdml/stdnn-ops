@@ -124,12 +124,9 @@ int main(int argc, char *argv[])
                        [](uint8_t p) { return p / 255.0; });
 #else
         (nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
-        const float mean[3] = {123.68, 116.779, 103.939};
-        for (auto i : range(h)) {
-            for (auto j : range(w)) {
-                for (auto k : range(3)) { x.at(0, i, j, k) -= mean[k]; }
-            }
-        }
+        std::vector<float> mean({123.68, 116.779, 103.939});
+        nn::ops::apply_bias<nn::ops::nhwc, std::minus<float>>()(
+            ref(x), view(x), ttl::tensor_view<float, 1>(mean.data(), 3));
 #endif
     }
 
