@@ -48,11 +48,54 @@ inline void swap_byte_endian(uint32_t &x)
 
 using encoding = ttl::internal::idx_format::encoding;
 
+template <typename R, ttl::rank_t r>
+void read(const ttl::tensor_ref<R, r> &y, std::istream &is)
+{
+    {
+        char magic[4];
+        is.read(magic, 4);
+        contract_assert(magic[0] == 0);
+        contract_assert(magic[1] == 0);
+        const uint8_t type = magic[2];
+        const uint8_t rank = magic[3];
+        contract_assert(type == encoding::value<R>());
+        contract_assert(rank == r);
+    }
+    {
+        uint32_t dims[r];
+        is.read(reinterpret_cast<char *>(dims), r * sizeof(uint32_t));
+        for (auto i : range(r)) {
+            swap_byte_endian(dims[i]);
+            contract_assert_eq(dims[i], y.shape().dims[i]);
+        }
+    }
+    is.read(reinterpret_cast<char *>(y.data()), sizeof(R) * y.shape().size());
+}
+
+template <typename R, ttl::rank_t r>
+void write(const ttl::tensor_view<R, r> &x, std::ostream &os)
+{
+    {
+        char magic[4] = {0, 0, encoding::value<R>(), r};
+        os.write(magic, 4);
+    }
+    {
+        uint32_t dims[r];
+        for (auto i : range(r)) {
+            dims[i] = x.shape().dims[i];
+            swap_byte_endian(dims[i]);
+        }
+        os.write(reinterpret_cast<const char *>(dims), sizeof(uint32_t) * r);
+    }
+    os.write(reinterpret_cast<const char *>(x.data()),
+             sizeof(R) * x.shape().size());
+}
+
 }  // namespace internal::idx_format
 
 class readfile
 {
-    std::string filename_;
+    const std::string filename_;
 
   public:
     readfile(const std::string &filename) : filename_(filename) {}
@@ -61,32 +104,13 @@ class readfile
     void operator()(const ttl::tensor_ref<R, r> &y) const
     {
         std::ifstream fs(filename_, std::ios::binary);
-        {
-            char magic[4];
-            fs.read(magic, 4);
-            contract_assert(magic[0] == 0);
-            contract_assert(magic[1] == 0);
-            const uint8_t type = magic[2];
-            const uint8_t rank = magic[3];
-            contract_assert(type == internal::idx_format::encoding::value<R>());
-            contract_assert(rank == r);
-        }
-        {
-            uint32_t dims[r];
-            fs.read(reinterpret_cast<char *>(dims), r * sizeof(uint32_t));
-            for (auto i : range(r)) {
-                internal::idx_format::swap_byte_endian(dims[i]);
-                contract_assert_eq(dims[i], y.shape().dims[i]);
-            }
-        }
-        fs.read(reinterpret_cast<char *>(y.data()),
-                sizeof(R) * y.shape().size());
+        internal::idx_format::read(y, fs);
     }
 };
 
 class writefile
 {
-    std::string filename_;
+    const std::string filename_;
 
   public:
     writefile(const std::string &filename) : filename_(filename) {}
@@ -95,25 +119,7 @@ class writefile
     void operator()(const ttl::tensor_view<R, r> &x) const
     {
         std::ofstream fs(filename_, std::ios::binary);
-        {
-            char magic[4];
-            magic[0] = 0;
-            magic[1] = 0;
-            magic[2] = internal::idx_format::encoding::value<R>();
-            magic[3] = r;
-            fs.write(magic, 4);
-        }
-        {
-            uint32_t dims[r];
-            for (auto i : range(r)) {
-                dims[i] = x.shape().dims[i];
-                internal::idx_format::swap_byte_endian(dims[i]);
-            }
-            fs.write(reinterpret_cast<const char *>(dims),
-                     sizeof(uint32_t) * r);
-        }
-        fs.write(reinterpret_cast<const char *>(x.data()),
-                 sizeof(R) * x.shape().size());
+        internal::idx_format::write(x, fs);
     }
 };
 
@@ -136,33 +142,7 @@ class readtar
         const auto info = idx(name_);
         std::ifstream fs(filename_, std::ios::binary);
         fs.seekg(info.data_offset, std::ios::beg);
-        read(y, fs);
-    }
-
-  private:
-    template <typename R, ttl::rank_t r>
-    void read(const ttl::tensor_ref<R, r> &y, std::ifstream &fs) const
-    {
-        {
-            char magic[4];
-            fs.read(magic, 4);
-            contract_assert(magic[0] == 0);
-            contract_assert(magic[1] == 0);
-            const uint8_t type = magic[2];
-            const uint8_t rank = magic[3];
-            contract_assert(type == internal::idx_format::encoding::value<R>());
-            contract_assert(rank == r);
-        }
-        {
-            uint32_t dims[r];
-            fs.read(reinterpret_cast<char *>(dims), r * sizeof(uint32_t));
-            for (auto i : range(r)) {
-                internal::idx_format::swap_byte_endian(dims[i]);
-                contract_assert_eq(dims[i], y.shape().dims[i]);
-            }
-        }
-        fs.read(reinterpret_cast<char *>(y.data()),
-                sizeof(R) * y.shape().size());
+        internal::idx_format::read(y, fs);
     }
 };
 
