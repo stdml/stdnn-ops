@@ -77,7 +77,7 @@ template <> class pool_trait<hw>
 struct pool_max;
 struct pool_mean;
 
-template <typename PoolMethod, typename image_order> class pool;
+template <typename pool_algo, typename image_order> class pool;
 
 template <> class pool<pool_max, hw> : public pool_trait<hw>
 {
