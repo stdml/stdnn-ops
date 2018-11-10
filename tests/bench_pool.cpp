@@ -8,7 +8,8 @@ struct bench_pool {
     static void run(benchmark::State &state)
     {
         using pool = nn::ops::pool<pool_algo, image_order>;
-        const auto op = pool(pool::ksize(k, k), pool::stride(s, s));
+        const auto op =
+            pool(pool::ksize(k, k), pool::padding(p, p), pool::stride(s, s));
 
         ttl::tensor<float, 4> x(1, d1, d2, d3);
         ttl::tensor<float, 4> y(op(x.shape()));
@@ -31,4 +32,20 @@ static void bench_max_pool_2x2_valid_hwc_224_224_64(benchmark::State &state)
         state);
 }
 BENCHMARK(bench_max_pool_2x2_valid_hwc_224_224_64)
+    ->Unit(benchmark::kMillisecond);
+
+static void bench_max_pool_3x3_same_chw_19_256_384(benchmark::State &state)
+{
+    bench_pool<19, 256, 384, 3, 1, 1, nn::ops::nchw, nn::ops::pool_max>::run(
+        state);
+}
+BENCHMARK(bench_max_pool_3x3_same_chw_19_256_384)
+    ->Unit(benchmark::kMillisecond);
+
+static void bench_max_pool_3x3_same_hwc_256_384_19(benchmark::State &state)
+{
+    bench_pool<256, 384, 19, 3, 1, 1, nn::ops::nhwc, nn::ops::pool_max>::run(
+        state);
+}
+BENCHMARK(bench_max_pool_3x3_same_hwc_256_384_19)
     ->Unit(benchmark::kMillisecond);
