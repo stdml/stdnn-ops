@@ -4,7 +4,9 @@
 #include <fstream>
 
 #include <experimental/contract>
-#include <stdtensor>
+
+#include <nn/bits/ops/io_tar.hpp>
+#include <nn/common.hpp>
 
 namespace nn::ops
 {
@@ -134,6 +136,55 @@ class writefile
         }
         fs.write(reinterpret_cast<const char *>(x.data()),
                  sizeof(R) * x.shape().size());
+    }
+};
+
+// read a tensor from a tar file of idx files
+class readtar
+{
+    const std::string filename_;
+    const std::string name_;
+
+  public:
+    readtar(const std::string &filename, const std::string &name)
+        : filename_(filename), name_(name)
+    {
+    }
+
+    template <typename R, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, r> &y) const
+    {
+        const auto idx = nn::ops::internal::make_tar_index(filename_);
+        const auto info = idx(name_);
+        std::ifstream fs(filename_, std::ios::binary);
+        fs.seekg(info.data_offset, std::ios::beg);
+        read(y, fs);
+    }
+
+  private:
+    template <typename R, ttl::rank_t r>
+    void read(const ttl::tensor_ref<R, r> &y, std::ifstream &fs) const
+    {
+        {
+            char magic[4];
+            fs.read(magic, 4);
+            contract_assert(magic[0] == 0);
+            contract_assert(magic[1] == 0);
+            const uint8_t type = magic[2];
+            const uint8_t rank = magic[3];
+            contract_assert(type == internal::idx_format::idx_type<R>::type);
+            contract_assert(rank == r);
+        }
+        {
+            uint32_t dims[r];
+            fs.read(reinterpret_cast<char *>(dims), r * sizeof(uint32_t));
+            for (auto i : range(r)) {
+                internal::idx_format::swap_byte_endian(dims[i]);
+                contract_assert_eq(dims[i], y.shape().dims[i]);
+            }
+        }
+        fs.read(reinterpret_cast<char *>(y.data()),
+                sizeof(R) * y.shape().size());
     }
 };
 
