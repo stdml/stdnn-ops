@@ -15,14 +15,19 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
 LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/3rdparty/lib)
 
 OPTION(USE_OPENBLAS "Build with blas." OFF)
-OPTION(USE_OPENCV "BUild with opencv." OFF)
+OPTION(USE_OPENCV "Build with opencv." OFF)
 OPTION(BUILD_TESTS "Build tests." ON)
+OPTION(BUILD_BENCHMARKS "Build benchmarks." ON)
 OPTION(BUILD_EXAMPLES "Build examples." ON)
 OPTION(BUILD_PACKAGES "Build release packages." OFF)
 
 IF(BUILD_TESTS)
     ENABLE_TESTING()
     INCLUDE(cmake/tests.cmake)
+ENDIF()
+
+IF(BUILD_BENCHMARKS)
+    INCLUDE(cmake/benchmarks.cmake)
 ENDIF()
 
 IF(USE_OPENBLAS)

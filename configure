@@ -40,6 +40,10 @@ add_cmake_flags() {
         add_cmake_flag GTEST_GIT_URL ${GTEST_GIT_URL}
     fi
 
+    if [ ! -z ${GBENCH_GIT_URL} ]; then
+        add_cmake_flag GBENCH_GIT_URL ${GBENCH_GIT_URL}
+    fi
+
     if [ ! -z ${STDTRACER_GIT_URL} ]; then
         add_cmake_flag STDTRACER_GIT_URL ${STDTRACER_GIT_URL}
     fi
