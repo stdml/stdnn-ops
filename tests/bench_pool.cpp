@@ -8,7 +8,8 @@ struct bench_pool {
     static void run(benchmark::State &state)
     {
         using pool = nn::ops::pool<pool_algo, image_order>;
-        const auto op = pool(pool::ksize(k, k), pool::stride(s, s));
+        const auto op =
+            pool(pool::ksize(k, k), pool::padding(p, p), pool::stride(s, s));
 
         ttl::tensor<float, 4> x(1, d1, d2, d3);
         ttl::tensor<float, 4> y(op(x.shape()));
