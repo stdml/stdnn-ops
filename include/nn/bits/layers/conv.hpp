@@ -33,6 +33,12 @@ class conv_layer_trait : public ops::conv_trait<ops::hw>
     {
     }
 
+    conv_layer_trait(const ksize_t &ksize, size_t n_filters,
+                     const conv_trait &trait)
+        : conv_trait(trait), ksize_(ksize), n_filters_(n_filters)
+    {
+    }
+
     template <typename image_order, typename filter_order>
     shape<4> filter_shape(const shape<4> &x) const
     {
@@ -63,8 +69,8 @@ class conv<image_order, filter_order, false, Act> : public conv_layer_trait
     {
         auto w = ops::new_parameter<ttl::tensor<R, 4>>(
             filter_shape<image_order, filter_order>(x.shape()), w_init);
-        auto y = ops::new_result<ttl::tensor<R, 4>>(
-            conv_op(padding_, stride_, rate_), x, *w);
+        auto y = ops::new_result<ttl::tensor<R, 4>>(conv_op(h_trait_, w_trait_),
+                                                    x, *w);
 
         Act()(ref(*y), view(*y));
         return make_layer(y, w);
@@ -86,8 +92,8 @@ class conv<image_order, filter_order, true, Act> : public conv_layer_trait
     {
         auto w = ops::new_parameter<ttl::tensor<R, 4>>(
             filter_shape<image_order, filter_order>(x.shape()), w_init);
-        auto y = ops::new_result<ttl::tensor<R, 4>>(
-            conv_op(padding_, stride_, rate_), x, *w);
+        auto y = ops::new_result<ttl::tensor<R, 4>>(conv_op(h_trait_, w_trait_),
+                                                    x, *w);
 
         using add_bias = nn::ops::apply_bias<image_order, std::plus<R>>;
         auto b = ops::new_parameter<ttl::tensor<R, 1>>(bias_shape(x.shape()),

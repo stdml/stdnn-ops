@@ -1,5 +1,5 @@
 #pragma once
-#include <experimental/contract>
+#include <nn/common.hpp>
 
 /*!
 \begin{definition}
@@ -47,8 +47,19 @@ template <typename dim_t> class linear_sample_trait
     const dim_t pad_l_;  // TODO: make it template parameter
     const dim_t pad_r_;  // TODO: make it template parameter
 
+    struct padding_trait;
+
   public:
-    //   FIXME:
+    using padding_t = std::experimental::new_type<shape<2>, padding_trait>;
+
+    static padding_t padding(dim_t p) { return padding_t(p, p); }
+
+    static padding_t padding(dim_t left, dim_t right)
+    {
+        return padding_t(left, right);
+    };
+
+    // FIXME: make them private
     const dim_t rate_;
     const dim_t stride_;
     const dim_t ksize_;
@@ -70,14 +81,21 @@ template <typename dim_t> class linear_sample_trait
     }
 
     linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_lr)
-        : linear_sample_trait(ksize, stride, rate, pad_lr, pad_lr)
+        : linear_sample_trait(ksize, stride, rate, padding(pad_lr))
     {
     }
 
     linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_l,
                         dim_t pad_r)
-        : pad_l_(pad_l),
-          pad_r_(pad_r),
+        : linear_sample_trait(ksize, stride, rate, padding(pad_l, pad_r))
+    {
+        // TODO: deprecate it
+    }
+
+    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate,
+                        const padding_t &pad)
+        : pad_l_(std::get<0>(pad.dims)),
+          pad_r_(std::get<1>(pad.dims)),
           rate_(rate),
           stride_(stride),
           ksize_(ksize)
@@ -85,8 +103,8 @@ template <typename dim_t> class linear_sample_trait
         contract_assert(rate_ >= 1);
         contract_assert(stride_ >= 1);
         contract_assert(ksize_ >= 1);
-        contract_assert(pad_l >= 0);
-        contract_assert(pad_r >= 0);
+        contract_assert(pad_l_ >= 0);
+        contract_assert(pad_r_ >= 0);
     }
 
     /*! Compute the output size from input size. */

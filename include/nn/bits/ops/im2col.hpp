@@ -1,10 +1,8 @@
 #pragma once
-#include <experimental/contract>
-#include <experimental/new_type>
 #include <nn/bits/ops/linear_sample.hpp>
 #include <nn/bits/ops/reshape.hpp>
 #include <nn/bits/ops/traits.hpp>
-#include <stdtensor>
+#include <nn/common.hpp>
 
 namespace nn::ops
 {
@@ -13,21 +11,22 @@ template <typename image_order> class im2col_trait;
 template <> class im2col_trait<hw>
 {
   protected:
+    using dim_t = size_t;
+    using sample_t = linear_sample_trait<dim_t>;
+    using padding_1d_t = sample_t::padding_t;
+
     struct ksize_trait;
-    struct padding_trait;
     struct stride_trait;
     struct rate_trait;
 
     using ksize_t = std::experimental::new_type<shape<2>, ksize_trait>;
-    using padding_t = std::experimental::new_type<shape<2>, padding_trait>;
     using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
     using rate_t = std::experimental::new_type<shape<2>, rate_trait>;
 
-    static constexpr auto default_padding = padding_t(0, 0);
+    using padding_t = std::array<padding_1d_t, 2>;
+
     static constexpr auto default_stride = stride_t(1, 1);
     static constexpr auto default_rate = rate_t(1, 1);
-
-    using sample_t = linear_sample_trait<size_t>;
 
     const sample_t h_sample_;
     const sample_t w_sample_;
@@ -37,14 +36,34 @@ template <> class im2col_trait<hw>
         return ksize_t(h_sample_.ksize_, w_sample_.ksize_);
     }
 
+    static padding_t default_padding() { return padding(0, 0); }
+
   public:
-    static ksize_t ksize(int r, int s) { return ksize_t(r, s); };
-    static padding_t padding(int r, int s) { return padding_t(r, s); };
-    static stride_t stride(int r, int s) { return stride_t(r, s); };
-    static rate_t rate(int r, int s) { return rate_t(r, s); };
+    static ksize_t ksize(dim_t r, dim_t s) { return ksize_t(r, s); };
+
+    static padding_1d_t padding_1d(dim_t p) { return padding_1d_t(p, p); }
+
+    static padding_1d_t padding_1d(dim_t left, dim_t right)
+    {
+        return padding_1d_t(left, right);
+    }
+
+    static padding_t padding(dim_t r, dim_t s)
+    {
+        return padding(padding_1d(r), padding_1d(s));
+    };
+
+    static padding_t padding(const padding_1d_t &r, const padding_1d_t &s)
+    {
+        return {r, s};
+    };
+
+    static stride_t stride(dim_t r, dim_t s) { return stride_t(r, s); };
+
+    static rate_t rate(dim_t r, dim_t s) { return rate_t(r, s); };
 
     im2col_trait(const ksize_t &ksize)
-        : im2col_trait(ksize, default_padding, default_stride)
+        : im2col_trait(ksize, default_padding(), default_stride)
     {
     }
 
@@ -54,7 +73,7 @@ template <> class im2col_trait<hw>
     }
 
     im2col_trait(const ksize_t &ksize, const stride_t &stride)
-        : im2col_trait(ksize, default_padding, stride)
+        : im2col_trait(ksize, default_padding(), stride)
     {
     }
 
@@ -66,10 +85,8 @@ template <> class im2col_trait<hw>
 
     im2col_trait(const ksize_t &ksize, const padding_t &padding,
                  const stride_t &stride, const rate_t &rate)
-        : h_sample_(ksize.dims[0], stride.dims[0], rate.dims[0],
-                    padding.dims[0]),
-          w_sample_(ksize.dims[1], stride.dims[1], rate.dims[1],
-                    padding.dims[1])
+        : h_sample_(ksize.dims[0], stride.dims[0], rate.dims[0], padding[0]),
+          w_sample_(ksize.dims[1], stride.dims[1], rate.dims[1], padding[1])
     {
     }
 

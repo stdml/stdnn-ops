@@ -22,6 +22,15 @@ template <typename dim_t> class linear_conv_trait
     const dim_t stride_;
 
   public:
+    using padding_t = typename linear_sample_trait<dim_t>::padding_t;
+
+    static padding_t padding(int p) { return padding_t(p, p); }
+
+    static padding_t padding(int left, int right)
+    {
+        return padding_t(left, right);
+    };
+
     linear_conv_trait() : linear_conv_trait(default_pad_lr) {}
 
     linear_conv_trait(dim_t pad_lr) : linear_conv_trait(pad_lr, default_stride)
@@ -34,9 +43,23 @@ template <typename dim_t> class linear_conv_trait
     }
 
     linear_conv_trait(dim_t pad_lr, dim_t stride, dim_t rate)
-        : pad_l_(pad_lr), pad_r_(pad_lr), rate_(rate), stride_(stride)
+        : linear_conv_trait(paddint(pad_lr), stride, rate)
     {
     }
+
+    linear_conv_trait(const padding_t &pad, dim_t stride, dim_t rate)
+        : pad_l_(std::get<0>(pad.dims)),
+          pad_r_(std::get<1>(pad.dims)),
+          rate_(rate),
+          stride_(stride)
+    {
+    }
+
+    padding_t get_padding() const { return padding_t(pad_l_, pad_r_); }
+
+    dim_t get_stride() const { return stride_; }
+
+    dim_t get_rate() const { return rate_; }
 
     dim_t operator()(dim_t n, dim_t k) const
     {
@@ -48,39 +71,59 @@ template <typename image_order> class conv_trait;
 
 template <> class conv_trait<hw>
 {
-    using conv_trait_1d_t = linear_conv_trait<size_t>;
+    using dim_t = size_t;
+    using conv_trait_1d_t = linear_conv_trait<dim_t>;
+    using sample_t = linear_sample_trait<dim_t>;
+    using padding_1d_t = sample_t::padding_t;
 
   protected:
-    struct padding_trait;
     struct stride_trait;
     struct rate_trait;
 
-    using padding_t = std::experimental::new_type<shape<2>, padding_trait>;
+    using padding_t = std::array<padding_1d_t, 2>;
+
     using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
     using rate_t = std::experimental::new_type<shape<2>, rate_trait>;
 
-    static constexpr auto default_padding = padding_t(0, 0);
     static constexpr auto default_stride = stride_t(1, 1);
     static constexpr auto default_rate = rate_t(1, 1);
-
-    const padding_t padding_;
-    const stride_t stride_;
-    const rate_t rate_;
 
     const conv_trait_1d_t h_trait_;
     const conv_trait_1d_t w_trait_;
 
+    static padding_t default_padding() { return padding(0, 0); }
+
   public:
-    static padding_t padding(int r, int s) { return padding_t(r, s); };
+    static padding_1d_t padding_1d(dim_t p) { return padding_1d_t(p, p); }
+
+    static padding_1d_t padding_1d(dim_t left, dim_t right)
+    {
+        return padding_1d_t(left, right);
+    }
+
+    static padding_t padding(dim_t r, dim_t s)
+    {
+        return padding(padding_1d(r), padding_1d(s));
+    };
+
+    static padding_t padding(const padding_1d_t &r, const padding_1d_t &s)
+    {
+        return {r, s};
+    };
+
     static stride_t stride(int r, int s) { return stride_t(r, s); };
 
-    conv_trait() : conv_trait(default_padding) {}
+    static rate_t rate(int r, int s) { return rate_t(r, s); };
+
+    conv_trait() : conv_trait(default_padding()) {}
 
     conv_trait(const padding_t &padding) : conv_trait(padding, default_stride)
     {
     }
 
-    conv_trait(const stride_t &stride) : conv_trait(default_padding, stride) {}
+    conv_trait(const stride_t &stride) : conv_trait(default_padding(), stride)
+    {
+    }
 
     conv_trait(const padding_t &padding, const stride_t &stride)
         : conv_trait(padding, stride, default_rate)
@@ -89,11 +132,13 @@ template <> class conv_trait<hw>
 
     conv_trait(const padding_t &padding, const stride_t &stride,
                const rate_t &rate)
-        : padding_(padding),
-          stride_(stride),
-          rate_(rate),
-          h_trait_(padding.dims[0], stride.dims[0], rate.dims[0]),
-          w_trait_(padding.dims[1], stride.dims[1], rate.dims[1])
+        : h_trait_(padding[0], stride.dims[0], rate.dims[0]),
+          w_trait_(padding[1], stride.dims[1], rate.dims[1])
+    {
+    }
+
+    conv_trait(const conv_trait_1d_t &h_trait, const conv_trait_1d_t &w_trait)
+        : h_trait_(h_trait), w_trait_(w_trait)
     {
     }
 
@@ -138,11 +183,11 @@ template <> class conv<nhwc, rscd> : public conv_trait<hw>
         const auto [r, s] = filter_shape<rscd>(y.shape()).dims;
 
         using upper_op = im2col<hwc, hwrsc>;
-        const auto upper = internal::make_batched(
-            upper_op(upper_op::ksize(r, s),
-                     upper_op::padding(padding_.dims[0], padding_.dims[1]),
-                     upper_op::stride(stride_.dims[0], stride_.dims[1]),
-                     upper_op::rate(rate_.dims[0], rate_.dims[1])));
+        const auto upper = internal::make_batched(upper_op(
+            upper_op::ksize(r, s),
+            upper_op::padding(h_trait_.get_padding(), w_trait_.get_padding()),
+            upper_op::stride(h_trait_.get_stride(), w_trait_.get_stride()),
+            upper_op::rate(h_trait_.get_rate(), w_trait_.get_rate())));
 
         ttl::tensor<R, 6> x_upper(upper(x.shape()));
         upper(ref(x_upper), view(x));
@@ -171,11 +216,11 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
     {
         using upper_op = im2col<hw, rshw>;
         const auto [r, s] = filter_shape<dcrs>(y.shape()).dims;
-        const auto upper = internal::make_batched(
-            upper_op(upper_op::ksize(r, s),
-                     upper_op::padding(padding_.dims[0], padding_.dims[1]),
-                     upper_op::stride(stride_.dims[0], stride_.dims[1]),
-                     upper_op::rate(rate_.dims[0], rate_.dims[1])));
+        const auto upper = internal::make_batched(upper_op(
+            upper_op::ksize(r, s),
+            upper_op::padding(h_trait_.get_padding(), w_trait_.get_padding()),
+            upper_op::stride(h_trait_.get_stride(), w_trait_.get_stride()),
+            upper_op::rate(h_trait_.get_rate(), w_trait_.get_rate())));
         ttl::tensor<R, 5> x_upper(upper(x.shape().template subshape<1>()));
         const auto n = batch_size<nchw>(z.shape());
         for (auto l : range(n)) {
