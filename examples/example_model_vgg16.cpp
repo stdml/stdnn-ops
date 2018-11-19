@@ -124,19 +124,22 @@ int main(int argc, char *argv[])
                "https://www.cs.toronto.edu/~frossard/vgg16/laska.png");
         auto img = cv::imread("laska.png");
         auto input = ttl::tensor<uint8_t, 4>(x.shape());
-        cv::Mat resized_image(cv::Size(w, h), CV_8UC(3), input.data());
+        cv::Mat resized_image(cv::Size(vgg16.w, vgg16.h), CV_8UC(3),
+                              input.data());
         cv::resize(img, resized_image, resized_image.size(), 0, 0);
-        std::transform(input.data(), data_end(input), x.data(),
-                       [](uint8_t p) { return p / 255.0; });
-#else
-        (nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
-        const float mean[3] = {123.68, 116.779, 103.939};
         for (auto i : range(vgg16.h)) {
             for (auto j : range(vgg16.w)) {
-                for (auto k : range(3)) { x.at(0, i, j, k) -= mean[k]; }
+                x.at(0, i, j, 0) = input.at(0, i, j, 2);
+                x.at(0, i, j, 1) = input.at(0, i, j, 1);
+                x.at(0, i, j, 2) = input.at(0, i, j, 0);
             }
         }
+#else
+        (nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
 #endif
+        std::vector<float> mean({123.68, 116.779, 103.939});
+        nn::ops::apply_bias<nn::ops::nhwc, std::minus<float>>()(
+            ref(x), view(x), ttl::tensor_view<float, 1>(mean.data(), 3));
     }
 
     int m = 5;

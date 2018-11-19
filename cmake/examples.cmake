@@ -8,6 +8,7 @@ FUNCTION(ADD_NN_OPS_EXAMPLE target)
         TARGET_LINK_LIBRARIES(${target} openblas)
     ENDIF()
     IF(USE_OPENCV)
+        TARGET_COMPILE_DEFINITIONS(${target} PRIVATE USE_OPENCV)
         TARGET_LINK_LIBRARIES(${target}
                               opencv_core
                               opencv_imgproc
@@ -19,6 +20,9 @@ ENDFUNCTION()
 FILE(GLOB examples examples/example_*.cpp)
 FOREACH(f ${examples})
     GET_FILENAME_COMPONENT(name ${f} NAME_WE)
-    STRING(REPLACE "_" "-" name ${name})
+    STRING(REPLACE "_"
+                   "-"
+                   name
+                   ${name})
     ADD_NN_OPS_EXAMPLE(${name} ${f})
 ENDFOREACH()
