@@ -5,6 +5,7 @@ CMAKE_FLAGS=
 
 # defaults
 # WITH_BLAS=1
+USE_OPENCV=0
 
 add_cmake_flag() {
     echo "usinig $1=$2"
@@ -16,6 +17,9 @@ parse_args() {
         case $i in
         --prefix=*)
             PREFIX="${i#*=}"
+            ;;
+        --use-opencv)
+            USE_OPENCV=1
             ;;
         # --with-blas)
         #     WITH_BLAS=1
@@ -60,7 +64,7 @@ add_cmake_flags() {
     add_cmake_flag BUILD_PACKAGES 1
 
     # add_cmake_flag USE_OPT 1
-    # add_cmake_flag USE_OPENCV 1
+    add_cmake_flag USE_OPENCV ${USE_OPENCV}
     # add_cmake_flag USE_OPENBLAS 1
     # add_cmake_flag BUILD_TESTS 0
 
