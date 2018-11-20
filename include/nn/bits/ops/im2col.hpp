@@ -11,10 +11,6 @@ template <typename image_order> class im2col_trait;
 template <> class im2col_trait<hw> : public multi_linear_sample_trait<2, size_t>
 {
     using multi_linear_sample_trait::multi_linear_sample_trait;
-
-  protected:
-    const sample_t &h_sample_ = std::get<0>(samples_);
-    const sample_t &w_sample_ = std::get<1>(samples_);
 };
 
 template <typename image_order, typename ColOrder> class im2col;
@@ -35,6 +31,9 @@ template <> class im2col<hw, hwrs> : public im2col_trait<hw>
     {
         const auto [h, w] = x.shape().dims;
         const auto [h_, w_, r, s] = y.shape().dims;
+
+        const sample_t &h_sample_ = std::get<0>(samples_);
+        const sample_t &w_sample_ = std::get<1>(samples_);
 
         for (const auto i_ : range(h_)) {
             for (const auto j_ : range(w_)) {
@@ -72,6 +71,9 @@ template <> class im2col<hw, rshw> : public im2col_trait<hw>
         const auto [h, w] = x.shape().dims;
         const auto [r, s, h_, w_] = y.shape().dims;
 
+        const sample_t &h_sample_ = std::get<0>(samples_);
+        const sample_t &w_sample_ = std::get<1>(samples_);
+
         for (const auto u : range(r)) {
             for (const auto v : range(s)) {
                 for (const auto i_ : range(h_)) {
@@ -100,8 +102,9 @@ template <> class im2col<hwc, hwrsc> : public im2col_trait<hw>
     shape<5> operator()(const shape<3> &x) const
     {
         const auto [r, s] = get_ksize().dims;
-        return shape<5>(h_sample_(x.dims[0]), w_sample_(x.dims[1]), r, s,
-                        x.dims[2]);
+        const auto [h, w, c] = x.dims;
+        const auto [h_, w_] = im2col_trait::operator()(shape<2>(h, w)).dims;
+        return shape<5>(h_, w_, r, s, c);
     }
 
     template <typename R>
@@ -111,6 +114,9 @@ template <> class im2col<hwc, hwrsc> : public im2col_trait<hw>
         const auto [h, w, c] = x.shape().dims;
         const auto [h_, w_, r, s, _c] = y.shape().dims;
         contract_assert(_c == c);
+
+        const sample_t &h_sample_ = std::get<0>(samples_);
+        const sample_t &w_sample_ = std::get<1>(samples_);
 
         for (const auto i_ : range(h_)) {
             for (const auto j_ : range(w_)) {
