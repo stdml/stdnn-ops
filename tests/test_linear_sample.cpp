@@ -71,6 +71,6 @@ TEST(linear_sample_test, test_2)
 
         sample_t sample(sample_t::ksize(1, 2, 3));
         const auto y = sample(nn::shape<3>(9, 8, 7));
-        ASSERT_EQ(y, nn::shape<3>(9, 7, 6));
+        ASSERT_EQ(y, nn::shape<3>(9, 7, 5));
     }
 }
