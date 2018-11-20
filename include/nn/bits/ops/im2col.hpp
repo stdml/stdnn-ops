@@ -33,7 +33,7 @@ template <> class im2col_trait<hw>
 
     ksize_t get_ksize() const
     {
-        return ksize_t(h_sample_.ksize_, w_sample_.ksize_);
+        return ksize_t(h_sample_.get_ksize(), w_sample_.get_ksize());
     }
 
     static padding_t default_padding() { return padding(0, 0); }

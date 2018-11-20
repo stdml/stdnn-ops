@@ -47,6 +47,10 @@ template <typename dim_t> class linear_sample_trait
     const dim_t pad_l_;  // TODO: make it template parameter
     const dim_t pad_r_;  // TODO: make it template parameter
 
+    const dim_t rate_;
+    const dim_t stride_;
+    const dim_t ksize_;
+
     struct padding_trait;
 
   public:
@@ -58,11 +62,6 @@ template <typename dim_t> class linear_sample_trait
     {
         return padding_t(left, right);
     };
-
-    // FIXME: make them private
-    const dim_t rate_;
-    const dim_t stride_;
-    const dim_t ksize_;
 
   public:
     linear_sample_trait(dim_t ksize)
@@ -106,6 +105,10 @@ template <typename dim_t> class linear_sample_trait
         contract_assert(pad_l_ >= 0);
         contract_assert(pad_r_ >= 0);
     }
+
+    dim_t get_ksize() const { return ksize_; }
+
+    dim_t get_stride() const { return stride_; }
 
     /*! Compute the output size from input size. */
     dim_t operator()(dim_t n) const
