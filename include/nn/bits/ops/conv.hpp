@@ -57,12 +57,6 @@ template <typename dim_t> class linear_conv_trait
     {
     }
 
-    padding_t get_padding() const { return padding_t(pad_l_, pad_r_); }
-
-    dim_t get_stride() const { return stride_; }
-
-    dim_t get_rate() const { return rate_; }
-
     sample_t get_sample(dim_t ksize) const
     {
         return sample_t(ksize, stride_, rate_, pad_l_, pad_r_);
