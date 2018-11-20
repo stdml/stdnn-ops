@@ -276,8 +276,13 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
     }
 
     template <typename... Sample>
-    multi_linear_sample_trait(const Sample &... sample) : samples_(sample...)
+    multi_linear_sample_trait(const Sample &... sample) : samples_({sample...})
     {
+    }
+
+    ksize_t get_ksize() const
+    {
+        return get_ksize(std::make_index_sequence<r>());
     }
 
     shape<r> operator()(const shape<r> &x) const
@@ -302,6 +307,13 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
     {
         static_assert(sizeof...(I) == r, "");
         return shape<r>(std::get<I>(samples_)(std::get<I>(x.dims))...);
+    }
+
+    template <std::size_t... I>
+    ksize_t get_ksize(std::index_sequence<I...>) const
+    {
+        static_assert(sizeof...(I) == r, "");
+        return ksize_t(std::get<I>(samples_).get_ksize()...);
     }
 };
 

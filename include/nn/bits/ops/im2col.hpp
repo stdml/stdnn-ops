@@ -8,97 +8,13 @@ namespace nn::ops
 {
 template <typename image_order> class im2col_trait;
 
-template <> class im2col_trait<hw>
+template <> class im2col_trait<hw> : public multi_linear_sample_trait<2, size_t>
 {
+    using multi_linear_sample_trait::multi_linear_sample_trait;
+
   protected:
-    using dim_t = size_t;
-    using sample_t = linear_sample_trait<dim_t>;
-    using padding_1d_t = sample_t::padding_t;
-
-    struct ksize_trait;
-    struct stride_trait;
-    struct rate_trait;
-
-    using ksize_t = std::experimental::new_type<shape<2>, ksize_trait>;
-    using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
-    using rate_t = std::experimental::new_type<shape<2>, rate_trait>;
-
-    using padding_t = std::array<padding_1d_t, 2>;
-
-    static constexpr auto default_stride = stride_t(1, 1);
-    static constexpr auto default_rate = rate_t(1, 1);
-
-    const sample_t h_sample_;
-    const sample_t w_sample_;
-
-    ksize_t get_ksize() const
-    {
-        return ksize_t(h_sample_.get_ksize(), w_sample_.get_ksize());
-    }
-
-    static padding_t default_padding() { return padding(0, 0); }
-
-  public:
-    static ksize_t ksize(dim_t r, dim_t s) { return ksize_t(r, s); };
-
-    static padding_1d_t padding_1d(dim_t p) { return padding_1d_t(p, p); }
-
-    static padding_1d_t padding_1d(dim_t left, dim_t right)
-    {
-        return padding_1d_t(left, right);
-    }
-
-    static padding_t padding(dim_t r, dim_t s)
-    {
-        return padding(padding_1d(r), padding_1d(s));
-    };
-
-    static padding_t padding(const padding_1d_t &r, const padding_1d_t &s)
-    {
-        return {r, s};
-    };
-
-    static stride_t stride(dim_t r, dim_t s) { return stride_t(r, s); };
-
-    static rate_t rate(dim_t r, dim_t s) { return rate_t(r, s); };
-
-    im2col_trait(const ksize_t &ksize)
-        : im2col_trait(ksize, default_padding(), default_stride)
-    {
-    }
-
-    im2col_trait(const ksize_t &ksize, const padding_t &padding)
-        : im2col_trait(ksize, padding, default_stride)
-    {
-    }
-
-    im2col_trait(const ksize_t &ksize, const stride_t &stride)
-        : im2col_trait(ksize, default_padding(), stride)
-    {
-    }
-
-    im2col_trait(const ksize_t &ksize, const padding_t &padding,
-                 const stride_t &stride)
-        : im2col_trait(ksize, padding, stride, default_rate)
-    {
-    }
-
-    im2col_trait(const ksize_t &ksize, const padding_t &padding,
-                 const stride_t &stride, const rate_t &rate)
-        : h_sample_(ksize.dims[0], stride.dims[0], rate.dims[0], padding[0]),
-          w_sample_(ksize.dims[1], stride.dims[1], rate.dims[1], padding[1])
-    {
-    }
-
-    im2col_trait(const sample_t &h_sample, const sample_t &w_sample)
-        : h_sample_(h_sample), w_sample_(w_sample)
-    {
-    }
-
-    shape<2> operator()(const shape<2> &x) const
-    {
-        return shape<2>(h_sample_(x.dims[0]), w_sample_(x.dims[1]));
-    }
+    const sample_t &h_sample_ = std::get<0>(samples_);
+    const sample_t &w_sample_ = std::get<1>(samples_);
 };
 
 template <typename image_order, typename ColOrder> class im2col;
