@@ -21,8 +21,10 @@ template <typename dim_t> class linear_conv_trait
     const dim_t rate_;
     const dim_t stride_;
 
+    using sample_t = linear_sample_trait<dim_t>;
+
   public:
-    using padding_t = typename linear_sample_trait<dim_t>::padding_t;
+    using padding_t = typename sample_t::padding_t;
 
     static padding_t padding(int p) { return padding_t(p, p); }
 
@@ -61,10 +63,12 @@ template <typename dim_t> class linear_conv_trait
 
     dim_t get_rate() const { return rate_; }
 
-    dim_t operator()(dim_t n, dim_t k) const
+    sample_t get_sample(dim_t ksize) const
     {
-        return linear_sample_trait(k, stride_, rate_, pad_l_, pad_r_)(n);
+        return sample_t(ksize, stride_, rate_, pad_l_, pad_r_);
     }
+
+    dim_t operator()(dim_t n, dim_t k) const { return get_sample(k)(n); }
 };
 
 template <typename image_order> class conv_trait;
@@ -73,8 +77,7 @@ template <> class conv_trait<hw>
 {
     using dim_t = size_t;
     using conv_trait_1d_t = linear_conv_trait<dim_t>;
-    using sample_t = linear_sample_trait<dim_t>;
-    using padding_1d_t = sample_t::padding_t;
+    using padding_1d_t = conv_trait_1d_t::padding_t;
 
   protected:
     struct stride_trait;
@@ -183,11 +186,8 @@ template <> class conv<nhwc, rscd> : public conv_trait<hw>
         const auto [r, s] = filter_shape<rscd>(y.shape()).dims;
 
         using upper_op = im2col<hwc, hwrsc>;
-        const auto upper = internal::make_batched(upper_op(
-            upper_op::ksize(r, s),
-            upper_op::padding(h_trait_.get_padding(), w_trait_.get_padding()),
-            upper_op::stride(h_trait_.get_stride(), w_trait_.get_stride()),
-            upper_op::rate(h_trait_.get_rate(), w_trait_.get_rate())));
+        const auto upper = internal::make_batched(
+            upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
 
         ttl::tensor<R, 6> x_upper(upper(x.shape()));
         upper(ref(x_upper), view(x));
@@ -216,11 +216,9 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
     {
         using upper_op = im2col<hw, rshw>;
         const auto [r, s] = filter_shape<dcrs>(y.shape()).dims;
-        const auto upper = internal::make_batched(upper_op(
-            upper_op::ksize(r, s),
-            upper_op::padding(h_trait_.get_padding(), w_trait_.get_padding()),
-            upper_op::stride(h_trait_.get_stride(), w_trait_.get_stride()),
-            upper_op::rate(h_trait_.get_rate(), w_trait_.get_rate())));
+        const auto upper = internal::make_batched(
+            upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
+
         ttl::tensor<R, 5> x_upper(upper(x.shape().template subshape<1>()));
         const auto n = batch_size<nchw>(z.shape());
         for (auto l : range(n)) {

@@ -90,6 +90,11 @@ template <> class im2col_trait<hw>
     {
     }
 
+    im2col_trait(const sample_t &h_sample, const sample_t &w_sample)
+        : h_sample_(h_sample), w_sample_(w_sample)
+    {
+    }
+
     shape<2> operator()(const shape<2> &x) const
     {
         return shape<2>(h_sample_(x.dims[0]), w_sample_(x.dims[1]));
