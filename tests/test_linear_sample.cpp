@@ -56,3 +56,21 @@ void test_linear_sample_1()
 }
 
 TEST(linear_sample_test, test_1) { test_linear_sample_1(); }
+
+TEST(linear_sample_test, test_2)
+{
+    {
+        using sample_t = nn::ops::multi_linear_sample_trait<2, size_t>;
+
+        sample_t sample(sample_t::ksize(1, 1));
+        const auto y = sample(nn::shape<2>(10, 11));
+        ASSERT_EQ(y, nn::shape<2>(10, 11));
+    }
+    {
+        using sample_t = nn::ops::multi_linear_sample_trait<3, size_t>;
+
+        sample_t sample(sample_t::ksize(1, 2, 3));
+        const auto y = sample(nn::shape<3>(9, 8, 7));
+        ASSERT_EQ(y, nn::shape<3>(9, 7, 6));
+    }
+}
