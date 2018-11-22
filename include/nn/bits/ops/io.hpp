@@ -5,7 +5,7 @@
 
 #include <experimental/contract>
 
-#include <bits/std_scalar_type_encoding.hpp>
+#include <ttl/bits/std_scalar_type_encoding.hpp>
 
 #include <nn/bits/ops/io_tar.hpp>
 #include <nn/common.hpp>
