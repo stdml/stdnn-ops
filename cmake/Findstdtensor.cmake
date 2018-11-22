@@ -1,10 +1,7 @@
 INCLUDE(ExternalProject)
 
-SET(STDTENSOR_GIT_URL
-    https://github.com/lgarithm/stdtensor
-    CACHE
-    STRING
-    "URL for clone stdtensor")
+SET(STDTENSOR_GIT_URL https://github.com/lgarithm/stdtensor.git
+    CACHE STRING "URL for clone stdtensor")
 
 SET(PREFIX ${CMAKE_SOURCE_DIR}/3rdparty)
 
@@ -12,7 +9,7 @@ EXTERNALPROJECT_ADD(libstdtensor
                     GIT_REPOSITORY
                     ${STDTENSOR_GIT_URL}
                     GIT_TAG
-                    c-api
+                    v0.1.0
                     PREFIX
                     ${PREFIX}
                     CMAKE_ARGS
