@@ -13,10 +13,11 @@ struct tar_header {
     std::int64_t uid;
     std::int64_t gid;
     std::string size_oct;
-    char mod_time[12];
-    char checksum[8];
-    char link_indicator;
-    char linked_filename;
+
+    // char mod_time[12];
+    // char checksum[8];
+    // char link_indicator;
+    // char linked_filename;
 
     // derived fields
     std::int64_t size;
