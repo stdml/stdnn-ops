@@ -1,4 +1,5 @@
 #pragma once
+#include <experimental/contract>
 #include <experimental/range>
 
 #include <stdtensor>

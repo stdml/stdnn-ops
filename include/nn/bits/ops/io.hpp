@@ -3,8 +3,6 @@
 #include <cstdint>
 #include <fstream>
 
-#include <experimental/contract>
-
 #include <ttl/bits/std_scalar_type_encoding.hpp>
 
 #include <nn/bits/ops/io_tar.hpp>
@@ -12,6 +10,18 @@
 
 namespace nn::ops
 {
+
+namespace internal
+{
+inline uint32_t byte_endian_swapped(uint32_t x)
+{
+    uint8_t *p = reinterpret_cast<uint8_t *>(&x);
+    std::swap(p[0], p[3]);
+    std::swap(p[1], p[2]);
+    return x;
+}
+}  // namespace internal
+
 namespace internal::idx_format
 {
 /*
@@ -39,62 +49,61 @@ We adopt the idx format originally defined at
          |                                   |
          +--------+--------+--------+--------+
 */
-inline void swap_byte_endian(uint32_t &x)
-{
-    uint8_t *p = reinterpret_cast<uint8_t *>(&x);
-    std::swap(p[0], p[3]);
-    std::swap(p[1], p[2]);
-}
 
-using encoding = ttl::internal::idx_format::encoding;
-
-template <typename R, ttl::rank_t r>
-void read(const ttl::tensor_ref<R, r> &y, std::istream &is)
+template <typename encoding = ttl::internal::idx_format::encoding>
+class serializer
 {
+  public:
+    template <typename R, ttl::rank_t r>
+    static void read(const ttl::tensor_ref<R, r> &y, std::istream &is)
     {
-        char magic[4];
-        is.read(magic, 4);
-        contract_assert(magic[0] == 0);
-        contract_assert(magic[1] == 0);
-        const uint8_t type = magic[2];
-        const uint8_t rank = magic[3];
-        contract_assert(type == encoding::value<R>());
-        contract_assert(rank == r);
-    }
-    {
-        uint32_t dims[r];
-        is.read(reinterpret_cast<char *>(dims), r * sizeof(uint32_t));
-        for (auto i : range(r)) {
-            swap_byte_endian(dims[i]);
-            contract_assert_eq(dims[i], y.shape().dims[i]);
+        {
+            char magic[4];
+            is.read(magic, 4);
+            contract_assert(magic[0] == 0);
+            contract_assert(magic[1] == 0);
+            const uint8_t type = magic[2];
+            const uint8_t rank = magic[3];
+            contract_assert(type == encoding::template value<R>());
+            contract_assert(rank == r);
         }
-    }
-    is.read(reinterpret_cast<char *>(y.data()), sizeof(R) * y.shape().size());
-}
-
-template <typename R, ttl::rank_t r>
-void write(const ttl::tensor_view<R, r> &x, std::ostream &os)
-{
-    {
-        char magic[4] = {0, 0, encoding::value<R>(), r};
-        os.write(magic, 4);
-    }
-    {
-        uint32_t dims[r];
-        for (auto i : range(r)) {
-            dims[i] = x.shape().dims[i];
-            swap_byte_endian(dims[i]);
+        {
+            uint32_t buffer[r];
+            is.read(reinterpret_cast<char *>(buffer), r * sizeof(uint32_t));
+            std::transform(buffer, buffer + r, buffer, byte_endian_swapped);
+            for (auto i : range(r)) {
+                contract_assert_eq(buffer[i], y.shape().dims[i]);
+            }
         }
-        os.write(reinterpret_cast<const char *>(dims), sizeof(uint32_t) * r);
+        is.read(reinterpret_cast<char *>(y.data()),
+                sizeof(R) * y.shape().size());
     }
-    os.write(reinterpret_cast<const char *>(x.data()),
-             sizeof(R) * x.shape().size());
-}
 
+    template <typename R, ttl::rank_t r>
+    static void write(const ttl::tensor_view<R, r> &x, std::ostream &os)
+    {
+        {
+            char magic[4] = {0, 0, encoding::template value<R>(), r};
+            os.write(magic, 4);
+        }
+        {
+            uint32_t buffer[r];
+            const auto dims = x.shape().dims;
+            std::transform(dims.begin(), dims.end(), buffer,
+                           byte_endian_swapped);
+            os.write(reinterpret_cast<const char *>(buffer),
+                     sizeof(uint32_t) * r);
+        }
+        os.write(reinterpret_cast<const char *>(x.data()),
+                 sizeof(R) * x.shape().size());
+    }
+};
 }  // namespace internal::idx_format
 
 class readfile
 {
+    using serializer = internal::idx_format::serializer<>;
+
     const std::string filename_;
 
   public:
@@ -104,12 +113,14 @@ class readfile
     void operator()(const ttl::tensor_ref<R, r> &y) const
     {
         std::ifstream fs(filename_, std::ios::binary);
-        internal::idx_format::read(y, fs);
+        serializer::read(y, fs);
     }
 };
 
 class writefile
 {
+    using serializer = internal::idx_format::serializer<>;
+
     const std::string filename_;
 
   public:
@@ -119,13 +130,15 @@ class writefile
     void operator()(const ttl::tensor_view<R, r> &x) const
     {
         std::ofstream fs(filename_, std::ios::binary);
-        internal::idx_format::write(x, fs);
+        serializer::write(x, fs);
     }
 };
 
 // read a tensor from a tar file of idx files
 class readtar
 {
+    using serializer = internal::idx_format::serializer<>;
+
     const std::string filename_;
     const std::string name_;
 
@@ -142,7 +155,7 @@ class readtar
         const auto info = idx(name_);
         std::ifstream fs(filename_, std::ios::binary);
         fs.seekg(info.data_offset, std::ios::beg);
-        internal::idx_format::read(y, fs);
+        serializer::read(y, fs);
     }
 };
 
