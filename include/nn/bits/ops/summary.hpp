@@ -28,7 +28,9 @@ struct span {
     template <typename R, ttl::rank_t r>
     R operator()(const ttl::tensor_view<R, r> &x) const
     {
-        return max()(x) - min()(x);
+        const auto mm =
+            std::minmax_element(x.data(), x.data() + x.shape().size());
+        return *mm.second - *mm.first;
     }
 };
 
