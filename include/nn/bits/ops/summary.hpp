@@ -24,6 +24,14 @@ struct max {
     }
 };
 
+struct span {
+    template <typename R, ttl::rank_t r>
+    R operator()(const ttl::tensor_view<R, r> &x) const
+    {
+        return max()(x) - min()(x);
+    }
+};
+
 struct sum {
     template <typename R, ttl::rank_t r>
     R operator()(const ttl::tensor_view<R, r> &x) const
