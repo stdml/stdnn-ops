@@ -24,6 +24,16 @@ struct max {
     }
 };
 
+struct span {
+    template <typename R, ttl::rank_t r>
+    R operator()(const ttl::tensor_view<R, r> &x) const
+    {
+        const auto mm =
+            std::minmax_element(x.data(), x.data() + x.shape().size());
+        return *mm.second - *mm.first;
+    }
+};
+
 struct sum {
     template <typename R, ttl::rank_t r>
     R operator()(const ttl::tensor_view<R, r> &x) const
