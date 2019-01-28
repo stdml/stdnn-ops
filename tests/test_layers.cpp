@@ -11,16 +11,31 @@ template <typename dense> void test_dense_layer()
     l1(ref(x));
 }
 
-template <typename conv> void test_conv_layer()
+template <typename conv_layer> void test_conv_layer()
 {
-    static_assert(std::is_class<conv>::value, "");
+    static_assert(std::is_class<conv_layer>::value, "");
     // static_assert(std::is_constructible<L>::value, "");
 
-    auto x = ttl::tensor<float, 4>(2, 32, 32, 32);
-    conv l1(conv::ksize(3, 3), 32);
-    l1(ref(x));
-    conv l2(conv::ksize(3, 3), 32, conv::padding(1, 1));
-    l2(ref(x));
+    {
+        auto x = ttl::tensor<float, 4>(2, 32, 32, 32);
+        conv_layer l1(conv_layer::ksize(3, 3), 32);
+        l1(ref(x));
+        conv_layer l2(conv_layer::ksize(3, 3), 32, conv_layer::padding(1, 1));
+        l2(ref(x));
+    }
+
+    {
+        auto x = ttl::tensor<float, 4>(2, 224, 224, 224);
+        using conv_trait = nn::ops::conv_trait<nn::ops::hw>;
+        conv_layer l1(
+            conv_layer::ksize(7, 7), 1,
+            conv_trait(conv_trait::padding(conv_trait::padding_1d(3, 2),
+                                           conv_trait::padding_1d(3, 2)),
+                       conv_trait::stride(2, 2)));
+        auto l = l1(ref(x));
+        const auto shp = (*l).shape();
+        ASSERT_EQ(shp.size(), 2 * 112 * 112);
+    }
 }
 
 template <typename pool> void test_pool_layer()

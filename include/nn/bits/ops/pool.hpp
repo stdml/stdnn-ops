@@ -24,25 +24,26 @@ template <> class pool_trait<hw>
     static constexpr auto default_padding = padding_t(0, 0);
     static constexpr auto default_ksize = ksize_t(2, 2);
 
-    using sample_t = linear_sample_trait<size_t>;
+    using dim_t = size_t;
+    using sample_t = linear_sample_trait<dim_t>;
 
     const sample_t h_sample_;
     const sample_t w_sample_;
 
     ksize_t get_ksize() const
     {
-        return ksize_t(h_sample_.ksize_, w_sample_.ksize_);
+        return ksize_t(h_sample_.get_ksize(), w_sample_.get_ksize());
     }
 
     stride_t get_stride() const
     {
-        return stride_t(h_sample_.stride_, w_sample_.stride_);
+        return stride_t(h_sample_.get_stride(), w_sample_.get_stride());
     }
 
   public:
-    static padding_t padding(int r, int s) { return padding_t(r, s); };
-    static ksize_t ksize(int r, int s) { return ksize_t(r, s); };
-    static stride_t stride(int r, int s) { return stride_t(r, s); };
+    static padding_t padding(dim_t r, dim_t s) { return padding_t(r, s); };
+    static ksize_t ksize(dim_t r, dim_t s) { return ksize_t(r, s); };
+    static stride_t stride(dim_t r, dim_t s) { return stride_t(r, s); };
 
     pool_trait() : pool_trait(default_ksize) {}
 
