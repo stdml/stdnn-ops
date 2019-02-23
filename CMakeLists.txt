@@ -20,6 +20,7 @@ OPTION(USE_OPENCV "Build with opencv." OFF)
 OPTION(BUILD_TESTS "Build tests." ON)
 OPTION(BUILD_BENCHMARKS "Build benchmarks." ON)
 OPTION(BUILD_EXAMPLES "Build examples." ON)
+OPTION(BUILD_C_API "Build C API." ON)
 OPTION(BUILD_PACKAGES "Build release packages." OFF)
 
 IF(USE_OPT)
@@ -48,6 +49,11 @@ ENDIF()
 
 IF(BUILD_EXAMPLES)
     INCLUDE(cmake/examples.cmake)
+ENDIF()
+
+IF(BUILD_C_API)
+    ADD_LIBRARY(stdnn-ops-experimental src/nn/ops.cpp)
+    USE_STDTENSOR(stdnn-ops-experimental)
 ENDIF()
 
 IF(BUILD_PACKAGES)

@@ -16,3 +16,7 @@ EXTERNALPROJECT_ADD(libstdtensor
                     -DCMAKE_INSTALL_PREFIX=${PREFIX}
                     -DBUILD_TESTS=0
                     -DBUILD_EXAMPLES=0)
+
+FUNCTION(USE_STDTENSOR target)
+    ADD_DEPENDENCIES(${target} libstdtensor)
+ENDFUNCTION()
