@@ -22,7 +22,8 @@ template <> class im2col<hw, hwrs> : public im2col_trait<hw>
   public:
     shape<4> operator()(const shape<2> &x) const
     {
-        return internal::join_shape(im2col_trait::operator()(x), get_ksize());
+        return ttl::internal::join_shape(im2col_trait::operator()(x),
+                                         get_ksize());
     }
 
     template <typename R>
@@ -61,7 +62,8 @@ template <> class im2col<hw, rshw> : public im2col_trait<hw>
   public:
     shape<4> operator()(const shape<2> &x) const
     {
-        return internal::join_shape(get_ksize(), im2col_trait::operator()(x));
+        return ttl::internal::join_shape(get_ksize(),
+                                         im2col_trait::operator()(x));
     }
 
     template <typename R>
