@@ -41,7 +41,7 @@ class plain34_model
     auto pool1() const
     {
         using pool_max = nn::layers::pool<nn::ops::pool_max, image_order>;
-        const auto padding = pool_max::sample1d_t::auto_padding(3, 2, 1, 112);
+        const auto padding = pool_max::sample1d_t::valid_padding(3, 2, 1, 112);
         return pool_max(pool_max::ksize(3, 3),
                         pool_max::padding(padding, padding),
                         pool_max::stride(2, 2));

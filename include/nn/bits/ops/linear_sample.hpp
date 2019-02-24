@@ -4,27 +4,6 @@
 #include <nn/common.hpp>
 
 /*!
-\begin{definition}
-A Linear sample is a map that maps a sequence of length $n$ to a sequence of
-length $m$.
-\end{definition}
-
-
-The sample takes the following steps
-\begin{itemize}
-\item The input sequence $x[n]$ is padded to $x^\prime[pad_l + n + pad_r]$ by
-prepending $pad_l$ zero elements and appending $pad_r$ zero elements.
-
-\item The kernel (filter) $y[k]$ is extended to $y^\prime[rate * (k - 1) + 1]$
-by inserting $rate - 1$ zero elements to adjacent elemnts.
-
-\item The padded input $x^\prime$ and the extended kernel $y^\prime$ takes a
-valid convolution with stride $s$, resulting the output sequence $Z[m]$,
-where $m = (n^\prime - k^prime) / s + 1$, and $s \mid n^\prime - k^prime$ should
-be granted.
-\end{itemize}
-
-
 e.g.
 
 012345678901234567890123456789
@@ -67,13 +46,27 @@ template <typename dim_t> class linear_sample_trait
 
     static dim_t patch_size(dim_t k, dim_t r) { return r * (k - 1) + 1; }
 
-    static padding_t auto_padding(dim_t k, dim_t s, dim_t r, dim_t n)
+    static padding_t even_padding(dim_t p)
+    {
+        return padding_t(p / 2, p - p / 2);
+    }
+
+    static padding_t valid_padding(dim_t k, dim_t s, dim_t r, dim_t n)
     {
         const dim_t ps = patch_size(k, r);
         // p is the minimal p such that (n + p - ps) == 0 (mod s)
         // p == ps - n (mod s)
-        const dim_t p = (ps + s - (n % s)) % s;
-        return padding_t(p / 2, p - p / 2);
+        return even_padding((ps + s - (n % s)) % s);
+    }
+
+    static padding_t same_padding(dim_t k, dim_t s, dim_t r, dim_t n)
+    {
+        const dim_t ps = patch_size(k, r);
+        const dim_t n0 = n % s;
+        // p = ps - s - (n % s)
+        // TODO: support negative padding
+        contract_assert(ps >= s + n0);
+        return even_padding(ps - s - n0);
     }
 
   public:
