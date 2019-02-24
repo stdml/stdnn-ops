@@ -74,3 +74,32 @@ TEST(linear_sample_test, test_2)
         ASSERT_EQ(y, nn::shape<3>(9, 7, 5));
     }
 }
+
+template <typename dim_t>
+void test_valid_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
+{
+    using sample_t = nn::ops::linear_sample_trait<size_t>;
+    const auto padding = sample_t::valid_padding(3, s, 1, n);
+    const auto [u, v] = padding.dims;
+    ASSERT_EQ(u, pad_l);
+    ASSERT_EQ(v, pad_r);
+}
+
+template <typename dim_t>
+void test_same_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
+{
+    using sample_t = nn::ops::linear_sample_trait<dim_t>;
+    const auto padding = sample_t::same_padding(3, s, 1, n);
+    const auto [u, v] = padding.dims;
+    ASSERT_EQ(u, pad_l);
+    ASSERT_EQ(v, pad_r);
+}
+
+TEST(linear_sample_test, test_auto_padding)
+{
+    test_valid_padding_ksize_3<uint8_t>(56, 1, 0, 0);
+    test_valid_padding_ksize_3<uint8_t>(56, 2, 0, 1);
+
+    test_same_padding_ksize_3<uint8_t>(56, 1, 1, 1);
+    test_same_padding_ksize_3<uint8_t>(112, 2, 0, 1);
+}
