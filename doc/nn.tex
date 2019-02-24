@@ -1,0 +1,36 @@
+\documentclass{article}
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumerate}
+\usepackage{color}
+\usepackage[
+  colorlinks,
+  citecolor=black,
+  filecolor=black,
+  linkcolor=black,
+  urlcolor=black
+  colorlinks=true,
+  linktoc=all,
+  linkcolor=blue,
+  linktocpage=true
+]{hyperref}
+% \usepackage{minitoc}
+
+
+\newtheorem{defi}{Definition}[section]
+
+\newtheorem*{exer}{Exercise}
+\newtheorem*{exmp}{Example}
+\newtheorem*{prf}{Proof}
+\newtheorem*{rem}{Remark}
+\newtheorem{cly}[defi]{Corollary}
+\newtheorem{lem}[defi]{Lemma}
+\newtheorem{pro}[defi]{Proposition}
+\newtheorem{thm}[defi]{Theorem}
+
+\begin{document}
+
+\include{linear-sample}
+
+\end{document}
