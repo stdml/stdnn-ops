@@ -13,22 +13,21 @@ template <typename image_order> class pool_trait;
 template <> class pool_trait<hw>
 {
   protected:
-    struct padding_trait;
     struct ksize_trait;
     struct stride_trait;
 
-    using padding_t = std::experimental::new_type<shape<2>, padding_trait>;
+    using dim_t = size_t;
+    using sample1d_t_ = linear_sample_trait<dim_t>;
+
+    using padding_1d_t = typename sample1d_t_::padding_t;
+    using padding_t = std::array<padding_1d_t, 2>;
     using ksize_t = std::experimental::new_type<shape<2>, ksize_trait>;
     using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
 
-    static constexpr auto default_padding = padding_t(0, 0);
     static constexpr auto default_ksize = ksize_t(2, 2);
 
-    using dim_t = size_t;
-    using sample_t = linear_sample_trait<dim_t>;
-
-    const sample_t h_sample_;
-    const sample_t w_sample_;
+    const sample1d_t_ h_sample_;
+    const sample1d_t_ w_sample_;
 
     ksize_t get_ksize() const
     {
@@ -40,10 +39,27 @@ template <> class pool_trait<hw>
         return stride_t(h_sample_.get_stride(), w_sample_.get_stride());
     }
 
+    padding_t get_padding() const
+    {
+        return padding(h_sample_.get_padding(), w_sample_.get_padding());
+    }
+
   public:
-    static padding_t padding(dim_t r, dim_t s) { return padding_t(r, s); };
-    static ksize_t ksize(dim_t r, dim_t s) { return ksize_t(r, s); };
-    static stride_t stride(dim_t r, dim_t s) { return stride_t(r, s); };
+    using sample1d_t = sample1d_t_;
+
+    static padding_t padding(const padding_1d_t &r, const padding_1d_t &s)
+    {
+        return {r, s};
+    };
+
+    static padding_t padding(dim_t r, dim_t s)
+    {
+        return padding(sample1d_t::padding(r), sample1d_t::padding(s));
+    }
+
+    static ksize_t ksize(dim_t r, dim_t s) { return ksize_t(r, s); }
+
+    static stride_t stride(dim_t r, dim_t s) { return stride_t(r, s); }
 
     pool_trait() : pool_trait(default_ksize) {}
 
@@ -53,7 +69,7 @@ template <> class pool_trait<hw>
     }
 
     pool_trait(const ksize_t &ksize, const stride_t &stride)
-        : pool_trait(ksize, default_padding, stride)
+        : pool_trait(ksize, padding(0, 0), stride)
     {
     }
 
@@ -64,8 +80,8 @@ template <> class pool_trait<hw>
 
     pool_trait(const ksize_t &ksize, const padding_t &padding,
                const stride_t &stride)
-        : h_sample_(ksize.dims[0], stride.dims[0], 1, padding.dims[0]),
-          w_sample_(ksize.dims[1], stride.dims[1], 1, padding.dims[1])
+        : h_sample_(ksize.dims[0], stride.dims[0], 1, std::get<0>(padding)),
+          w_sample_(ksize.dims[1], stride.dims[1], 1, std::get<1>(padding))
     {
     }
 

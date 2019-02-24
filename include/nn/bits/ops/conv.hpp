@@ -71,6 +71,8 @@ template <> class conv_trait<hw>
 {
     using dim_t = size_t;
     using conv_trait_1d_t = linear_conv_trait<dim_t>;
+
+  public:
     using padding_1d_t = conv_trait_1d_t::padding_t;
 
   protected:

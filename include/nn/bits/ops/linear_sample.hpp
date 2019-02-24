@@ -1,4 +1,6 @@
 #pragma once
+#include <sstream>
+
 #include <nn/common.hpp>
 
 /*!
@@ -56,12 +58,23 @@ template <typename dim_t> class linear_sample_trait
 
     using padding_t = std::experimental::new_type<shape<2>, padding_trait>;
 
-    static padding_t padding(dim_t p) { return padding_t(p, p); }
+    static constexpr padding_t padding(dim_t p) { return padding_t(p, p); }
 
-    static padding_t padding(dim_t left, dim_t right)
+    static constexpr padding_t padding(dim_t left, dim_t right)
     {
         return padding_t(left, right);
     };
+
+    static dim_t patch_size(dim_t k, dim_t r) { return r * (k - 1) + 1; }
+
+    static padding_t auto_padding(dim_t k, dim_t s, dim_t r, dim_t n)
+    {
+        const dim_t ps = patch_size(k, r);
+        // p is the minimal p such that (n + p - ps) == 0 (mod s)
+        // p == ps - n (mod s)
+        const dim_t p = (ps + s - (n % s)) % s;
+        return padding_t(p / 2, p - p / 2);
+    }
 
   public:
     linear_sample_trait(dim_t ksize)
@@ -110,14 +123,16 @@ template <typename dim_t> class linear_sample_trait
 
     dim_t get_stride() const { return stride_; }
 
+    padding_t get_padding() const { return padding(pad_l_, pad_r_); }
+
     /*! Compute the output size from input size. */
     dim_t operator()(dim_t n) const
     {
         const dim_t n_padded = n + pad_l_ + pad_r_;
-        const dim_t patch_size = rate_ * (ksize_ - 1) + 1;
-        contract_assert(n_padded >= patch_size);
-        contract_assert((n_padded - patch_size) % stride_ == 0);
-        return (n_padded - patch_size) / stride_ + 1;
+        const dim_t ps = patch_size(ksize_, rate_);
+        contract_assert(n_padded >= ps);
+        contract_assert((n_padded - ps) % stride_ == 0);
+        return (n_padded - ps) / stride_ + 1;
     }
 
     /*! Compute the index $i^\prime$ of padded input from the output index and
@@ -144,6 +159,17 @@ template <typename dim_t> class linear_sample_trait
     }
 
     dim_t unpad(dim_t i) const { return i - pad_l_; }
+
+    std::string to_string() const
+    {
+        std::stringstream ss;
+        ss << "<ksize=" << ksize_ <<                       //
+            ",stride=" << stride_ <<                       //
+            ",rate=" << rate_ <<                           //
+            ",pad_l=" << pad_l_ << ",pad_r=" << pad_r_ <<  //
+            ">";
+        return ss.str();
+    }
 };
 
 namespace internal
