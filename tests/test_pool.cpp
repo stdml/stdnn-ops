@@ -146,3 +146,20 @@ TEST(pool_test, test_padding)
         }
     }
 }
+
+TEST(pool_test, test_mean)
+{
+    using pool = nn::ops::pool<nn::ops::pool_mean, nn::ops::hw>;
+    const pool op;
+    const auto x = ttl::tensor<int, 2>(4, 4);
+    std::iota(x.data(), x.data() + 16, 0);
+    using add = nn::ops::add;
+    add()(ref(x), view(x), view(x));
+
+    const auto y = ttl::tensor<int, 2>(op(x.shape()));
+    op(ref(y), view(x));
+    ASSERT_EQ(y.data()[0], 5);
+    ASSERT_EQ(y.data()[1], 9);
+    ASSERT_EQ(y.data()[2], 21);
+    ASSERT_EQ(y.data()[3], 25);
+}
