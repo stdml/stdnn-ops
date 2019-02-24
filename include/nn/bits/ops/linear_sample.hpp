@@ -1,6 +1,4 @@
 #pragma once
-#include <sstream>
-
 #include <nn/common.hpp>
 
 /*!
@@ -152,17 +150,6 @@ template <typename dim_t> class linear_sample_trait
     }
 
     dim_t unpad(dim_t i) const { return i - pad_l_; }
-
-    std::string to_string() const
-    {
-        std::stringstream ss;
-        ss << "<ksize=" << ksize_ <<                       //
-            ",stride=" << stride_ <<                       //
-            ",rate=" << rate_ <<                           //
-            ",pad_l=" << pad_l_ << ",pad_r=" << pad_r_ <<  //
-            ">";
-        return ss.str();
-    }
 };
 
 namespace internal
