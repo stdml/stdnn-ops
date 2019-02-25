@@ -21,6 +21,7 @@ class plain34_model
     using relu = nn::ops::pointwise<nn::ops::relu>;
     using pool_ave = nn::layers::pool<nn::ops::pool_mean, image_order>;
 
+    using flatten = nn::layers::flatten<1, 3>;
     using dense = nn::layers::dense<>;
     using softmax = nn::layers::activation<nn::ops::softmax>;
     using top = nn::ops::top;
@@ -80,57 +81,53 @@ class plain34_model
     template <typename R>
     auto operator()(const ttl::tensor_ref<R, 4> &x, int m = 5) const
     {
-        auto conv_layers = nn::models::make_sequential()  //
-                           << conv1(64)                   //
-                           << pool1()                     //
+        auto layers = nn::models::make_sequential()  //
+                      << conv1(64)                   //
+                      << pool1()                     //
 
-                           << conv(64, 1, conv_trait::padding_1d(1, 1))
-                           << conv(64, 1, conv_trait::padding_1d(1, 1))
-                           << conv(64, 1, conv_trait::padding_1d(1, 1))
-                           << conv(64, 1, conv_trait::padding_1d(1, 1))
-                           << conv(64, 1, conv_trait::padding_1d(1, 1))
-                           << conv(64, 1, conv_trait::padding_1d(1, 1))
+                      << conv(64, 1, conv_trait::padding_1d(1, 1))
+                      << conv(64, 1, conv_trait::padding_1d(1, 1))
+                      << conv(64, 1, conv_trait::padding_1d(1, 1))
+                      << conv(64, 1, conv_trait::padding_1d(1, 1))
+                      << conv(64, 1, conv_trait::padding_1d(1, 1))
+                      << conv(64, 1, conv_trait::padding_1d(1, 1))
 
-                           << conv(128, 2, conv_trait::padding_1d(0, 1))  //
-                           << conv(128, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(128, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(128, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(128, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(128, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(128, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(128, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(128, 2, conv_trait::padding_1d(0, 1))  //
+                      << conv(128, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(128, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(128, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(128, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(128, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(128, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(128, 1, conv_trait::padding_1d(1, 1))  //
 
-                           << conv(256, 2, conv_trait::padding_1d(0, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 2, conv_trait::padding_1d(0, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(256, 1, conv_trait::padding_1d(1, 1))  //
 
-                           << conv(512, 2, conv_trait::padding_1d(0, 1))  //
-                           << conv(512, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(512, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(512, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(512, 1, conv_trait::padding_1d(1, 1))  //
-                           << conv(512, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(512, 2, conv_trait::padding_1d(0, 1))  //
+                      << conv(512, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(512, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(512, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(512, 1, conv_trait::padding_1d(1, 1))  //
+                      << conv(512, 1, conv_trait::padding_1d(1, 1))  //
 
-                           << pool2()  //
+                      << pool2()        //
+                      << flatten()      //
+                      << dense(logits)  //
+                      << softmax()      //
             ;
 
-        auto dense_layers = nn::models::make_sequential()  //
-                            << dense(logits)               //
-                            << softmax()                   //
-            ;
-
-        auto y1 = conv_layers(x);
-        auto y2 = nn::ops::as_matrix<1, 3, ttl::tensor_ref<R, 2>>(*y1);
-        auto y = dense_layers(y2);
+        auto y = layers(x);
         return y;
     }
 };
