@@ -16,6 +16,10 @@ e.g.
 
 namespace nn::ops
 {
+struct fixed_padding;
+
+template <typename dim_t, typename padding_policy = fixed_padding>
+class basic_linear_sample_trait;
 
 template <typename dim_t> class linear_sample_trait
 {

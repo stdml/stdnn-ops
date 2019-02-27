@@ -27,10 +27,10 @@ class plain34_model
         using conv_layer =
             nn::layers::conv<image_order, filter_order, true, relu>;
         using conv_trait = nn::ops::conv_trait<nn::ops::hw>;
-
-        return conv_layer(conv_layer::ksize(7, 7), d,
-                          conv_trait(conv_trait::padding(pad(3, 2), pad(3, 2)),
-                                     conv_trait::stride(2, 2)));
+        const conv_trait::padding_1d_t p = pad<uint32_t>(3, 2);
+        return conv_layer(
+            conv_layer::ksize(7, 7), d,
+            conv_trait(conv_trait::padding(p, p), conv_trait::stride(2, 2)));
     }
 
     auto pool1() const
@@ -78,41 +78,41 @@ class plain34_model
                       << conv1(64)                   //
                       << pool1()                     //
 
-                      << conv(64, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(64, 1, pad(1, 1)) << bn_layer()
-                      << conv(64, 1, pad(1, 1)) << bn_layer()
-                      << conv(64, 1, pad(1, 1)) << bn_layer()
-                      << conv(64, 1, pad(1, 1)) << bn_layer()
-                      << conv(64, 1, pad(1, 1)) << bn_layer()
+                      << conv(64, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(64, 1, pad<uint32_t>(1, 1)) << bn_layer()
+                      << conv(64, 1, pad<uint32_t>(1, 1)) << bn_layer()
+                      << conv(64, 1, pad<uint32_t>(1, 1)) << bn_layer()
+                      << conv(64, 1, pad<uint32_t>(1, 1)) << bn_layer()
+                      << conv(64, 1, pad<uint32_t>(1, 1)) << bn_layer()
 
-                      << conv(128, 2, pad(0, 1)) << bn_layer()  //
-                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(128, 2, pad<uint32_t>(0, 1)) << bn_layer()  //
+                      << conv(128, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
 
-                      << conv(256, 2, pad(0, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 2, pad<uint32_t>(0, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
 
-                      << conv(512, 2, pad(0, 1)) << bn_layer()  //
-                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
-                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(512, 2, pad<uint32_t>(0, 1)) << bn_layer()  //
+                      << conv(512, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad<uint32_t>(1, 1)) << bn_layer()  //
 
                       << pool2()        //
                       << flatten()      //

@@ -8,7 +8,8 @@ namespace nn::ops
 {
 template <typename image_order> class im2col_trait;
 
-template <> class im2col_trait<hw> : public multi_linear_sample_trait<2, size_t>
+template <>
+class im2col_trait<hw> : public multi_linear_sample_trait<2, uint32_t>
 {
     using multi_linear_sample_trait::multi_linear_sample_trait;
 };
