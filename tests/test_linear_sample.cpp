@@ -103,3 +103,12 @@ TEST(linear_sample_test, test_auto_padding)
     test_same_padding_ksize_3<uint8_t>(56, 1, 1, 1);
     test_same_padding_ksize_3<uint8_t>(112, 2, 0, 1);
 }
+
+TEST(linear_sample_test, test_pad)
+{
+    using nn::ops::pad;
+    pad(1);
+    pad(2);
+    pad(1, 2);
+    pad(0, 1);
+}

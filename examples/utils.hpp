@@ -21,7 +21,7 @@ void show_signature(const T &y, const Ts &... x)
 {
     std::array<std::string, sizeof...(Ts)> args({show_shape(x.shape())...});
     std::string ss;
-    for (auto p : args) {
+    for (const auto& p : args) {
         if (!ss.empty()) { ss += ", "; }
         ss += p;
     }

@@ -7,6 +7,8 @@
 
 #include "utils.hpp"
 
+using nn::ops::pad;
+
 template <typename image_order = nn::ops::nhwc,
           typename filter_order = nn::ops::rscd>
 class plain34_model
@@ -26,11 +28,9 @@ class plain34_model
             nn::layers::conv<image_order, filter_order, true, relu>;
         using conv_trait = nn::ops::conv_trait<nn::ops::hw>;
 
-        return conv_layer(
-            conv_layer::ksize(7, 7), d,
-            conv_trait(conv_trait::padding(conv_trait::padding_1d(3, 2),
-                                           conv_trait::padding_1d(3, 2)),
-                       conv_trait::stride(2, 2)));
+        return conv_layer(conv_layer::ksize(7, 7), d,
+                          conv_trait(conv_trait::padding(pad(3, 2), pad(3, 2)),
+                                     conv_trait::stride(2, 2)));
     }
 
     auto pool1() const
@@ -74,51 +74,50 @@ class plain34_model
     template <typename R>
     auto operator()(const ttl::tensor_ref<R, 4> &x, int m = 5) const
     {
-        auto layers =
-            nn::models::make_sequential()  //
-            << conv1(64)                   //
-            << pool1()                     //
+        auto layers = nn::models::make_sequential()  //
+                      << conv1(64)                   //
+                      << pool1()                     //
 
-            << conv(64, 1, conv_trait::padding_1d(1, 1)) << bn_layer()
-            << conv(64, 1, conv_trait::padding_1d(1, 1)) << bn_layer()
-            << conv(64, 1, conv_trait::padding_1d(1, 1)) << bn_layer()
-            << conv(64, 1, conv_trait::padding_1d(1, 1)) << bn_layer()
-            << conv(64, 1, conv_trait::padding_1d(1, 1)) << bn_layer()
-            << conv(64, 1, conv_trait::padding_1d(1, 1)) << bn_layer()
+                      << conv(64, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(64, 1, pad(1, 1)) << bn_layer()
+                      << conv(64, 1, pad(1, 1)) << bn_layer()
+                      << conv(64, 1, pad(1, 1)) << bn_layer()
+                      << conv(64, 1, pad(1, 1)) << bn_layer()
+                      << conv(64, 1, pad(1, 1)) << bn_layer()
 
-            << conv(128, 2, conv_trait::padding_1d(0, 1)) << bn_layer()  //
-            << conv(128, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(128, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(128, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(128, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(128, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(128, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(128, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
+                      << conv(128, 2, pad(0, 1)) << bn_layer()  //
+                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(128, 1, pad(1, 1)) << bn_layer()  //
 
-            << conv(256, 2, conv_trait::padding_1d(0, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(256, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
+                      << conv(256, 2, pad(0, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(256, 1, pad(1, 1)) << bn_layer()  //
 
-            << conv(512, 2, conv_trait::padding_1d(0, 1)) << bn_layer()  //
-            << conv(512, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(512, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(512, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(512, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
-            << conv(512, 1, conv_trait::padding_1d(1, 1)) << bn_layer()  //
+                      << conv(512, 2, pad(0, 1)) << bn_layer()  //
+                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
+                      << conv(512, 1, pad(1, 1)) << bn_layer()  //
 
-            << pool2()        //
-            << flatten()      //
-            << dense(logits)  //
-            << softmax()      //
+                      << pool2()        //
+                      << flatten()      //
+                      << dense(logits)  //
+                      << softmax()      //
             ;
 
         auto y = layers(x);

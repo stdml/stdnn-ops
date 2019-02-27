@@ -152,6 +152,18 @@ template <typename dim_t> class linear_sample_trait
     dim_t unpad(dim_t i) const { return i - pad_l_; }
 };
 
+template <typename dim_t>
+constexpr typename linear_sample_trait<dim_t>::padding_t pad(dim_t p)
+{
+    return typename linear_sample_trait<dim_t>::padding_t(p, p);
+}
+
+template <typename dim_t>
+constexpr typename linear_sample_trait<dim_t>::padding_t pad(dim_t l, dim_t r)
+{
+    return typename linear_sample_trait<dim_t>::padding_t(l, r);
+}
+
 namespace internal
 {
 template <size_t idx, typename T> static T constant(const T &x) { return x; }
