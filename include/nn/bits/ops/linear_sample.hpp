@@ -17,11 +17,13 @@ e.g.
 namespace nn::ops
 {
 struct fixed_padding;
+struct valid_padding;
+struct same_padding;
 
 template <typename dim_t, typename padding_policy = fixed_padding>
-class basic_linear_sample_trait;
+class linear_sample_trait;
 
-template <typename dim_t> class linear_sample_trait
+template <typename dim_t> class linear_sample_trait<dim_t, fixed_padding>
 {
     const dim_t pad_l_;  // TODO: make it template parameter
     const dim_t pad_r_;  // TODO: make it template parameter
@@ -154,6 +156,20 @@ template <typename dim_t> class linear_sample_trait
     }
 
     dim_t unpad(dim_t i) const { return i - pad_l_; }
+};
+
+template <typename dim_t> class linear_sample_trait<dim_t, valid_padding>
+{
+    const dim_t rate_;
+    const dim_t stride_;
+    const dim_t ksize_;
+};
+
+template <typename dim_t> class linear_sample_trait<dim_t, same_padding>
+{
+    const dim_t rate_;
+    const dim_t stride_;
+    const dim_t ksize_;
 };
 
 template <typename dim_t>

@@ -3,9 +3,11 @@
 *.png
 /3rdparty
 /bin
+/build
 /cmake-build
 /lib
 /local
+/Makefile
 /release
 cmake_install.cmake
 CMakeCache.txt
@@ -16,5 +18,4 @@ CPackSourceConfig.cmake
 CTestTestfile.cmake
 install_manifest.txt
 libstdtensor-prefix
-Makefile
 Testing

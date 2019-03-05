@@ -7,7 +7,8 @@
 
 void test_linear_sample_ksr_nm(int ksize, int stride, int rate, int n, int m)
 {
-    nn::ops::linear_sample_trait sample(ksize, stride, rate);
+    using sample_t = nn::ops::linear_sample_trait<int>;
+    sample_t sample(ksize, stride, rate);
 
     ASSERT_EQ(sample(n), m);
     ASSERT_EQ(sample(0, 0), 0);
