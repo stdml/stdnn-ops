@@ -8,7 +8,7 @@
 #include <nn/models>
 
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#    include <opencv2/opencv.hpp>
 #endif
 
 #include "utils.hpp"

@@ -1,18 +1,40 @@
 # https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 # clang-format version 6.0.0 (tags/RELEASE_600/final)
 
+# AlignConsecutiveAssignments: true
 AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
-
-IndentWidth: 4
 BreakBeforeBraces: Linux
-SortIncludes: true
-# IncludeBlocks: true
-
 ColumnLimit: 80
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+DerivePointerAlignment: false
+IncludeBlocks: Regroup
+IndentPPDirectives: AfterHash
+IndentWidth: 4
+PointerAlignment: Right
+SortIncludes: true
 SpacesBeforeTrailingComments: 2
 
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
-
 # TODO: require one blank line between blocks
+
+
+# FIXME: auto generate this section
+IncludeCategories:
+  # standard C headers
+  # TODO: add as needed
+  - Regex:           ^<(cstdint|cstdio|cstdlib|cstring)>$
+    Priority:        1
+  # standard C++ headers
+  # TODO: add as needed
+  - Regex:           ^<(algorithm|condition_variable|functional|iostream|map|memory|mutex|numeric|string|thread|vector)>$
+    Priority:        2
+  # third party headers
+  - Regex:           ^<stdtensor>
+    Priority:        3
+  # public nn headers
+  - Regex:           ^<nn
+    Priority:        4
+  # internal headers
+  - Regex:           ^"
+    Priority:        5

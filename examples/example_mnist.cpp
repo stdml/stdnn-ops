@@ -1,10 +1,11 @@
 #include <cstdlib>
+
 #include <string>
 
 #include <nn/ops>
 
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#    include <opencv2/opencv.hpp>
 #endif
 
 #include <stdtensor>

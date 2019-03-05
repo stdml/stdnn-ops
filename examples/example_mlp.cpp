@@ -1,7 +1,8 @@
 #include <string>
 
-#include <nn/ops>
 #include <stdtensor>
+
+#include <nn/ops>
 
 #include "utils.hpp"
 
