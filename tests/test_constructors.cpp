@@ -59,8 +59,11 @@ void test_pool2d(pool2d_params_t p)
             pool2d::stride(p.stride_h, p.stride_w));
     }
     {
-        pool2d op(ksize<pool2d>()(p), padding<pool2d>()(p),
-                  stride<pool2d>()(p));
+        pool2d op1(ksize<pool2d>()(p));
+        pool2d op2(ksize<pool2d>()(p), padding<pool2d>()(p));
+        pool2d op3(ksize<pool2d>()(p), stride<pool2d>()(p));
+        pool2d op4(ksize<pool2d>()(p), padding<pool2d>()(p),
+                   stride<pool2d>()(p));
     }
 }
 
@@ -143,7 +146,11 @@ void test_conv2d(conv2d_params_t p)
             conv2d::rate(p.rate_h, p.rate_w));
     }
     {
-        conv2d op(padding<conv2d>()(p), stride<conv2d>()(p), rate<conv2d>()(p));
+        conv2d op1(padding<conv2d>()(p));
+        conv2d op2(stride<conv2d>()(p));
+        conv2d op3(padding<conv2d>()(p), stride<conv2d>()(p));
+        conv2d op4(padding<conv2d>()(p), stride<conv2d>()(p),
+                   rate<conv2d>()(p));
     }
 }
 
