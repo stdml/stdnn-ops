@@ -13,7 +13,7 @@ template <> class im2col_trait<hw> : public multi_linear_sample_trait<2, size_t>
     using multi_linear_sample_trait::multi_linear_sample_trait;
 };
 
-template <typename image_order, typename ColOrder> class im2col;
+template <typename image_order, typename col_order> class im2col;
 
 template <> class im2col<hw, hwrs> : public im2col_trait<hw>
 {
