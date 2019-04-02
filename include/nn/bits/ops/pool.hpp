@@ -47,6 +47,13 @@ template <> class pool_trait<hw>
   public:
     using sample1d_t = sample1d_t_;
 
+    static padding_1d_t padding_1d(dim_t p) { return padding_1d_t(p, p); }
+
+    static padding_1d_t padding_1d(dim_t left, dim_t right)
+    {
+        return padding_1d_t(left, right);
+    }
+
     static padding_t padding(const padding_1d_t &r, const padding_1d_t &s)
     {
         return {r, s};
