@@ -8,7 +8,7 @@
 #include <nn/models>
 
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#    include <opencv2/opencv.hpp>
 #endif
 
 #include "utils.hpp"
@@ -33,7 +33,7 @@ class vgg16_model
     {
         using conv_layer =
             nn::layers::conv<image_order, filter_order, true, relu>;
-        return conv_layer(conv_layer::ksize(3, 3), d,
+        return conv_layer(d, conv_layer::ksize(3, 3),
                           conv_layer::padding(1, 1));
     }
 

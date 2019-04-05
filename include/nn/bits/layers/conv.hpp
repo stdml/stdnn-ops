@@ -16,26 +16,16 @@ class conv_layer_trait : public ops::conv_trait<ops::hw>
     struct ksize_trait;
     using ksize_t = std::experimental::new_type<shape<2>, ksize_trait>;
 
-    const ksize_t ksize_;
     const size_t n_filters_;
+    const ksize_t ksize_;
 
   public:
     static ksize_t ksize(int r, int s) { return ksize_t(r, s); };
 
-    conv_layer_trait(const ksize_t &ksize, size_t n_filters)
-        : ksize_(ksize), n_filters_(n_filters)
-    {
-    }
-
-    conv_layer_trait(const ksize_t &ksize, size_t n_filters,
-                     const padding_t &padding)
-        : conv_trait(padding), ksize_(ksize), n_filters_(n_filters)
-    {
-    }
-
-    conv_layer_trait(const ksize_t &ksize, size_t n_filters,
-                     const conv_trait &trait)
-        : conv_trait(trait), ksize_(ksize), n_filters_(n_filters)
+    template <typename... Traits>
+    conv_layer_trait(size_t n_filters, const ksize_t &ksize,
+                     const Traits &... ts)
+        : conv_trait(ts...), n_filters_(n_filters), ksize_(ksize)
     {
     }
 
