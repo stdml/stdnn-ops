@@ -20,9 +20,6 @@ template <class pool_method, class image_order>
 void test_pool2d(pool2d_params_t p)
 {
     using pool2d = nn::ops::pool<pool_method, image_order>;
-
-    using pad1d_t = typename pool2d::sample1d_t::padding_t;
-
     {
         pool2d op(
             pool2d::ksize(p.ksize_h, p.ksize_w),

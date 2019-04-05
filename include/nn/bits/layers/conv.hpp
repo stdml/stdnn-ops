@@ -22,15 +22,10 @@ class conv_layer_trait : public ops::conv_trait<ops::hw>
   public:
     static ksize_t ksize(int r, int s) { return ksize_t(r, s); };
 
-    conv_layer_trait(size_t n_filters, const ksize_t &ksize)
-        : n_filters_(n_filters), ksize_(ksize)
-    {
-    }
-
     template <typename... Traits>
     conv_layer_trait(size_t n_filters, const ksize_t &ksize,
                      const Traits &... ts)
-        : conv_trait({ts...}), n_filters_(n_filters), ksize_(ksize)
+        : conv_trait(ts...), n_filters_(n_filters), ksize_(ksize)
     {
     }
 
