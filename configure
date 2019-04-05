@@ -70,6 +70,16 @@ add_cmake_flags() {
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
 }
 
+cleanup_cmake_cache() {
+    if [ -f CMakeCache.txt ]; then
+        rm CMakeCache.txt
+    fi
+    for cmake_cache in $(find 3rdparty/ | grep CMakeCache.txt); do
+        rm $cmake_cache
+    done
+}
+
 parse_args $@
 add_cmake_flags
+cleanup_cmake_cache
 cmake . $CMAKE_FLAGS
