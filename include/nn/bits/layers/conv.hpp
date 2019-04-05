@@ -27,15 +27,10 @@ class conv_layer_trait : public ops::conv_trait<ops::hw>
     {
     }
 
+    template <typename... Traits>
     conv_layer_trait(size_t n_filters, const ksize_t &ksize,
-                     const padding_t &padding)
-        : conv_trait(padding), n_filters_(n_filters), ksize_(ksize)
-    {
-    }
-
-    conv_layer_trait(size_t n_filters, const ksize_t &ksize,
-                     const conv_trait &trait)
-        : conv_trait(trait), n_filters_(n_filters), ksize_(ksize)
+                     const Traits &... ts)
+        : conv_trait({ts...}), n_filters_(n_filters), ksize_(ksize)
     {
     }
 
