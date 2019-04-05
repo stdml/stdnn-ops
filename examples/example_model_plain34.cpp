@@ -28,9 +28,8 @@ class plain34_model
             nn::layers::conv<image_order, filter_order, true, relu>;
         using conv_trait = nn::ops::conv_trait<nn::ops::hw>;
         const conv_trait::padding_1d_t p = pad<uint32_t>(3, 2);
-        return conv_layer(
-            d, conv_layer::ksize(7, 7),
-            conv_trait(conv_trait::padding(p, p), conv_trait::stride(2, 2)));
+        return conv_layer(d, conv_layer::ksize(7, 7), conv_trait::padding(p, p),
+                          conv_trait::stride(2, 2));
     }
 
     auto pool1() const
@@ -54,8 +53,8 @@ class plain34_model
     {
         using conv_layer = nn::layers::conv<image_order, filter_order, false>;
         return conv_layer(d, conv_layer::ksize(3, 3),
-                          conv_trait(conv_trait::padding(padding, padding),
-                                     conv_trait::stride(s, s)));
+                          conv_trait::padding(padding, padding),
+                          conv_trait::stride(s, s));
     }
 
     const std::string prefix_;
