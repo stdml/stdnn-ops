@@ -29,7 +29,7 @@ class plain34_model
         using conv_trait = nn::ops::conv_trait<nn::ops::hw>;
         const conv_trait::padding_1d_t p = pad<uint32_t>(3, 2);
         return conv_layer(
-            conv_layer::ksize(7, 7), d,
+            d, conv_layer::ksize(7, 7),
             conv_trait(conv_trait::padding(p, p), conv_trait::stride(2, 2)));
     }
 
@@ -53,7 +53,7 @@ class plain34_model
     auto conv(int d, int s, const conv_trait::padding_1d_t &padding) const
     {
         using conv_layer = nn::layers::conv<image_order, filter_order, false>;
-        return conv_layer(conv_layer::ksize(3, 3), d,
+        return conv_layer(d, conv_layer::ksize(3, 3),
                           conv_trait(conv_trait::padding(padding, padding),
                                      conv_trait::stride(s, s)));
     }
