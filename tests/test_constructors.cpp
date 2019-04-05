@@ -1,35 +1,7 @@
-#include "testing.hpp"
-
 #include <nn/ops>
 
-template <typename Op> struct ksize {
-    template <typename P> auto operator()(const P &p) const
-    {
-        return Op::ksize(p.ksize_h, p.ksize_w);
-    }
-};
-
-template <typename Op> struct stride {
-    template <typename P> auto operator()(const P &p) const
-    {
-        return Op::stride(p.stride_h, p.stride_w);
-    }
-};
-
-template <typename Op> struct padding {
-    template <typename P> auto operator()(const P &p) const
-    {
-        return Op::padding(Op::padding_1d(p.pad_h_left, p.pad_h_right),
-                           Op::padding_1d(p.pad_w_left, p.pad_w_right));
-    }
-};
-
-template <typename Op> struct rate {
-    template <typename P> auto operator()(const P &p) const
-    {
-        return Op::rate(p.rate_h, p.rate_w);
-    }
-};
+#include "testing.hpp"
+#include "testing_traits.hpp"
 
 struct pool2d_params_t {
     using dim_t = uint32_t;
@@ -59,11 +31,10 @@ void test_pool2d(pool2d_params_t p)
             pool2d::stride(p.stride_h, p.stride_w));
     }
     {
-        pool2d op1(ksize<pool2d>()(p));
-        pool2d op2(ksize<pool2d>()(p), padding<pool2d>()(p));
-        pool2d op3(ksize<pool2d>()(p), stride<pool2d>()(p));
-        pool2d op4(ksize<pool2d>()(p), padding<pool2d>()(p),
-                   stride<pool2d>()(p));
+        pool2d op1(ksize<pool2d>(p));
+        pool2d op2(ksize<pool2d>(p), padding<pool2d>(p));
+        pool2d op3(ksize<pool2d>(p), stride<pool2d>(p));
+        pool2d op4(ksize<pool2d>(p), padding<pool2d>(p), stride<pool2d>(p));
     }
 }
 
@@ -108,8 +79,8 @@ void test_im2col(im2col_params_t p)
             im2col::rate(p.rate_h, p.rate_w));
     }
     {
-        im2col op(ksize<im2col>()(p), padding<im2col>()(p), stride<im2col>()(p),
-                  rate<im2col>()(p));
+        im2col op(ksize<im2col>(p), padding<im2col>(p), stride<im2col>(p),
+                  rate<im2col>(p));
     }
 }
 
@@ -146,11 +117,10 @@ void test_conv2d(conv2d_params_t p)
             conv2d::rate(p.rate_h, p.rate_w));
     }
     {
-        conv2d op1(padding<conv2d>()(p));
-        conv2d op2(stride<conv2d>()(p));
-        conv2d op3(padding<conv2d>()(p), stride<conv2d>()(p));
-        conv2d op4(padding<conv2d>()(p), stride<conv2d>()(p),
-                   rate<conv2d>()(p));
+        conv2d op1(padding<conv2d>(p));
+        conv2d op2(stride<conv2d>(p));
+        conv2d op3(padding<conv2d>(p), stride<conv2d>(p));
+        conv2d op4(padding<conv2d>(p), stride<conv2d>(p), rate<conv2d>(p));
     }
 }
 
