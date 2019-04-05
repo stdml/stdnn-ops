@@ -1,7 +1,8 @@
 #include <string>
 
-#include <nn/layers>
 #include <stdtensor>
+
+#include <nn/layers>
 
 #include "utils.hpp"
 
@@ -20,10 +21,10 @@ void example_mlp()
     using dense = nn::layers::dense<>;
 
     auto x = ttl::tensor<float, 4>(n, h, w, c);
-    auto l1 = conv_nhwc(conv_nhwc::ksize(3, 3), 32)(ref(x));
+    auto l1 = conv_nhwc(32, conv_nhwc::ksize(3, 3))(ref(x));
     show_signature(*l1, x, l1.arg<0>(), l1.arg<1>());
 
-    auto l2 = conv_nhwc(conv_nhwc::ksize(3, 3), 64)(ref(*l1));
+    auto l2 = conv_nhwc(64, conv_nhwc::ksize(3, 3))(ref(*l1));
     show_signature(*l2, *l1, l2.arg<0>(), l2.arg<1>());
 
     auto l3 = pool(ref(*l2));

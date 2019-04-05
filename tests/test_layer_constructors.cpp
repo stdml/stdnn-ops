@@ -25,11 +25,11 @@ void test_conv2d_layer(conv2d_layer_params_t p)
 {
     using conv2d = nn::layers::conv<image_order, filter_order>;
     {
-        conv2d layer(conv2d::ksize(3, 3), p.depth);
+        conv2d layer(p.depth, conv2d::ksize(3, 3));
     }
     {
-        conv2d l1(ksize<conv2d>(p), p.depth);
-        conv2d l2(ksize<conv2d>(p), p.depth, padding<conv2d>(p));
+        conv2d l1(p.depth, ksize<conv2d>(p));
+        conv2d l2(p.depth, ksize<conv2d>(p), padding<conv2d>(p));
     }
 }
 

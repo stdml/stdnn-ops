@@ -1,6 +1,6 @@
-#include "testing.hpp"
-
 #include <nn/layers>
+
+#include "testing.hpp"
 
 template <typename dense> void test_dense_layer()
 {
@@ -18,9 +18,9 @@ template <typename conv_layer> void test_conv_layer()
 
     {
         auto x = ttl::tensor<float, 4>(2, 32, 32, 32);
-        conv_layer l1(conv_layer::ksize(3, 3), 32);
+        conv_layer l1(32, conv_layer::ksize(3, 3));
         l1(ref(x));
-        conv_layer l2(conv_layer::ksize(3, 3), 32, conv_layer::padding(1, 1));
+        conv_layer l2(32, conv_layer::ksize(3, 3), conv_layer::padding(1, 1));
         l2(ref(x));
     }
 
@@ -28,7 +28,7 @@ template <typename conv_layer> void test_conv_layer()
         auto x = ttl::tensor<float, 4>(2, 224, 224, 224);
         using conv_trait = nn::ops::conv_trait<nn::ops::hw>;
         conv_layer l1(
-            conv_layer::ksize(7, 7), 1,
+            1, conv_layer::ksize(7, 7),
             conv_trait(conv_trait::padding(conv_trait::padding_1d(3, 2),
                                            conv_trait::padding_1d(3, 2)),
                        conv_trait::stride(2, 2)));
