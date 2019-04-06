@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
 
+#include <nn/common.hpp>
+
 namespace nn::layers
 {
 template <typename T, typename... Ts> class layer

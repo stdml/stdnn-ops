@@ -39,42 +39,42 @@ auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
     };
 
     auto l1_1 = conv(64, conv::ksize(3, 3),
-                     conv::padding(1, 1))(x, p("conv1_1_W"), p("conv1_1_b"));
-    auto l1_2 = conv(64, conv::ksize(3, 3), conv::padding(1, 1))(
+                     conv::padding_same())(x, p("conv1_1_W"), p("conv1_1_b"));
+    auto l1_2 = conv(64, conv::ksize(3, 3), conv::padding_same())(
         ref(*l1_1), p("conv1_2_W"), p("conv1_2_b"));
     auto l1_3 = pool(pool::ksize(2, 2))(ref(*l1_2));
     PPRINT(*l1_3);
 
-    auto l2_1 = conv(128, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l2_1 = conv(128, conv::ksize(3, 3), conv::padding_same())(
         ref(*l1_3), p("conv2_1_W"), p("conv2_1_b"));
-    auto l2_2 = conv(128, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l2_2 = conv(128, conv::ksize(3, 3), conv::padding_same())(
         ref(*l2_1), p("conv2_2_W"), p("conv2_2_b"));
     auto l2_3 = pool(pool::ksize(2, 2))(ref(*l2_2));
     PPRINT(*l2_3);
 
-    auto l3_1 = conv(256, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l3_1 = conv(256, conv::ksize(3, 3), conv::padding_same())(
         ref(*l2_3), p("conv3_1_W"), p("conv3_1_b"));
-    auto l3_2 = conv(256, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l3_2 = conv(256, conv::ksize(3, 3), conv::padding_same())(
         ref(*l3_1), p("conv3_2_W"), p("conv3_2_b"));
-    auto l3_3 = conv(256, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l3_3 = conv(256, conv::ksize(3, 3), conv::padding_same())(
         ref(*l3_2), p("conv3_3_W"), p("conv3_3_b"));
     auto l3_4 = pool(pool::ksize(2, 2))(ref(*l3_3));
     PPRINT(*l3_4);
 
-    auto l4_1 = conv(512, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l4_1 = conv(512, conv::ksize(3, 3), conv::padding_same())(
         ref(*l3_4), p("conv4_1_W"), p("conv4_1_b"));
-    auto l4_2 = conv(512, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l4_2 = conv(512, conv::ksize(3, 3), conv::padding_same())(
         ref(*l4_1), p("conv4_2_W"), p("conv4_2_b"));
-    auto l4_3 = conv(512, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l4_3 = conv(512, conv::ksize(3, 3), conv::padding_same())(
         ref(*l4_2), p("conv4_3_W"), p("conv4_3_b"));
     auto l4_4 = pool(pool::ksize(2, 2))(ref(*l4_3));
     PPRINT(*l4_4);
 
-    auto l5_1 = conv(512, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l5_1 = conv(512, conv::ksize(3, 3), conv::padding_same())(
         ref(*l4_4), p("conv5_1_W"), p("conv5_1_b"));
-    auto l5_2 = conv(512, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l5_2 = conv(512, conv::ksize(3, 3), conv::padding_same())(
         ref(*l5_1), p("conv5_2_W"), p("conv5_2_b"));
-    auto l5_3 = conv(512, conv::ksize(3, 3), conv::padding(1, 1))(
+    auto l5_3 = conv(512, conv::ksize(3, 3), conv::padding_same())(
         ref(*l5_2), p("conv5_3_W"), p("conv5_3_b"));
     auto l5_4 = pool(pool::ksize(2, 2))(ref(*l5_3));
     PPRINT(*l5_4);

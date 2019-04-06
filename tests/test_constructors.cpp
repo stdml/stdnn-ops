@@ -39,7 +39,7 @@ template <class pool_method> void _test_pool2d_all_bind_1()
 {
     pool2d_params_t p;
     test_pool2d<pool_method, nn::ops::nhwc>(p);
-    test_pool2d<pool_method, nn::ops::nhwc>(p);
+    test_pool2d<pool_method, nn::ops::nchw>(p);
 }
 
 void test_pool2d_all()
