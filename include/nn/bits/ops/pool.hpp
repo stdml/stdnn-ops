@@ -1,8 +1,7 @@
 #pragma once
-#include <experimental/contract>
-#include <experimental/new_type>
 
 #include <nn/bits/ops/linear_sample.hpp>
+#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
 
 namespace nn::ops
@@ -92,6 +91,11 @@ template <> class pool_trait<hw>
     {
     }
 
+    pool_trait(const pool_trait &t)
+        : h_sample_(t.h_sample_), w_sample_(t.w_sample_)
+    {
+    }
+
     shape<2> operator()(const shape<2> &x) const
     {
         return shape<2>(h_sample_(x.dims[0]), w_sample_(x.dims[1]));
@@ -152,6 +156,8 @@ template <typename pool_algo> class pool<pool_algo, hw> : public pool_trait<hw>
     using pool_trait::pool_trait;
 
   public:
+    pool(const pool_trait &t) : pool_trait(t) {}
+
     shape<2> operator()(const shape<2> &x) const
     {
         return pool_trait<hw>::operator()(x);  // FIXME: auto pass through
@@ -191,6 +197,8 @@ template <typename pool_algo> class pool<pool_algo, hwc> : public pool_trait<hw>
     using pool_trait::pool_trait;
 
   public:
+    pool(const pool_trait &t) : pool_trait(t) {}
+
     template <typename R>
     void operator()(const ttl::tensor_ref<R, 3> &y,
                     const ttl::tensor_view<R, 3> &x) const
@@ -238,6 +246,8 @@ class pool<pool_algo, nhwc> : public pool_trait<hw>
     using pool_trait::pool_trait;
 
   public:
+    pool(const pool_trait &t) : pool_trait(t) {}
+
     shape<4> operator()(const shape<4> &x) const
     {
         return pooled_shape<nhwc, pool_trait<hw>>(x, *this);
@@ -255,8 +265,10 @@ class pool<pool_algo, nhwc> : public pool_trait<hw>
 template <typename pool_algo>
 class pool<pool_algo, nchw> : public pool_trait<hw>
 {
-  public:
     using pool_trait::pool_trait;
+
+  public:
+    pool(const pool_trait &t) : pool_trait(t) {}
 
     shape<4> operator()(const shape<4> &x) const
     {

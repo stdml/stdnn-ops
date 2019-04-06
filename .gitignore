@@ -1,5 +1,7 @@
+*.a
 *.idx
 *.log
+*.o
 *.png
 /3rdparty
 /bin

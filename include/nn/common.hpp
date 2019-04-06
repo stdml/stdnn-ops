@@ -1,8 +1,9 @@
 #pragma once
-#include <experimental/contract>
-#include <experimental/range>
-
 #include <stdtensor>
+
+#include <experimental/contract>
+#include <experimental/new_type>
+#include <experimental/range>
 
 // TODO: commit to upstream
 namespace ttl

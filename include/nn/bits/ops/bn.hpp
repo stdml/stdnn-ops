@@ -1,9 +1,9 @@
 #pragma once
 #include <cmath>
 
-#include <experimental/bits/contract.hpp>
-
+#include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/traits.hpp>
+#include <nn/common.hpp>
 
 namespace nn::ops
 {

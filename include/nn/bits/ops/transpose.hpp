@@ -2,6 +2,7 @@
 #include <array>
 #include <functional>
 
+#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
 
 namespace nn::ops

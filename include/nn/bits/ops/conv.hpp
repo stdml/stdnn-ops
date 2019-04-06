@@ -1,12 +1,12 @@
 #pragma once
-#include <experimental/contract>
-#include <experimental/new_type>
+#include <stdtensor>
+
 #include <nn/bits/engines/linag.hpp>
 #include <nn/bits/ops/combinators.hpp>
 #include <nn/bits/ops/im2col.hpp>
 #include <nn/bits/ops/reshape.hpp>
 #include <nn/bits/ops/traits.hpp>
-#include <stdtensor>
+#include <nn/common.hpp>
 
 namespace nn::ops
 {
@@ -141,6 +141,10 @@ template <> class conv_trait<hw>
     {
     }
 
+    conv_trait(const conv_trait &t) : h_trait_(t.h_trait_), w_trait_(t.w_trait_)
+    {
+    }
+
     template <typename image_order, typename filter_order>
     shape<4> infer(const shape<4> &x, const shape<4> &y) const
     {
@@ -166,6 +170,8 @@ template <> class conv<nhwc, rscd> : public conv_trait<hw>
     using conv_trait::conv_trait;
 
   public:
+    conv(const conv_trait &t) : conv_trait(t) {}
+
     shape<4> operator()(const shape<4> &x, const shape<4> &y) const
     {
         return conv_trait::infer<nhwc, rscd>(x, y);
@@ -200,6 +206,8 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
     using conv_trait::conv_trait;
 
   public:
+    conv(const conv_trait &t) : conv_trait(t) {}
+
     shape<4> operator()(const shape<4> &x, const shape<4> &y) const
     {
         return conv_trait::infer<nchw, dcrs>(x, y);

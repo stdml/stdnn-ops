@@ -1,8 +1,9 @@
 #pragma once
 #include <array>
-#include <nn/common.hpp>
 
 #include <nn/bits/ops/shape_algo.hpp>
+#include <nn/bits/ops/traits.hpp>
+#include <nn/common.hpp>
 
 namespace nn::ops
 {

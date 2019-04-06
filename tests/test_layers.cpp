@@ -20,18 +20,14 @@ template <typename conv_layer> void test_conv_layer()
         auto x = ttl::tensor<float, 4>(2, 32, 32, 32);
         conv_layer l1(32, conv_layer::ksize(3, 3));
         l1(ref(x));
-        conv_layer l2(32, conv_layer::ksize(3, 3), conv_layer::padding(1, 1));
+        conv_layer l2(32, conv_layer::ksize(3, 3), conv_layer::padding_same());
         l2(ref(x));
     }
 
     {
         auto x = ttl::tensor<float, 4>(2, 224, 224, 224);
-        using conv_trait = nn::ops::conv_trait<nn::ops::hw>;
-        conv_layer l1(
-            1, conv_layer::ksize(7, 7),
-            conv_trait(conv_trait::padding(conv_trait::padding_1d(3, 2),
-                                           conv_trait::padding_1d(3, 2)),
-                       conv_trait::stride(2, 2)));
+        conv_layer l1(1, conv_layer::ksize(7, 7), conv_layer::padding_same(),
+                      conv_layer::stride(2, 2));
         auto l = l1(ref(x));
         const auto shp = (*l).shape();
         ASSERT_EQ(shp.size(), 2 * 112 * 112);
