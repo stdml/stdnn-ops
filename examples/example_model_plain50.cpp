@@ -69,7 +69,7 @@ class plain50_model
     const size_t h = 224;
     const size_t w = 224;
 
-    plain34_model(const std::string &prefix) : prefix_(prefix) {}
+    plain50_model(const std::string &prefix) : prefix_(prefix) {}
 
     template <typename R>
     auto operator()(const ttl::tensor_ref<R, 4> &x, int m = 5) const
