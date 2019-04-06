@@ -18,7 +18,8 @@ template <> class pool_trait<ops::hw>
     using ksize_t = std::experimental::new_type<shape<2>, ksize_trait>;
     using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
 
-    using padding_policy = ops::linear_sample_trait<size_t>::padding_policy;
+    using dim_t = uint32_t;
+    using padding_policy = ops::linear_sample_trait<dim_t>::padding_policy;
 
     const ksize_t ksize_;
     const padding_policy padding_;
@@ -30,12 +31,12 @@ template <> class pool_trait<ops::hw>
 
     static padding_policy padding_same()
     {
-        return ops::linear_sample_trait<size_t>::padding_same();
+        return ops::linear_sample_trait<dim_t>::padding_same();
     }
 
     static padding_policy padding_valid()
     {
-        return ops::linear_sample_trait<size_t>::padding_valid();
+        return ops::linear_sample_trait<dim_t>::padding_valid();
     }
 
     pool_trait() : pool_trait(ksize(2, 2)) {}
