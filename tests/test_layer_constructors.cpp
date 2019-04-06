@@ -29,11 +29,12 @@ void test_conv2d_layer(conv2d_layer_params_t p)
     }
     {
         conv2d l1(p.depth, ksize<conv2d>(p));
-        conv2d l2(p.depth, ksize<conv2d>(p), padding<conv2d>(p));
-        conv2d l3(p.depth, ksize<conv2d>(p), stride<conv2d>(p));
-        conv2d l4(p.depth, ksize<conv2d>(p), padding<conv2d>(p),
+        conv2d l2(p.depth, ksize<conv2d>(p), conv2d::padding_same());
+        // FIXME: support fixed padding 2d
+        // conv2d l3(p.depth, ksize<conv2d>(p), stride<conv2d>(p));
+        conv2d l4(p.depth, ksize<conv2d>(p), conv2d::padding_same(),
                   stride<conv2d>(p));
-        conv2d l5(p.depth, ksize<conv2d>(p), padding<conv2d>(p),
+        conv2d l5(p.depth, ksize<conv2d>(p), conv2d::padding_same(),
                   stride<conv2d>(p), rate<conv2d>(p));
     }
 }

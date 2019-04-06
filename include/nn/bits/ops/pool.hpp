@@ -1,8 +1,7 @@
 #pragma once
-#include <experimental/contract>
-#include <experimental/new_type>
 
 #include <nn/bits/ops/linear_sample.hpp>
+#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
 
 namespace nn::ops

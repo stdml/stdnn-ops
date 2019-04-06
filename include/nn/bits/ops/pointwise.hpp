@@ -1,7 +1,9 @@
 #pragma once
 #include <algorithm>
-#include <experimental/contract>
+
 #include <stdtensor>
+
+#include <nn/common.hpp>
 
 namespace nn::ops
 {

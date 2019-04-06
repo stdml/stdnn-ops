@@ -23,11 +23,11 @@ SpacesBeforeTrailingComments: 2
 IncludeCategories:
   # standard C headers
   # TODO: add as needed
-  - Regex:           ^<(cstdint|cstdio|cstdlib|cstring)>$
+  - Regex:           ^<(cmath|cstdint|cstdio|cstdlib|cstring)>$
     Priority:        1
   # standard C++ headers
   # TODO: add as needed
-  - Regex:           ^<(algorithm|condition_variable|functional|iostream|map|memory|mutex|numeric|string|thread|vector)>$
+  - Regex:           ^<(algorithm|array|condition_variable|functional|iostream|map|memory|mutex|numeric|string|thread|vector)>$
     Priority:        2
   # third party headers
   - Regex:           ^<stdtensor>

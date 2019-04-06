@@ -1,9 +1,11 @@
 #pragma once
-#include <algorithm>
 #include <cmath>
 
-#include <experimental/contract>
+#include <algorithm>
+
 #include <stdtensor>
+
+#include <nn/common.hpp>
 
 namespace nn::ops
 {

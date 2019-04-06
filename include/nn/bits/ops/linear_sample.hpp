@@ -67,6 +67,25 @@ template <typename dim_t> class linear_sample_trait
         return even_padding(ps - s - n0);
     }
 
+    using padding_policy = std::function<padding_t(dim_t, dim_t, dim_t, dim_t)>;
+
+    // maybe TODO: make it a value instead of a function
+    static padding_policy padding_valid()
+    {
+        return padding_policy(valid_padding);
+    }
+
+    // maybe TODO: make it a value instead of a function
+    static padding_policy padding_same()
+    {
+        return padding_policy(same_padding);
+    }
+
+    static padding_policy padding_fixed(const padding_t &p)
+    {
+        return [p = p](dim_t k, dim_t s, dim_t r, dim_t n) { return p; };
+    }
+
   public:
     linear_sample_trait(dim_t ksize)
         : linear_sample_trait(ksize, default_stride)
