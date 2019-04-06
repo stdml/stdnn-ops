@@ -7,8 +7,6 @@
 
 #include "utils.hpp"
 
-using nn::ops::pad;
-
 template <typename image_order = nn::ops::nhwc,
           typename filter_order = nn::ops::rscd>
 class plain34_model
