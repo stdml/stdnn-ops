@@ -7,6 +7,9 @@
 
 #include "utils.hpp"
 
+using nn::layers::with_init;
+using nn::layers::debug::show_name;
+
 template <typename image_order = nn::ops::nhwc,
           typename filter_order = nn::ops::rscd>
 class plain50_model
@@ -18,14 +21,24 @@ class plain50_model
 
     using flatten = nn::layers::flatten<1, 3>;
     using conv = nn::layers::conv<image_order, filter_order, false>;
-    using conv_relu = nn::layers::conv<image_order, filter_order, false, relu>;
-    using dense = nn::layers::dense<>;
     using softmax = nn::layers::activation<nn::ops::softmax>;
 
     auto conv7x7(int d) const
     {
-        return conv_relu(d, conv_relu::ksize(7, 7), conv_relu::padding_same(),
-                         conv_relu::stride(2, 2));
+        using conv_relu =
+            nn::layers::conv<image_order, filter_order, false, relu>;
+
+        return with_init(conv_relu(d, conv_relu::ksize(7, 7),
+                                   conv_relu::padding_same(),
+                                   conv_relu::stride(2, 2)),
+                         show_name("w"));
+    }
+
+    auto bn() const
+    {
+        return with_init(bn_layer(),  //
+                         show_name("mean"), show_name("var"), show_name("beta"),
+                         show_name("gamma"));
     }
 
     auto pool1() const
@@ -43,20 +56,28 @@ class plain50_model
 
     auto conv1x1(int d, int s) const
     {
-        return conv(d, conv::ksize(1, 1), conv::padding_same(),
-                    conv::stride(s, s));
+        return with_init(conv(d, conv::ksize(1, 1), conv::padding_same(),
+                              conv::stride(s, s)),
+                         show_name("W"));
     }
 
     auto conv3x3(int d, int s) const
     {
-        return conv(d, conv::ksize(3, 3), conv::padding_same(),
-                    conv::stride(s, s));
+        return with_init(conv(d, conv::ksize(3, 3), conv::padding_same(),
+                              conv::stride(s, s)),
+                         show_name("W"));
     }
 
     // auto conv2_x() const {}
     // auto conv3_x() const {}
     // auto conv4_x() const {}
     // auto conv5_x() const {}
+
+    auto dense(int logits) const
+    {
+        using layer = nn::layers::dense<>;
+        return with_init(layer(logits), show_name("W"), show_name("b"));
+    }
 
     const std::string prefix_;
 
@@ -75,80 +96,80 @@ class plain50_model
     auto operator()(const ttl::tensor_ref<R, 4> &x, int m = 5) const
     {
         auto layers = nn::models::make_sequential()  //
-                      << conv7x7(64) << bn_layer()   //
+                      << conv7x7(64) << bn()         //
                       << pool1()                     //
 
                       // conv2_x [1x1, 64; 3x3, 64; 1x1, 256] x 3
-                      << conv1x1(64, 1) << bn_layer()   //
-                      << conv3x3(64, 1) << bn_layer()   //
-                      << conv1x1(256, 1) << bn_layer()  //
+                      << conv1x1(64, 1) << bn()   //
+                      << conv3x3(64, 1) << bn()   //
+                      << conv1x1(256, 1) << bn()  //
 
-                      << conv1x1(64, 1) << bn_layer()   //
-                      << conv3x3(64, 1) << bn_layer()   //
-                      << conv1x1(256, 1) << bn_layer()  //
+                      << conv1x1(64, 1) << bn()   //
+                      << conv3x3(64, 1) << bn()   //
+                      << conv1x1(256, 1) << bn()  //
 
-                      << conv1x1(64, 1) << bn_layer()  //
-                      << conv3x3(64, 1) << bn_layer()  //
+                      << conv1x1(64, 1) << bn()  //
+                      << conv3x3(64, 1) << bn()  //
                       << conv1x1(256, 1)
-                      << bn_layer()  //
+                      << bn()  //
 
                       // conv3_x [1x1, 128; 3x3, 128; 1x1, 512] x 4
-                      << conv1x1(128, 2) << bn_layer()  //
-                      << conv3x3(128, 1) << bn_layer()  //
-                      << conv1x1(512, 1) << bn_layer()  //
+                      << conv1x1(128, 2) << bn()  //
+                      << conv3x3(128, 1) << bn()  //
+                      << conv1x1(512, 1) << bn()  //
 
-                      << conv1x1(128, 1) << bn_layer()  //
-                      << conv3x3(128, 1) << bn_layer()  //
-                      << conv1x1(512, 1) << bn_layer()  //
+                      << conv1x1(128, 1) << bn()  //
+                      << conv3x3(128, 1) << bn()  //
+                      << conv1x1(512, 1) << bn()  //
 
-                      << conv1x1(128, 1) << bn_layer()  //
-                      << conv3x3(128, 1) << bn_layer()  //
-                      << conv1x1(512, 1) << bn_layer()  //
+                      << conv1x1(128, 1) << bn()  //
+                      << conv3x3(128, 1) << bn()  //
+                      << conv1x1(512, 1) << bn()  //
 
-                      << conv1x1(128, 1) << bn_layer()  //
-                      << conv3x3(128, 1) << bn_layer()  //
+                      << conv1x1(128, 1) << bn()  //
+                      << conv3x3(128, 1) << bn()  //
                       << conv1x1(512, 1)
-                      << bn_layer()  //
+                      << bn()  //
 
                       // conv4_x [1x1, 256; 3x3, 256; 1x1, 1024] x 6
-                      << conv1x1(256, 2) << bn_layer()   //
-                      << conv3x3(256, 1) << bn_layer()   //
-                      << conv1x1(1024, 1) << bn_layer()  //
+                      << conv1x1(256, 2) << bn()   //
+                      << conv3x3(256, 1) << bn()   //
+                      << conv1x1(1024, 1) << bn()  //
 
-                      << conv1x1(256, 1) << bn_layer()   //
-                      << conv3x3(256, 1) << bn_layer()   //
-                      << conv1x1(1024, 1) << bn_layer()  //
+                      << conv1x1(256, 1) << bn()   //
+                      << conv3x3(256, 1) << bn()   //
+                      << conv1x1(1024, 1) << bn()  //
 
-                      << conv1x1(256, 1) << bn_layer()   //
-                      << conv3x3(256, 1) << bn_layer()   //
-                      << conv1x1(1024, 1) << bn_layer()  //
+                      << conv1x1(256, 1) << bn()   //
+                      << conv3x3(256, 1) << bn()   //
+                      << conv1x1(1024, 1) << bn()  //
 
-                      << conv1x1(256, 1) << bn_layer()   //
-                      << conv3x3(256, 1) << bn_layer()   //
-                      << conv1x1(1024, 1) << bn_layer()  //
+                      << conv1x1(256, 1) << bn()   //
+                      << conv3x3(256, 1) << bn()   //
+                      << conv1x1(1024, 1) << bn()  //
 
-                      << conv1x1(256, 1) << bn_layer()   //
-                      << conv3x3(256, 1) << bn_layer()   //
-                      << conv1x1(1024, 1) << bn_layer()  //
+                      << conv1x1(256, 1) << bn()   //
+                      << conv3x3(256, 1) << bn()   //
+                      << conv1x1(1024, 1) << bn()  //
 
-                      << conv1x1(256, 1) << bn_layer()  //
-                      << conv3x3(256, 1) << bn_layer()  //
+                      << conv1x1(256, 1) << bn()  //
+                      << conv3x3(256, 1) << bn()  //
                       << conv1x1(1024, 1)
-                      << bn_layer()  //
+                      << bn()  //
 
                       // conv5_x [1x1, 512; 3x3, 512; 1x1, 2048] x 3
-                      << conv1x1(512, 2) << bn_layer()   //
-                      << conv3x3(512, 1) << bn_layer()   //
-                      << conv1x1(2048, 1) << bn_layer()  //
+                      << conv1x1(512, 2) << bn()   //
+                      << conv3x3(512, 1) << bn()   //
+                      << conv1x1(2048, 1) << bn()  //
 
-                      << conv1x1(512, 1) << bn_layer()   //
-                      << conv3x3(512, 1) << bn_layer()   //
-                      << conv1x1(2048, 1) << bn_layer()  //
+                      << conv1x1(512, 1) << bn()   //
+                      << conv3x3(512, 1) << bn()   //
+                      << conv1x1(2048, 1) << bn()  //
 
-                      << conv1x1(512, 1) << bn_layer()  //
-                      << conv3x3(512, 1) << bn_layer()  //
+                      << conv1x1(512, 1) << bn()  //
+                      << conv3x3(512, 1) << bn()  //
                       << conv1x1(2048, 1)
-                      << bn_layer()  //
+                      << bn()  //
 
                       //
                       << pool2()        //
