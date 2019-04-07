@@ -20,25 +20,27 @@ class plain50_model
     using bn_layer = nn::layers::batch_norm<image_order, relu>;
 
     using flatten = nn::layers::flatten<1, 3>;
-    using conv = nn::layers::conv<image_order, filter_order, false>;
+    using conv = nn::layers::conv<image_order, filter_order, true>;
     using softmax = nn::layers::activation<nn::ops::softmax>;
 
     auto conv7x7(int d) const
     {
         using conv_relu =
-            nn::layers::conv<image_order, filter_order, false, relu>;
-
+            nn::layers::conv<image_order, filter_order, true, relu>;
         return with_init(conv_relu(d, conv_relu::ksize(7, 7),
                                    conv_relu::padding_same(),
                                    conv_relu::stride(2, 2)),
-                         show_name("w"));
+                         show_name("conv1/kernel"), show_name("conv1/bias"));
     }
 
     auto bn() const
     {
         return with_init(bn_layer(),  //
-                         show_name("mean"), show_name("var"), show_name("beta"),
-                         show_name("gamma"));
+                                      //  show_name("mean"), show_name("var"),
+                         nn::ops::noop(),  //
+                         nn::ops::noop(),  //
+                         show_name("bn_conv?/beta"),
+                         show_name("bn_conv?/gamma"));
     }
 
     auto pool1() const
@@ -58,14 +60,16 @@ class plain50_model
     {
         return with_init(conv(d, conv::ksize(1, 1), conv::padding_same(),
                               conv::stride(s, s)),
-                         show_name("W"));
+                         show_name("res??_branch??/kernel"),
+                         show_name("res??_branch??/bias"));
     }
 
     auto conv3x3(int d, int s) const
     {
         return with_init(conv(d, conv::ksize(3, 3), conv::padding_same(),
                               conv::stride(s, s)),
-                         show_name("W"));
+                         show_name("res??_branch??/kernel"),
+                         show_name("res??_branch??/bias"));
     }
 
     // auto conv2_x() const {}

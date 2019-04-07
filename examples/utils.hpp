@@ -1,3 +1,5 @@
+#include <iomanip>
+#include <iostream>
 #include <string>
 
 #include <stdtensor>
@@ -50,7 +52,8 @@ class show_name
     template <typename R, ttl::rank_t r>
     void operator()(const ttl::tensor_ref<R, r> &y) const
     {
-        std::cerr << name_ << " :: " << std::endl;
+        std::cerr << std::left << std::setw(32) << name_
+                  << " :: " << show_shape(y.shape()) << std::endl;
     }
 };
 }  // namespace nn::layers::debug

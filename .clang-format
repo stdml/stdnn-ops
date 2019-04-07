@@ -27,7 +27,7 @@ IncludeCategories:
     Priority:        1
   # standard C++ headers
   # TODO: add as needed
-  - Regex:           ^<(algorithm|array|condition_variable|functional|iostream|map|memory|mutex|numeric|string|thread|type_traits|vector)>$
+  - Regex:           ^<(algorithm|array|condition_variable|functional|iomanip|iostream|map|memory|mutex|numeric|string|thread|type_traits|vector)>$
     Priority:        2
   # third party headers
   - Regex:           ^<stdtensor>
