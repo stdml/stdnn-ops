@@ -21,6 +21,7 @@ OPTION(BUILD_TESTS "Build tests." ON)
 OPTION(BUILD_BENCHMARKS "Build benchmarks." ON)
 OPTION(BUILD_EXAMPLES "Build examples." ON)
 OPTION(BUILD_PACKAGES "Build release packages." OFF)
+OPTION(TRACE_EXAMPLES "Enable trace for examples." ON)
 
 IF(USE_OPT)
     ADD_DEFINITIONS(-ffast-math)
@@ -47,7 +48,7 @@ IF(USE_OPENCV)
 ENDIF()
 
 IF(BUILD_EXAMPLES)
-    INCLUDE(cmake/examples.cmake)
+    ADD_SUBDIRECTORY(examples)
 ENDIF()
 
 IF(BUILD_PACKAGES)

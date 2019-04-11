@@ -1,9 +1,10 @@
-#include "testing.hpp"
-
 #include <algorithm>
 
-#include <nn/ops>
 #include <stdtensor>
+
+#include <nn/ops>
+
+#include "testing.hpp"
 
 void test_mm(int k, int m, int n)
 {
@@ -47,7 +48,8 @@ void test_vv(int n)
     fill(x, 1);
     fill(y, 2);
     const auto z = ttl::tensor<R, 1>(n);
-    nn::engines::linag<R>::vv(x, y, z);
+    nn::engines::linag<nn::engines::default_engine>::vv(view(x), view(y),
+                                                        ref(z));
     for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 3); }
 }
 
