@@ -73,16 +73,17 @@ template <typename T> struct plain_impl {
         }
     }
 
-    // a \times b -> c where a[m, n], b[n] -> c[n]; a.n = b.n
+    // a \times b -> c where a[m, n], b[n] -> c[m]
     static void mv(const m_view_t &a, const v_view_t &b, const v_ref_t &c)
     {
-        // const auto m = equally(len(a), len(c));
-        // const auto n = equally(wid(a), len(b));
-        // for (auto i = 0; i < m; ++i) {
-        //     T tmp = 0;
-        //     for (auto j = 0; j < n; ++j) { tmp += a.at(i, j) * b.at(j); }
-        //     c.at(i) = tmp;
-        // }
+        const auto [m, n] = a.shape().dims;
+        contract_assert(n == b.shape().dims[0]);
+        contract_assert(m == c.shape().dims[0]);
+        for (auto i = 0; i < m; ++i) {
+            T tmp = 0;
+            for (auto j = 0; j < n; ++j) { tmp += a.at(i, j) * b.at(j); }
+            c.at(i) = tmp;
+        }
     }
 
     // [1, n] X [n, m] -> [1, m]
