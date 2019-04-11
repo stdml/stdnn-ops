@@ -1,20 +1,20 @@
 // http://www.netlib.org/blas/
 #pragma once
-#include <cblas.h>
-
 #include <stdtensor>
+
+#include <cblas.h>
 
 namespace nn::engines
 {
-template <typename R> struct cblas;
+template <typename R> struct _cblas;
 
-template <> struct cblas<float> {
+template <> struct _cblas<float> {
     static constexpr auto axpy = cblas_saxpy;
     static constexpr auto gemm = cblas_sgemm;
     static constexpr auto gemv = cblas_sgemv;
 };
 
-template <> struct cblas<double> {
+template <> struct _cblas<double> {
     static constexpr auto axpy = cblas_daxpy;
     static constexpr auto gemm = cblas_dgemm;
     static constexpr auto gemv = cblas_dgemv;
@@ -30,7 +30,7 @@ template <typename R> struct cblas_impl {
     using v_ref_t = ttl::vector_ref<R>;
     using v_view_t = ttl::vector_view<R>;
 
-    using blas = cblas<R>;
+    using blas = _cblas<R>;
 
     template <typename T> static int len(const T &t)
     {
