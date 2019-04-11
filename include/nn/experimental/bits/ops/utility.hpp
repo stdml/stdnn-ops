@@ -22,37 +22,6 @@ nn::shape<1>::dimension_type argmax(const ttl::tensor_view<R, 1> &t)
     return std::max_element(t.data(), t.data() + t.shape().size()) - t.data();
 }
 
-// TODO: move to upstream
-template <typename S, typename T> S tensor_slice(const T &t, int i, int j)
-{
-    using shape_t = shape<T::rank>;
-    using dim_t = typename shape_t::dimension_type;
-    auto dims = t.shape().dims;
-    dims[0] = j - i;
-    const auto offset =
-        std::accumulate(dims.begin() + 1, dims.end(), static_cast<dim_t>(i),
-                        std::multiplies<dim_t>());
-    return S(t.data() + offset, shape_t(dims));
-}
-
-template <typename R, ttl::rank_t r>
-ttl::tensor_ref<R, r> slice(const ttl::tensor<R, r> &t, int i, int j)
-{
-    return tensor_slice<ttl::tensor_ref<R, r>>(t, i, j);
-}
-
-template <typename R, ttl::rank_t r>
-ttl::tensor_ref<R, r> slice(const ttl::tensor_ref<R, r> &t, int i, int j)
-{
-    return tensor_slice<ttl::tensor_ref<R, r>>(t, i, j);
-}
-
-template <typename R, ttl::rank_t r>
-ttl::tensor_view<R, r> slice(const ttl::tensor_view<R, r> &t, int i, int j)
-{
-    return tensor_slice<ttl::tensor_view<R, r>>(t, i, j);
-}
-
 class onehot
 {
     using dim_t = shape<0>::dimension_type;

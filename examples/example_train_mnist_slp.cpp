@@ -138,10 +138,9 @@ void load_data(const D &ds, int offset, int batch_size,
                const ttl::tensor_ref<R, 2> &y_s)
 {
     using nn::experimental::ops::onehot;
-    using nn::experimental::ops::slice;
 
-    onehot(10)(y_s, view(slice(ds.second, offset, offset + batch_size)));
-    const auto images = slice(ds.first, offset, offset + batch_size);
+    onehot(10)(y_s, view(ds.second.slice(offset, offset + batch_size)));
+    const auto images = ds.first.slice(offset, offset + batch_size);
     for (auto l : range(batch_size)) {
         const auto pixels = images[l];
         std::transform(pixels.data(), pixels.data() + pixels.shape().size(),
