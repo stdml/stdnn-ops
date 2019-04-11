@@ -19,7 +19,7 @@ template <typename T> struct plain_impl {
     using v_ref_t = ttl::vector_ref<T>;
     using v_view_t = ttl::vector_view<T>;
 
-    // a \times b -> c where a[m, n], b[m, n] -> c[m, n]; a.n == b.m
+    // a \times b -> c where a[m, l], b[l, n] -> c[m, n]
     static void mm(const m_view_t &a, const m_view_t &b, const m_ref_t &c)
     {
         const auto [m, l] = a.shape().dims;
@@ -55,19 +55,22 @@ template <typename T> struct plain_impl {
         }
     }
 
-    // a^T \times b -> c where a[m, n], b[m, n] -> c[m, n]; a.m == b.m
+    // a^T \times b -> c where a[l, m], b[l, n] -> c[m, n]
     static void mtm(const m_view_t &a, const m_view_t &b, const m_ref_t &c)
     {
-        // const auto m = equally(wid(a), len(c));
-        // const auto n = equally(wid(b), wid(c));
-        // const auto l = equally(len(a), len(b));
-        // for (auto i = 0; i < m; ++i) {
-        //     for (auto j = 0; j < n; ++j) {
-        //         T tmp = 0;
-        //         for (auto k = 0; k < l; ++k) { tmp += a.at(k, i) * b.at(k,
-        //         j); } c.at(i, j) = tmp;
-        //     }
-        // }
+        const auto [l, m] = a.shape().dims;
+        const auto [_l, n] = b.shape().dims;
+        contract_assert(_l == l);
+        contract_assert(m == c.shape().dims[0]);
+        contract_assert(n == c.shape().dims[1]);
+
+        for (auto i = 0; i < m; ++i) {
+            for (auto j = 0; j < n; ++j) {
+                T tmp = 0;
+                for (auto k = 0; k < l; ++k) { tmp += a.at(k, i) * b.at(k, j); }
+                c.at(i, j) = tmp;
+            }
+        }
     }
 
     // a \times b -> c where a[m, n], b[n] -> c[n]; a.n = b.n
