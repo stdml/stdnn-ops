@@ -1,13 +1,18 @@
 #pragma once
-#include <algorithm>
 #include <cstring>
+
+#include <algorithm>
 #include <numeric>
 
-#include <experimental/contract>
 #include <stdtensor>
+
+#include <experimental/contract>
+#include <experimental/range>
 
 namespace nn::engines
 {
+using std::experimental::range;
+
 template <typename T> struct plain_impl {
     using m_ref_t = ttl::matrix_ref<T>;
     using m_view_t = ttl::matrix_view<T>;
