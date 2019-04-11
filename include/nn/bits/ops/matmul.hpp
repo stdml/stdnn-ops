@@ -1,13 +1,10 @@
 #pragma once
-#include <algorithm>
-#include <experimental/contract>
-#include <stdtensor>
-
 #include <nn/bits/engines/linag.hpp>
+#include <nn/common.hpp>
 
 namespace nn::ops
 {
-class matmul
+template <typename E> class matmul_
 {
   public:
     shape<2> operator()(const shape<2> &x, const shape<2> &y) const
@@ -23,8 +20,10 @@ class matmul
                     const ttl::tensor_view<R, 2> &x,
                     const ttl::tensor_view<R, 2> &y) const
     {
-        nn::engines::linag<R>::mm(x, y, z);
+        nn::engines::linag<E>::mm(x, y, z);
     }
 };
+
+using matmul = matmul_<nn::engines::default_engine>;
 
 }  // namespace nn::ops
