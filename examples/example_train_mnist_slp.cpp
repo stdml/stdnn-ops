@@ -1,5 +1,7 @@
 #include <cstdlib>
 
+#include <nn/experimental/bits/ops/grad/softmax.hpp>
+#include <nn/experimental/bits/ops/grad/xentropy.hpp>
 #include <nn/experimental/bits/ops/utility.hpp>
 #include <nn/experimental/datasets>
 #include <nn/layers>
@@ -11,38 +13,6 @@
 #include <experimental/range>
 
 using std::experimental::range;
-
-template <typename R>
-void grad_softmax(const ttl::tensor_ref<R, 1> &gx,
-                  const ttl::tensor_view<R, 1> &gy,
-                  const ttl::tensor_view<R, 1> &y,
-                  const ttl::tensor_view<R, 1> &x)
-{
-    const auto n = x.shape().size();
-    const ttl::tensor<R, 2> g(n, n);
-    for (auto i : range(n)) {
-        for (auto j : range(n)) {
-            if (i == j) {
-                const R v = y.at(i);
-                g.at(i, j) = v * (static_cast<R>(1) - v);
-            } else {
-                g.at(i, j) = -y.at(i) * y.at(j);
-            }
-        }
-    }
-    nn::engines::linag<nn::engines::default_engine>::vm(gy, view(g), gx);
-}
-
-template <typename R>
-void grad_softmax(const ttl::tensor_ref<R, 2> &gx,
-                  const ttl::tensor_view<R, 2> &gy,
-                  const ttl::tensor_view<R, 2> &y,
-                  const ttl::tensor_view<R, 2> &x)
-{
-    for (auto i : range(x.shape().dims[0])) {
-        grad_softmax(gx[i], gy[i], y[i], x[i]);
-    }
-}
 
 class slp
 {
@@ -84,30 +54,6 @@ class slp
         nn::engines::linag<nn::engines::default_engine>::mtm(xs, g_ys, g_w);
     }
 };
-
-template <typename R>
-void grad_xentropy_y(const ttl::tensor_ref<R, 1> &gx,
-                     const ttl::tensor_view<R, 0> &gz,
-                     const ttl::tensor_view<R, 0> &z,
-                     const ttl::tensor_view<R, 1> &x,
-                     const ttl::tensor_view<R, 1> &y)
-{
-    for (auto i : range(y.shape().size())) {
-        gx.data()[i] = gz.data()[0] * (-x.data()[i] / y.data()[i]);
-    }
-}
-
-template <typename R>
-void grad_xentropy_y(const ttl::tensor_ref<R, 2> &gx,
-                     const ttl::tensor_view<R, 1> &gz,
-                     const ttl::tensor_view<R, 1> &z,
-                     const ttl::tensor_view<R, 2> &x,
-                     const ttl::tensor_view<R, 2> &y)
-{
-    for (auto i : range(y.shape().dims[0])) {
-        grad_xentropy_y(gx[i], gz[i], z[i], x[i], y[i]);
-    }
-}
 
 template <typename R>
 void loss(const ttl::tensor_ref<R, 0> &l, const ttl::tensor_view<R, 2> &ys,
@@ -194,10 +140,11 @@ void train_slp_model(const D &ds,  //
             printf("loss: %f\n", l.data()[0]);
             {
                 // PPRINT(g_ls);
-                grad_xentropy_y(ref(g_ys), view(g_ls), view(ls), view(y_s),
-                                view(ys));
+                nn::experimental::ops::grad::xentropy<1>()(
+                    ref(g_ys), view(g_ls), view(ls), view(y_s), view(ys));
                 // PPRINT(g_ys);
-                grad_softmax(ref(g_zs), view(g_ys), view(ys), view(zs));
+                nn::experimental::ops::grad::softmax<0>()(ref(g_zs), view(g_ys),
+                                                          view(ys), view(zs));
                 // PPRINT(g_zs);
                 slp().grad(ref(g_w), ref(g_b), view(g_zs), view(zs), view(xs),
                            view(w), view(b));
