@@ -14,12 +14,24 @@ struct pool2d_params_t {
     dim_t pad_h_right;
     dim_t pad_w_left;
     dim_t pad_w_right;
+
+    using trait_t = nn::ops::pool_trait<nn::ops::hw>;
 };
+
+template <class pool2d> void test_pool2d_constructors(pool2d_params_t p)
+{
+    pool2d op1;
+    pool2d op2(ksize<pool2d>(p));
+    pool2d op3(ksize<pool2d>(p), padding<pool2d>(p));
+    pool2d op4(ksize<pool2d>(p), stride<pool2d>(p));
+    pool2d op5(ksize<pool2d>(p), padding<pool2d>(p), stride<pool2d>(p));
+}
 
 template <class pool_method, class image_order>
 void test_pool2d(pool2d_params_t p)
 {
     using pool2d = nn::ops::pool<pool_method, image_order>;
+    static_assert(std::is_base_of<pool2d_params_t::trait_t, pool2d>::value);
     {
         pool2d op(
             pool2d::ksize(p.ksize_h, p.ksize_w),
@@ -28,10 +40,12 @@ void test_pool2d(pool2d_params_t p)
             pool2d::stride(p.stride_h, p.stride_w));
     }
     {
-        pool2d op1(ksize<pool2d>(p));
-        pool2d op2(ksize<pool2d>(p), padding<pool2d>(p));
-        pool2d op3(ksize<pool2d>(p), stride<pool2d>(p));
-        pool2d op4(ksize<pool2d>(p), padding<pool2d>(p), stride<pool2d>(p));
+        test_pool2d_constructors<pool2d>(p);
+        test_pool2d_constructors<pool2d_params_t::trait_t>(p);
+    }
+    {
+        pool2d_params_t::trait_t t;
+        pool2d op(t);
     }
 }
 
@@ -61,12 +75,15 @@ struct im2col_params_t {
     dim_t pad_h_right;
     dim_t pad_w_left;
     dim_t pad_w_right;
+
+    using trait_t = nn::ops::im2col_trait<nn::ops::hw>;
 };
 
 template <class image_order, class col_order>
 void test_im2col(im2col_params_t p)
 {
     using im2col = nn::ops::im2col<image_order, col_order>;
+    static_assert(std::is_base_of<im2col_params_t::trait_t, im2col>::value);
     {
         im2col op(
             im2col::ksize(p.ksize_h, p.ksize_w),
@@ -100,12 +117,24 @@ struct conv2d_params_t {
     dim_t pad_h_right;
     dim_t pad_w_left;
     dim_t pad_w_right;
+
+    using trait_t = nn::ops::conv_trait<nn::ops::hw>;
 };
+
+template <class conv2d> void test_conv2d_constructors(conv2d_params_t p)
+{
+    conv2d op1;
+    conv2d op2(padding<conv2d>(p));
+    conv2d op3(stride<conv2d>(p));
+    conv2d op4(padding<conv2d>(p), stride<conv2d>(p));
+    conv2d op5(padding<conv2d>(p), stride<conv2d>(p), rate<conv2d>(p));
+}
 
 template <class image_order, class filter_order>
 void test_conv2d(conv2d_params_t p)
 {
     using conv2d = nn::ops::conv<image_order, filter_order>;
+    static_assert(std::is_base_of<conv2d_params_t::trait_t, conv2d>::value);
     {
         conv2d op(
             conv2d::padding(conv2d::padding_1d(p.pad_h_left, p.pad_h_right),
@@ -114,10 +143,12 @@ void test_conv2d(conv2d_params_t p)
             conv2d::rate(p.rate_h, p.rate_w));
     }
     {
-        conv2d op1(padding<conv2d>(p));
-        conv2d op2(stride<conv2d>(p));
-        conv2d op3(padding<conv2d>(p), stride<conv2d>(p));
-        conv2d op4(padding<conv2d>(p), stride<conv2d>(p), rate<conv2d>(p));
+        test_conv2d_constructors<conv2d>(p);
+        test_conv2d_constructors<conv2d_params_t::trait_t>(p);
+    }
+    {
+        conv2d_params_t::trait_t t;
+        conv2d op(t);
     }
 }
 
