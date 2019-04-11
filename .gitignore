@@ -3,9 +3,11 @@
 *.log
 *.o
 *.png
+*.tar
 /3rdparty
 /bin
 /cmake-build
+/examples/Makefile
 /lib
 /local
 /Makefile
