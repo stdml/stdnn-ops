@@ -37,19 +37,22 @@ template <typename T> struct plain_impl {
         }
     }
 
-    // a \times b^T -> c where a[m, n], b[m, n] -> c[m, n]; a.n == b.n
+    // a \times b^T -> c where a[m, l], b[n, l] -> c[m, n]
     static void mmt(const m_view_t &a, const m_view_t &b, const m_ref_t &c)
     {
-        // const auto m = equally(len(a), len(c));
-        // const auto n = equally(len(b), wid(c));
-        // const auto l = equally(wid(a), wid(b));
-        // for (auto i = 0; i < m; ++i) {
-        //     for (auto j = 0; j < n; ++j) {
-        //         T tmp = 0;
-        //         for (auto k = 0; k < l; ++k) { tmp += a.at(i, k) * b.at(j,
-        //         k); } c.at(i, j) = tmp;
-        //     }
-        // }
+        const auto [m, l] = a.shape().dims;
+        const auto [n, _l] = b.shape().dims;
+        contract_assert(_l == l);
+        contract_assert(m == c.shape().dims[0]);
+        contract_assert(n == c.shape().dims[1]);
+
+        for (auto i = 0; i < m; ++i) {
+            for (auto j = 0; j < n; ++j) {
+                T tmp = 0;
+                for (auto k = 0; k < l; ++k) { tmp += a.at(i, k) * b.at(j, k); }
+                c.at(i, j) = tmp;
+            }
+        }
     }
 
     // a^T \times b -> c where a[m, n], b[m, n] -> c[m, n]; a.m == b.m
