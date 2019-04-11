@@ -1,4 +1,6 @@
 #pragma once
+#include <cstring>
+
 #include <algorithm>
 
 #include <nn/bits/ops/reshape.hpp>

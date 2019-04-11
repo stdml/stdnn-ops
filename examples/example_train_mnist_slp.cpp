@@ -30,7 +30,7 @@ void grad_softmax(const ttl::tensor_ref<R, 1> &gx,
             }
         }
     }
-    nn::engines::linag<R>::vm(gy, view(g), gx);
+    nn::engines::linag<nn::engines::default_engine>::vm(gy, view(g), gx);
 }
 
 template <typename R>
@@ -81,7 +81,7 @@ class slp
             for (auto i : range(n)) { tot += g_ys.at(i, l); }
             g_b.at(l) = tot;
         }
-        nn::engines::linag<R>::mtm(xs, g_ys, g_w);
+        nn::engines::linag<nn::engines::default_engine>::mtm(xs, g_ys, g_w);
     }
 };
 
