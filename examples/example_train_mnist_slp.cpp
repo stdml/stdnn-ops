@@ -164,13 +164,13 @@ void test_slp_model(const D &ds, const ttl::tensor_view<R, 2> &w,
     const auto [n, height, width] = ds.first.shape().dims;
     const int k = 10;
 
-    ttl::tensor<float, 2> xs(n, height * width);
-    ttl::tensor<float, 2> ys(n, k);
-    ttl::tensor<float, 2> y_s(n, k);
+    ttl::tensor<R, 2> xs(n, height * width);
+    ttl::tensor<R, 2> ys(n, k);
+    ttl::tensor<R, 2> y_s(n, k);
     load_data(ds, 0, n, ref(xs), ref(y_s));
 
     slp()(ref(ys), view(xs), view(w), view(b));
-    const float acc = accuracy(view(ys), view(y_s));
+    const R acc = accuracy(view(ys), view(y_s));
     printf("accuracy: %f\n", acc);
 }
 
