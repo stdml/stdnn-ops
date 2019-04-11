@@ -79,6 +79,7 @@ template <typename T> struct plain_impl {
         const auto [m, n] = a.shape().dims;
         contract_assert(n == b.shape().dims[0]);
         contract_assert(m == c.shape().dims[0]);
+
         for (auto i = 0; i < m; ++i) {
             T tmp = 0;
             for (auto j = 0; j < n; ++j) { tmp += a.at(i, j) * b.at(j); }
@@ -86,17 +87,18 @@ template <typename T> struct plain_impl {
         }
     }
 
-    // [1, n] X [n, m] -> [1, m]
-    // a \times b -> c where a[n], b[m, n] -> c[n]; a.n = b.m
+    // a \times b -> c where a[m], b[m, n] -> c[n]
     static void vm(const v_view_t &a, const m_view_t &b, const v_ref_t &c)
     {
-        // const auto m = equally(len(a), len(b));
-        // const auto n = equally(wid(b), len(c));
-        // for (auto i = 0; i < n; ++i) {
-        //     T tmp = 0;
-        //     for (auto j = 0; j < m; ++j) { tmp += a.at(j) * b.at(j, i); }
-        //     c.at(i) = tmp;
-        // }
+        const auto [m, n] = b.shape().dims;
+        contract_assert(m == a.shape().dims[0]);
+        contract_assert(n == c.shape().dims[0]);
+
+        for (auto i = 0; i < n; ++i) {
+            T tmp = 0;
+            for (auto j = 0; j < m; ++j) { tmp += a.at(j) * b.at(j, i); }
+            c.at(i) = tmp;
+        }
     }
 
     // a + b -> c

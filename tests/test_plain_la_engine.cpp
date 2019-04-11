@@ -118,7 +118,23 @@ TEST(plain_la_test, test_mv)
     test_mv(3, 2);
 }
 
-TEST(plain_la_test, test_vm) {}
+void test_vm(int n, int m)
+{
+    using R = int;
+    const auto x = ttl::tensor<R, 1>(m);
+    const auto y = ttl::tensor<R, 2>(m, n);
+    fill(x, 2);
+    fill(y, 3);
+    const auto z = ttl::tensor<R, 1>(n);
+    la::vm(view(x), view(y), ref(z));
+    for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 2 * 3 * m); }
+}
+
+TEST(plain_la_test, test_vm)
+{
+    test_vm(2, 3);
+    test_vm(3, 2);
+}
 
 void test_vv(int n)
 {
