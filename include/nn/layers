@@ -8,3 +8,4 @@
 #include <nn/bits/layers/dense.hpp>
 #include <nn/bits/layers/elementary.hpp>
 #include <nn/bits/layers/pool.hpp>
+#include <nn/bits/layers/reshape.hpp>

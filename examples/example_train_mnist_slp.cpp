@@ -125,6 +125,7 @@ void train_slp_model(const D &ds,  //
     const int n_epochs = 1;
     int step = 0;
     for (auto _ : range(n_epochs)) {
+        UNUSED(_);
         for (auto offset : range(n / batch_size)) {
             ++step;
             printf("step: %d\n", step);

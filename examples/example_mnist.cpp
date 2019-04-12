@@ -1,13 +1,16 @@
 #include <cstdlib>
+
 #include <string>
 
 #include <nn/ops>
 
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#    include <opencv2/opencv.hpp>
 #endif
 
 #include <stdtensor>
+
+#include "utils.hpp"
 
 void example_mnist() {}
 
@@ -25,6 +28,7 @@ int main()
     int i = 0;
     system("mkdir -p images");
     for (auto im : t) {
+        UNUSED(im);
         char name[20];
         sprintf(name, "images/%d.png", ++i);
 #ifdef USE_OPENCV

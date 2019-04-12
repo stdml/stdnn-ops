@@ -15,7 +15,7 @@ template <> class pool_trait<hw>
     struct ksize_trait;
     struct stride_trait;
 
-    using dim_t = size_t;
+    using dim_t = uint32_t;
     using sample1d_t_ = linear_sample_trait<dim_t>;
 
     using padding_1d_t = typename sample1d_t_::padding_t;

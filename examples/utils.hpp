@@ -1,8 +1,12 @@
+#include <iomanip>
+#include <iostream>
 #include <string>
 
-#include <experimental/range>
-#include <nn/ops>
 #include <stdtensor>
+
+#include <nn/ops>
+
+#include <experimental/range>
 
 template <ttl::rank_t r>
 std::string show_shape(const ttl::internal::basic_shape<r> &shape,
@@ -21,7 +25,7 @@ void show_signature(const T &y, const Ts &... x)
 {
     std::array<std::string, sizeof...(Ts)> args({show_shape(x.shape())...});
     std::string ss;
-    for (auto p : args) {
+    for (const auto &p : args) {
         if (!ss.empty()) { ss += ", "; }
         ss += p;
     }
@@ -35,3 +39,28 @@ template <typename T> void pprint(const T &t, const char *name)
 }
 
 #define PPRINT(e) pprint(e, #e);
+
+namespace nn::layers::debug
+{
+class show_name
+{
+    const std::string name_;
+
+  public:
+    show_name(const std::string name) : name_(name) {}
+
+    template <typename R, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, r> &y) const
+    {
+        std::cerr << std::left << std::setw(32) << name_
+                  << " :: " << show_shape(y.shape()) << std::endl;
+    }
+};
+}  // namespace nn::layers::debug
+
+inline void make_unuse(void *) {}
+
+#define UNUSED(e)                                                              \
+    {                                                                          \
+        make_unuse(&e);                                                        \
+    }

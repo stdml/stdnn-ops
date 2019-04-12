@@ -1,13 +1,14 @@
-#include "testing.hpp"
-
-#include <nn/ops>
 #include <stdtensor>
 
 #include <nn/bits/ops/linear_sample.hpp>
+#include <nn/ops>
+
+#include "testing.hpp"
 
 void test_linear_sample_ksr_nm(int ksize, int stride, int rate, int n, int m)
 {
-    nn::ops::linear_sample_trait sample(ksize, stride, rate);
+    using sample_t = nn::ops::linear_sample_trait<int>;
+    sample_t sample(ksize, stride, rate);
 
     ASSERT_EQ(sample(n), m);
     ASSERT_EQ(sample(0, 0), 0);
@@ -80,9 +81,8 @@ void test_valid_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
 {
     using sample_t = nn::ops::linear_sample_trait<size_t>;
     const auto padding = sample_t::valid_padding(3, s, 1, n);
-    const auto [u, v] = padding.dims;
-    ASSERT_EQ(u, pad_l);
-    ASSERT_EQ(v, pad_r);
+    ASSERT_EQ(padding.left_, pad_l);
+    ASSERT_EQ(padding.right_, pad_r);
 }
 
 template <typename dim_t>
@@ -90,9 +90,8 @@ void test_same_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
 {
     using sample_t = nn::ops::linear_sample_trait<dim_t>;
     const auto padding = sample_t::same_padding(3, s, 1, n);
-    const auto [u, v] = padding.dims;
-    ASSERT_EQ(u, pad_l);
-    ASSERT_EQ(v, pad_r);
+    ASSERT_EQ(padding.left_, pad_l);
+    ASSERT_EQ(padding.right_, pad_r);
 }
 
 TEST(linear_sample_test, test_auto_padding)
@@ -102,4 +101,13 @@ TEST(linear_sample_test, test_auto_padding)
 
     test_same_padding_ksize_3<uint8_t>(56, 1, 1, 1);
     test_same_padding_ksize_3<uint8_t>(112, 2, 0, 1);
+}
+
+TEST(linear_sample_test, test_pad)
+{
+    using nn::ops::pad;
+    pad(1);
+    pad(2);
+    pad(1, 2);
+    pad(0, 1);
 }

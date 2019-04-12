@@ -6,6 +6,7 @@
 *.tar
 /3rdparty
 /bin
+/build
 /cmake-build
 /examples/Makefile
 /lib

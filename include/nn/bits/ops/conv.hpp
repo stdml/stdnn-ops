@@ -50,10 +50,7 @@ template <typename dim_t> class linear_conv_trait
     }
 
     linear_conv_trait(const padding_t &pad, dim_t stride, dim_t rate)
-        : pad_l_(std::get<0>(pad.dims)),
-          pad_r_(std::get<1>(pad.dims)),
-          rate_(rate),
-          stride_(stride)
+        : pad_l_(pad.left_), pad_r_(pad.right_), rate_(rate), stride_(stride)
     {
     }
 
@@ -69,7 +66,7 @@ template <typename image_order> class conv_trait;
 
 template <> class conv_trait<hw>
 {
-    using dim_t = size_t;
+    using dim_t = uint32_t;
     using conv_trait_1d_t = linear_conv_trait<dim_t>;
 
   public:

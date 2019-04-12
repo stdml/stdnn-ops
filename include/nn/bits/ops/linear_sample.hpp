@@ -1,4 +1,6 @@
 #pragma once
+#include <type_traits>
+
 #include <nn/common.hpp>
 
 /*!
@@ -16,35 +18,52 @@ e.g.
 
 namespace nn::ops
 {
+struct fixed_padding;
+struct valid_padding;
+struct same_padding;
 
-template <typename dim_t> class linear_sample_trait
+template <typename dim_t, typename padding_policy = fixed_padding>
+class linear_sample_trait;
+
+template <typename dim_t> class linear_sample_trait<dim_t, fixed_padding>
 {
-    const dim_t pad_l_;  // TODO: make it template parameter
-    const dim_t pad_r_;  // TODO: make it template parameter
+    using signed_dim_t = typename std::make_signed<dim_t>::type;
+
+    const signed_dim_t pad_l_;  // TODO: make it template parameter
+    const signed_dim_t pad_r_;  // TODO: make it template parameter
 
     const dim_t rate_;
     const dim_t stride_;
     const dim_t ksize_;
-
-    struct padding_trait;
 
   public:
     static constexpr dim_t default_rate = 1;
     static constexpr dim_t default_stride = 1;
     static constexpr dim_t default_pad_lr = 0;
 
-    using padding_t = std::experimental::new_type<shape<2>, padding_trait>;
+    struct padding_t {
+        signed_dim_t left_;
+        signed_dim_t right_;
 
-    static constexpr padding_t padding(dim_t p) { return padding_t(p, p); }
+        padding_t(signed_dim_t left, signed_dim_t right)
+            : left_(left), right_(right)
+        {
+        }
+    };
 
-    static constexpr padding_t padding(dim_t left, dim_t right)
+    static constexpr padding_t padding(signed_dim_t p)
+    {
+        return padding_t(p, p);
+    }
+
+    static constexpr padding_t padding(signed_dim_t left, signed_dim_t right)
     {
         return padding_t(left, right);
     };
 
     static dim_t patch_size(dim_t k, dim_t r) { return r * (k - 1) + 1; }
 
-    static padding_t even_padding(dim_t p)
+    static padding_t even_padding(signed_dim_t p)
     {
         return padding_t(p / 2, p - p / 2);
     }
@@ -61,10 +80,9 @@ template <typename dim_t> class linear_sample_trait
     {
         const dim_t ps = patch_size(k, r);
         const dim_t n0 = n % s;
-        // p = ps - s - (n % s)
-        // TODO: support negative padding
-        contract_assert(ps >= s + n0);
-        return even_padding(ps - s - n0);
+        // tot_pad = ps - s - (n % s)
+        return even_padding(static_cast<signed_dim_t>(ps) -
+                            static_cast<signed_dim_t>(s + n0));
     }
 
     using padding_policy = std::function<padding_t(dim_t, dim_t, dim_t, dim_t)>;
@@ -102,13 +120,14 @@ template <typename dim_t> class linear_sample_trait
     {
     }
 
-    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_lr)
+    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate,
+                        signed_dim_t pad_lr)
         : linear_sample_trait(ksize, stride, rate, padding(pad_lr))
     {
     }
 
-    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_l,
-                        dim_t pad_r)
+    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate,
+                        signed_dim_t pad_l, signed_dim_t pad_r)
         : linear_sample_trait(ksize, stride, rate, padding(pad_l, pad_r))
     {
         // TODO: deprecate it
@@ -116,8 +135,8 @@ template <typename dim_t> class linear_sample_trait
 
     linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate,
                         const padding_t &pad)
-        : pad_l_(std::get<0>(pad.dims)),
-          pad_r_(std::get<1>(pad.dims)),
+        : pad_l_(pad.left_),
+          pad_r_(pad.right_),
           rate_(rate),
           stride_(stride),
           ksize_(ksize)
@@ -125,8 +144,6 @@ template <typename dim_t> class linear_sample_trait
         contract_assert(rate_ >= 1);
         contract_assert(stride_ >= 1);
         contract_assert(ksize_ >= 1);
-        contract_assert(pad_l_ >= 0);
-        contract_assert(pad_r_ >= 0);
     }
 
     dim_t get_ksize() const { return ksize_; }
@@ -170,6 +187,32 @@ template <typename dim_t> class linear_sample_trait
 
     dim_t unpad(dim_t i) const { return i - pad_l_; }
 };
+
+template <typename dim_t> class linear_sample_trait<dim_t, valid_padding>
+{
+    const dim_t rate_;
+    const dim_t stride_;
+    const dim_t ksize_;
+};
+
+template <typename dim_t> class linear_sample_trait<dim_t, same_padding>
+{
+    const dim_t rate_;
+    const dim_t stride_;
+    const dim_t ksize_;
+};
+
+template <typename dim_t>
+constexpr typename linear_sample_trait<dim_t>::padding_t pad(dim_t p)
+{
+    return typename linear_sample_trait<dim_t>::padding_t(p, p);
+}
+
+template <typename dim_t>
+constexpr typename linear_sample_trait<dim_t>::padding_t pad(dim_t l, dim_t r)
+{
+    return typename linear_sample_trait<dim_t>::padding_t(l, r);
+}
 
 namespace internal
 {

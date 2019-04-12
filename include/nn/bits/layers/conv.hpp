@@ -21,7 +21,8 @@ class conv_trait
     using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
     using rate_t = std::experimental::new_type<shape<2>, rate_trait>;
 
-    using padding_policy = ops::linear_sample_trait<size_t>::padding_policy;
+    using dim_t = uint32_t;
+    using padding_policy = ops::linear_sample_trait<dim_t>::padding_policy;
 
     const size_t n_filters_;
     const ksize_t ksize_;
@@ -36,12 +37,12 @@ class conv_trait
 
     static padding_policy padding_same()
     {
-        return ops::linear_sample_trait<size_t>::padding_same();
+        return ops::linear_sample_trait<dim_t>::padding_same();
     }
 
     static padding_policy padding_valid()
     {
-        return ops::linear_sample_trait<size_t>::padding_valid();
+        return ops::linear_sample_trait<dim_t>::padding_valid();
     }
 
     conv_trait(size_t n_filters, const ksize_t &ksize)
