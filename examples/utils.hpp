@@ -57,3 +57,10 @@ class show_name
     }
 };
 }  // namespace nn::layers::debug
+
+inline void make_unuse(void *) {}
+
+#define UNUSED(e)                                                              \
+    {                                                                          \
+        make_unuse(&e);                                                        \
+    }

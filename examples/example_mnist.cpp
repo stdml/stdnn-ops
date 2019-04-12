@@ -10,6 +10,8 @@
 
 #include <stdtensor>
 
+#include "utils.hpp"
+
 void example_mnist() {}
 
 int main()
@@ -26,6 +28,7 @@ int main()
     int i = 0;
     system("mkdir -p images");
     for (auto im : t) {
+        UNUSED(im);
         char name[20];
         sprintf(name, "images/%d.png", ++i);
 #ifdef USE_OPENCV

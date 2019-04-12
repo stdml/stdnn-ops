@@ -60,16 +60,16 @@ class plain50_model
     {
         return with_init(conv(d, conv::ksize(1, 1), conv::padding_same(),
                               conv::stride(s, s)),
-                         show_name("res??_branch??/kernel"),
-                         show_name("res??_branch??/bias"));
+                         show_name("res?_branch?/kernel"),
+                         show_name("res?_branch?/bias"));
     }
 
     auto conv3x3(int d, int s) const
     {
         return with_init(conv(d, conv::ksize(3, 3), conv::padding_same(),
                               conv::stride(s, s)),
-                         show_name("res??_branch??/kernel"),
-                         show_name("res??_branch??/bias"));
+                         show_name("res?_branch?/kernel"),
+                         show_name("res?_branch?/bias"));
     }
 
     // auto conv2_x() const {}

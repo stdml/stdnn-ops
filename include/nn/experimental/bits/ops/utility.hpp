@@ -46,7 +46,12 @@ class onehot
         const auto y_flat = nn::ops::as_matrix<r, 1, ttl::tensor_ref<R, 2>>(y);
         const auto n = x.shape().size();
         for (auto i : range(n)) {
-            y_flat.at(i, x.data()[i]) = static_cast<R>(1);
+            const dim_t j = x.data()[i];
+            if (0 <= j && j < k_) {
+                y_flat.at(i, j) = static_cast<R>(1);
+            } else {
+                // TODO: maybe throw runtime_error(""):
+            }
         }
     }
 };
