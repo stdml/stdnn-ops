@@ -20,20 +20,11 @@ void test_mm(int k, int m, int n)
     }
 }
 
-void test_mm_all(int k, int m, int n)
-{
-    std::array<int, 3> a({k, m, n});
-    do {
-        const auto [k, m, n] = a;
-        test_mm(k, m, n);
-    } while (std::next_permutation(a.begin(), a.end()));
-}
-
 TEST(plain_la_test, test_mm)
 {
-    test_mm_all(3, 5, 7);
-    test_mm_all(5, 7, 9);
-    test_mm_all(10, 100, 1000);
+    test_all_3_permutations(test_mm, 3, 5, 7);
+    test_all_3_permutations(test_mm, 5, 7, 9);
+    test_all_3_permutations(test_mm, 10, 100, 1000);
 }
 
 void test_mmt(int k, int m, int n)
@@ -52,20 +43,11 @@ void test_mmt(int k, int m, int n)
     }
 }
 
-void test_mmt_all(int k, int m, int n)
-{
-    std::array<int, 3> a({k, m, n});
-    do {
-        const auto [k, m, n] = a;
-        test_mmt(k, m, n);
-    } while (std::next_permutation(a.begin(), a.end()));
-}
-
 TEST(plain_la_test, test_mmt)
 {
-    test_mmt_all(3, 5, 7);
-    test_mmt_all(5, 7, 9);
-    test_mmt_all(10, 100, 1000);
+    test_all_3_permutations(test_mmt, 3, 5, 7);
+    test_all_3_permutations(test_mmt, 5, 7, 9);
+    test_all_3_permutations(test_mmt, 10, 100, 1000);
 }
 
 void test_mtm(int k, int m, int n)
@@ -84,20 +66,11 @@ void test_mtm(int k, int m, int n)
     }
 }
 
-void test_mtm_all(int k, int m, int n)
-{
-    std::array<int, 3> a({k, m, n});
-    do {
-        const auto [k, m, n] = a;
-        test_mtm(k, m, n);
-    } while (std::next_permutation(a.begin(), a.end()));
-}
-
 TEST(plain_la_test, test_mtm)
 {
-    test_mtm_all(3, 5, 7);
-    test_mtm_all(5, 7, 9);
-    test_mtm_all(10, 100, 1000);
+    test_all_3_permutations(test_mtm, 3, 5, 7);
+    test_all_3_permutations(test_mtm, 5, 7, 9);
+    test_all_3_permutations(test_mtm, 10, 100, 1000);
 }
 
 void test_mv(int n, int m)

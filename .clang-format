@@ -29,8 +29,11 @@ IncludeCategories:
   # TODO: add as needed
   - Regex:           ^<(algorithm|array|condition_variable|functional|iostream|map|memory|mutex|numeric|string|thread|vector)>$
     Priority:        2
+  # user added experimental STL headers
+  - Regex:           ^<experimental/(contract|ith|range)>
+    Priority:        2
   # third party headers
-  - Regex:           ^<stdtensor>
+  - Regex:           ^<(stdtensor|ttl/tensor)>
     Priority:        3
   # public nn headers
   - Regex:           ^<nn
