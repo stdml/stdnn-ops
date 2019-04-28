@@ -1,10 +1,7 @@
 #pragma once
 #include <nn/bits/engines/linag.hpp>
+#include <nn/bits/ops/softmax.hpp>
 #include <nn/common.hpp>
-
-#include <experimental/range>
-
-using std::experimental::range;
 
 namespace nn::experimental::ops::grad
 {
@@ -17,7 +14,8 @@ template <> class softmax<0>
     shape<r> operator()(const shape<r> &gy, const shape<r> &y,
                         const shape<r> &x) const
     {
-        // TODO: check
+        contract_assert_eq(y, nn::ops::softmax()(x));
+        contract_assert_eq(y, gy);
         return x;
     }
 

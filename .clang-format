@@ -30,7 +30,7 @@ IncludeCategories:
   - Regex:           ^<(algorithm|array|condition_variable|functional|iostream|map|memory|mutex|numeric|string|thread|vector)>$
     Priority:        2
   # user added experimental STL headers
-  - Regex:           ^<experimental/(contract|ith|range)>
+  - Regex:           ^<experimental/(contract|ith|new_type|range)>
     Priority:        2
   # third party headers
   - Regex:           ^<(stdtensor|ttl/tensor)>

@@ -1,5 +1,6 @@
 #pragma once
 #include <nn/bits/engines/linag.hpp>
+#include <nn/bits/ops/matmul.hpp>
 #include <nn/common.hpp>
 
 namespace nn::experimental::ops::grad
@@ -13,7 +14,8 @@ template <typename E> class matmul<0, E>
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,
                         const shape<2> &x, const shape<2> &y) const
     {
-        // TODO: check
+        contract_assert_eq(z, nn::ops::matmul()(x, y));
+        contract_assert_eq(z, gz);
         return x;
     }
 
@@ -34,7 +36,8 @@ template <typename E> class matmul<1, E>
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,
                         const shape<2> &x, const shape<2> &y) const
     {
-        // TODO: check
+        contract_assert_eq(z, nn::ops::matmul()(x, y));
+        contract_assert_eq(z, gz);
         return y;
     }
 

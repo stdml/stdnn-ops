@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 
+#include <nn/bits/ops/elementary.hpp>
 #include <nn/common.hpp>
 
 namespace nn::experimental::ops::grad
@@ -14,7 +15,8 @@ template <> class add<0>
     shape<r> operator()(const shape<r> &gz, const shape<r> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        // TODO: check
+        contract_assert_eq(z, nn::ops::add()(x, y));
+        contract_assert_eq(z, gz);
         return x;
     }
 
@@ -36,7 +38,8 @@ template <> class add<1>
     shape<r> operator()(const shape<r> &gz, const shape<r> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        // TODO: check
+        contract_assert_eq(z, nn::ops::add()(x, y));
+        contract_assert_eq(z, gz);
         return y;
     }
 

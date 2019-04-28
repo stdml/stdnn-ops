@@ -1,6 +1,6 @@
 #pragma once
 #include <algorithm>
-#include <experimental/contract>
+
 #include <nn/common.hpp>
 
 namespace nn::ops
@@ -32,6 +32,13 @@ struct scalar_sub {
     template <typename R> R operator()(const R &x, const R &y) const
     {
         return x - y;
+    }
+};
+
+struct scalar_mul {
+    template <typename R> R operator()(const R &x, const R &y) const
+    {
+        return x * y;
     }
 };
 

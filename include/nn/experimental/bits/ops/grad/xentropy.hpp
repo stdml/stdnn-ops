@@ -1,9 +1,8 @@
 #pragma once
-#include <nn/common.hpp>
-
 #include <experimental/range>
 
-using std::experimental::range;
+#include <nn/bits/ops/xentropy.hpp>
+#include <nn/common.hpp>
 
 namespace nn::experimental::ops::grad
 {
@@ -16,8 +15,9 @@ template <> class xentropy<1>
     shape<r> operator()(const shape<r - 1> &gz, const shape<r - 1> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        // TODO: check
-        return x;
+        contract_assert_eq(z, nn::ops::xentropy()(x, y));
+        contract_assert_eq(z, gz);
+        return y;
     }
 
     template <typename R>

@@ -1,9 +1,9 @@
 #pragma once
-#include <stdtensor>
-
 #include <experimental/contract>
 #include <experimental/new_type>
 #include <experimental/range>
+
+#include <ttl/tensor>
 
 // TODO: commit to upstream
 namespace ttl
@@ -27,19 +27,6 @@ bool operator==(const basic_shape<r> &p, const basic_shape<r> &q)
 namespace nn
 {
 template <ttl::internal::rank_t r> using shape = ttl::internal::basic_shape<r>;
-}
 
-namespace nn::engines
-{
 using std::experimental::range;
-}
-
-namespace nn::ops
-{
-using std::experimental::range;
-}
-
-namespace nn::layers
-{
-using std::experimental::range;
-}
+}  // namespace nn
