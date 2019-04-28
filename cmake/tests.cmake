@@ -1,10 +1,7 @@
 INCLUDE(ExternalProject)
 
-SET(GTEST_GIT_URL
-    https://github.com/google/googletest.git
-    CACHE
-    STRING
-    "URL for clone gtest")
+SET(GTEST_GIT_URL https://github.com/google/googletest.git
+    CACHE STRING "URL for clone gtest")
 
 SET(PREFIX ${CMAKE_SOURCE_DIR}/3rdparty)
 
@@ -20,6 +17,7 @@ EXTERNALPROJECT_ADD(libgtest-dev
                     -DBUILD_GMOCK=0)
 
 LINK_DIRECTORIES(${PREFIX}/lib)
+LINK_DIRECTORIES(${PREFIX}/lib64) # for alpine
 
 FUNCTION(ADD_GTEST target)
     ADD_EXECUTABLE(${target} ${ARGN} tests/main.cpp)
@@ -32,6 +30,9 @@ ENDFUNCTION()
 FILE(GLOB tests tests/test_*.cpp)
 FOREACH(t ${tests})
     GET_FILENAME_COMPONENT(name ${t} NAME_WE)
-    STRING(REPLACE "_" "-" name ${name})
+    STRING(REPLACE "_"
+                   "-"
+                   name
+                   ${name})
     ADD_GTEST(${name} ${t})
 ENDFOREACH()
