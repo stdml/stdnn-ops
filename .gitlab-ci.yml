@@ -23,7 +23,7 @@ alpine:3.9:
   image: alpine:3.9
   before_script:
   - apk update
-  - apk add g++ cmake git
+  - apk add make cmake g++ git
   script:
   - ./configure
   - make
