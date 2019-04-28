@@ -43,8 +43,7 @@ template <typename Act = ops::noop> class dense : public dense_trait
 
         auto b = ops::new_parameter<ttl::tensor<R, 1>>(bias_shape(x.shape()),
                                                        b_init);
-        using add_bias = nn::ops::apply_bias<nn::ops::hw, std::plus<R>>;
-        add_bias()(ref(*y), view(*y), view(*b));
+        ops::add_bias<ops::hw>()(ref(*y), view(*y), view(*b));
         Act()(ref(*y), view(*y));
         return make_layer(y, w, b);
     }

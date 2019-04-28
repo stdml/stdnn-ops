@@ -1,5 +1,7 @@
 #include <cstdlib>
 
+#include <experimental/range>
+
 #include <nn/experimental/bits/ops/grad/softmax.hpp>
 #include <nn/experimental/bits/ops/grad/xentropy.hpp>
 #include <nn/experimental/bits/ops/utility.hpp>
@@ -9,8 +11,6 @@
 
 #include "trace.hpp"
 #include "utils.hpp"
-
-#include <experimental/range>
 
 using std::experimental::range;
 
@@ -33,9 +33,8 @@ class slp
                     const ttl::tensor_view<R, 2> &w,
                     const ttl::tensor_view<R, 1> &b)
     {
-        using add_bias = nn::ops::apply_bias<nn::ops::hw, std::plus<R>>;
         nn::ops::matmul()(ys, xs, w);
-        add_bias()(ref(ys), view(ys), b);
+        nn::ops::add_bias<nn::ops::hw>()(ref(ys), view(ys), b);
     }
 
     template <typename R>

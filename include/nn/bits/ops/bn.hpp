@@ -111,11 +111,9 @@ template <typename image_order> class batch_norm_with_bias
                     const ttl::tensor_view<R, 1> &beta,
                     const ttl::tensor_view<R, 1> &gamma) const
     {
-        using add_bias = apply_bias<image_order, std::plus<R>>;
-        using mul_bias = apply_bias<image_order, std::multiplies<R>>;
         bn_op()(y, x, rolling_mean, rolling_var);
-        mul_bias()(y, view(y), gamma);
-        add_bias()(y, view(y), beta);
+        mul_bias<image_order>()(y, view(y), gamma);
+        add_bias<image_order>()(y, view(y), beta);
     }
 };
 
