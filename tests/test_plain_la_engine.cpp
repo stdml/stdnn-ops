@@ -22,9 +22,9 @@ void test_mm(int k, int m, int n)
 
 TEST(plain_la_test, test_mm)
 {
-    test_all_3_permutations(test_mm, 3, 5, 7);
-    test_all_3_permutations(test_mm, 5, 7, 9);
-    test_all_3_permutations(test_mm, 10, 100, 1000);
+    test_all_permutations(test_mm, 3, 5, 7);
+    test_all_permutations(test_mm, 5, 7, 9);
+    test_all_permutations(test_mm, 10, 100, 1000);
 }
 
 void test_mmt(int k, int m, int n)
@@ -45,9 +45,9 @@ void test_mmt(int k, int m, int n)
 
 TEST(plain_la_test, test_mmt)
 {
-    test_all_3_permutations(test_mmt, 3, 5, 7);
-    test_all_3_permutations(test_mmt, 5, 7, 9);
-    test_all_3_permutations(test_mmt, 10, 100, 1000);
+    test_all_permutations(test_mmt, 3, 5, 7);
+    test_all_permutations(test_mmt, 5, 7, 9);
+    test_all_permutations(test_mmt, 10, 100, 1000);
 }
 
 void test_mtm(int k, int m, int n)
@@ -68,9 +68,9 @@ void test_mtm(int k, int m, int n)
 
 TEST(plain_la_test, test_mtm)
 {
-    test_all_3_permutations(test_mtm, 3, 5, 7);
-    test_all_3_permutations(test_mtm, 5, 7, 9);
-    test_all_3_permutations(test_mtm, 10, 100, 1000);
+    test_all_permutations(test_mtm, 3, 5, 7);
+    test_all_permutations(test_mtm, 5, 7, 9);
+    test_all_permutations(test_mtm, 10, 100, 1000);
 }
 
 void test_mv(int n, int m)
@@ -85,11 +85,7 @@ void test_mv(int n, int m)
     for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 2 * 3 * m); }
 }
 
-TEST(plain_la_test, test_mv)
-{
-    test_mv(2, 3);
-    test_mv(3, 2);
-}
+TEST(plain_la_test, test_mv) { test_all_permutations(test_mv, 2, 3); }
 
 void test_vm(int n, int m)
 {
@@ -103,11 +99,7 @@ void test_vm(int n, int m)
     for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 2 * 3 * m); }
 }
 
-TEST(plain_la_test, test_vm)
-{
-    test_vm(2, 3);
-    test_vm(3, 2);
-}
+TEST(plain_la_test, test_vm) { test_all_permutations(test_vm, 2, 3); }
 
 void test_vv(int n)
 {

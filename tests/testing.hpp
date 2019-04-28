@@ -34,15 +34,14 @@ template <> struct assert_eq<double> {
     void operator()(double x, double y) { ASSERT_FLOAT_EQ(x, y); }
 };
 
-template <typename T>
-int test_all_3_permutations(const T &t, int k, int m, int n)
+template <typename T, typename... I>
+int test_all_permutations(const T &t, I... i)
 {
-    int p = 0;
-    std::array<int, 3> a({k, m, n});
+    std::array<int, sizeof...(I)> a({static_cast<int>(i)...});
     std::sort(a.begin(), a.end());
+    int p = 0;
     do {
-        const auto [k, m, n] = a;
-        t(k, m, n);
+        std::apply(t, a);
         ++p;
     } while (std::next_permutation(a.begin(), a.end()));
     return p;
