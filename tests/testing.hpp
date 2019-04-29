@@ -62,21 +62,9 @@ void assert_tensor_eq(const ttl::tensor<R, r> &x, const ttl::tensor<R, r> &y)
     for (auto i : range(n)) { ASSERT_EQ(x.data()[i], y.data()[i]); }
 }
 
-template <ttl::rank_t r>
-std::string show_shape(const ttl::internal::basic_shape<r> &shape,
-                       char bracket_l = '(', char bracket_r = ')')
-{
-    std::string ss;
-    for (auto i : std::experimental::range(r)) {
-        if (!ss.empty()) { ss += ", "; }
-        ss += std::to_string(shape.dims[i]);
-    }
-    return bracket_l + ss + bracket_r;
-}
-
 template <typename T> void pprint(const T &t, const char *name)
 {
-    printf("%s :: %s\n", name, show_shape(t.shape()).c_str());
+    printf("%s :: %s\n", name, std::to_string(t.shape()).c_str());
 }
 
 #define PPRINT(e) pprint(e, #e);

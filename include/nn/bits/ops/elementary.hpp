@@ -48,7 +48,7 @@ template <typename F> class _binary_pointwise
     template <ttl::rank_t r>
     shape<r> operator()(const shape<r> &x, const shape<r> &y) const
     {
-        contract_assert(x == y);
+        contract_assert_eq(x, y);
         return x;
     }
 
