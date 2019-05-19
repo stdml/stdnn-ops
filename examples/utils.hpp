@@ -1,8 +1,9 @@
+#include <experimental/range>
 #include <string>
 
-#include <experimental/range>
+#include <ttl/tensor>
+
 #include <nn/ops>
-#include <stdtensor>
 
 template <ttl::rank_t r>
 std::string show_shape(const ttl::internal::basic_shape<r> &shape,
@@ -35,3 +36,10 @@ template <typename T> void pprint(const T &t, const char *name)
 }
 
 #define PPRINT(e) pprint(e, #e);
+
+inline void make_unuse(const void *) {}
+
+#define UNUSED(e)                                                              \
+    {                                                                          \
+        make_unuse(&e);                                                        \
+    }

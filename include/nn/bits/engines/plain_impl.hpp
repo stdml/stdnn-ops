@@ -2,12 +2,11 @@
 #include <cstring>
 
 #include <algorithm>
+#include <experimental/contract>
+#include <experimental/range>
 #include <numeric>
 
 #include <stdtensor>
-
-#include <experimental/contract>
-#include <experimental/range>
 
 namespace nn::engines
 {
@@ -46,10 +45,10 @@ template <typename T> struct plain_impl {
         contract_assert(m == c.shape().dims[0]);
         contract_assert(n == c.shape().dims[1]);
 
-        for (auto i = 0; i < m; ++i) {
-            for (auto j = 0; j < n; ++j) {
+        for (auto i : range(m)) {
+            for (auto j : range(n)) {
                 T tmp = 0;
-                for (auto k = 0; k < l; ++k) { tmp += a.at(i, k) * b.at(j, k); }
+                for (auto k : range(l)) { tmp += a.at(i, k) * b.at(j, k); }
                 c.at(i, j) = tmp;
             }
         }
@@ -64,10 +63,10 @@ template <typename T> struct plain_impl {
         contract_assert(m == c.shape().dims[0]);
         contract_assert(n == c.shape().dims[1]);
 
-        for (auto i = 0; i < m; ++i) {
-            for (auto j = 0; j < n; ++j) {
+        for (auto i : range(m)) {
+            for (auto j : range(n)) {
                 T tmp = 0;
-                for (auto k = 0; k < l; ++k) { tmp += a.at(k, i) * b.at(k, j); }
+                for (auto k : range(l)) { tmp += a.at(k, i) * b.at(k, j); }
                 c.at(i, j) = tmp;
             }
         }
@@ -80,9 +79,9 @@ template <typename T> struct plain_impl {
         contract_assert(n == b.shape().dims[0]);
         contract_assert(m == c.shape().dims[0]);
 
-        for (auto i = 0; i < m; ++i) {
+        for (auto i : range(m)) {
             T tmp = 0;
-            for (auto j = 0; j < n; ++j) { tmp += a.at(i, j) * b.at(j); }
+            for (auto j : range(n)) { tmp += a.at(i, j) * b.at(j); }
             c.at(i) = tmp;
         }
     }
@@ -94,9 +93,9 @@ template <typename T> struct plain_impl {
         contract_assert(m == a.shape().dims[0]);
         contract_assert(n == c.shape().dims[0]);
 
-        for (auto i = 0; i < n; ++i) {
+        for (auto i : range(n)) {
             T tmp = 0;
-            for (auto j = 0; j < m; ++j) { tmp += a.at(j) * b.at(j, i); }
+            for (auto j : range(m)) { tmp += a.at(j) * b.at(j, i); }
             c.at(i) = tmp;
         }
     }
