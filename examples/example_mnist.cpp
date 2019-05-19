@@ -30,7 +30,7 @@ int main()
     UNUSED(code);
     for (auto im : t) {
         UNUSED(im);
-        char name[20];
+        char name[32];
         sprintf(name, "images/%d.png", ++i);
 #ifdef USE_OPENCV
         cv::Mat img(cv::Size(28, 28), CV_8UC(1), im.data());
