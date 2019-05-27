@@ -1,6 +1,6 @@
 #pragma once
 #include <algorithm>
-#include <experimental/contract>
+
 #include <nn/common.hpp>
 
 namespace nn::ops
@@ -35,13 +35,20 @@ struct scalar_sub {
     }
 };
 
+struct scalar_mul {
+    template <typename R> R operator()(const R &x, const R &y) const
+    {
+        return x * y;
+    }
+};
+
 template <typename F> class _binary_pointwise
 {
   public:
     template <ttl::rank_t r>
     shape<r> operator()(const shape<r> &x, const shape<r> &y) const
     {
-        contract_assert(x == y);
+        contract_assert_eq(x, y);
         return x;
     }
 

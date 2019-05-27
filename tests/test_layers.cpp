@@ -30,7 +30,9 @@ template <typename conv_layer> void test_conv_layer()
                       conv_layer::stride(2, 2));
         auto l = l1(ref(x));
         const auto shp = (*l).shape();
-        ASSERT_EQ(shp.size(), 2 * 112 * 112);
+        ASSERT_EQ(
+            shp.size(),
+            static_cast<typename decltype(shp)::dimension_type>(2 * 112 * 112));
     }
 }
 

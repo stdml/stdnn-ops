@@ -139,11 +139,9 @@ class conv<image_order, filter_order, true, Act> : public conv_trait
             filter_shape<image_order, filter_order>(x.shape()), w_init);
         auto y = ops::new_result<ttl::tensor<R, 4>>(
             conv_op(op_trait(ops::image_shape<image_order>(x.shape()))), x, *w);
-
-        using add_bias = nn::ops::apply_bias<image_order, std::plus<R>>;
         auto b = ops::new_parameter<ttl::tensor<R, 1>>(bias_shape(x.shape()),
                                                        b_init);
-        add_bias()(ref(*y), view(*y), view(*b));
+        ops::add_bias<image_order>()(ref(*y), view(*y), view(*b));
         Act()(ref(*y), view(*y));
         return make_layer(y, w, b);
     }

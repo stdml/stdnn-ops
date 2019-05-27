@@ -1,17 +1,10 @@
-#!/bin/bash
+#!/bin/sh
 set -e
-
-CMAKE_FLAGS=
 
 # defaults
 USE_BLAS=0
 USE_OPENCV=0
 BUILD_TESTS=1
-
-add_cmake_flag() {
-    echo "usinig $1=$2"
-    CMAKE_FLAGS="$CMAKE_FLAGS -D$1=$2"
-}
 
 parse_args() {
     for i in "$@"; do
@@ -30,32 +23,37 @@ parse_args() {
             ;;
         *)
             echo "unknown argument $1"
-            exit
+            exit 1
             ;;
         esac
     done
 }
 
+CMAKE_FLAGS=
+
+add_cmake_flag() {
+    echo "usinig $1=$2"
+    CMAKE_FLAGS="$CMAKE_FLAGS -D$1=$2"
+}
+
+pass_cmake_flag_from_env() {
+    local name=$1
+    local env_key=$2
+    if [ -z ${env_key} ]; then
+        env_key=$name
+    fi
+    local val=$(eval echo \$$env_key)
+    if [ ! -z "$val" ]; then
+        add_cmake_flag $name $val
+    fi
+}
+
 add_cmake_flags() {
-    if [ ! -z ${PREFIX} ]; then
-        add_cmake_flag CMAKE_INSTALL_PREFIX ${PREFIX}
-    fi
-
-    if [ ! -z ${GTEST_GIT_URL} ]; then
-        add_cmake_flag GTEST_GIT_URL ${GTEST_GIT_URL}
-    fi
-
-    if [ ! -z ${GBENCH_GIT_URL} ]; then
-        add_cmake_flag GBENCH_GIT_URL ${GBENCH_GIT_URL}
-    fi
-
-    if [ ! -z ${STDTRACER_GIT_URL} ]; then
-        add_cmake_flag STDTRACER_GIT_URL ${STDTRACER_GIT_URL}
-    fi
-
-    if [ ! -z ${STDTENSOR_GIT_URL} ]; then
-        add_cmake_flag STDTENSOR_GIT_URL ${STDTENSOR_GIT_URL}
-    fi
+    pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX PREFIX
+    pass_cmake_flag_from_env GTEST_GIT_URL
+    pass_cmake_flag_from_env GBENCH_GIT_URL
+    pass_cmake_flag_from_env STDTRACER_GIT_URL
+    pass_cmake_flag_from_env STDTENSOR_GIT_URL
 
     add_cmake_flag EXECUTABLE_OUTPUT_PATH $(pwd)/bin
     # add_cmake_flag LIBRARY_OUTPUT_PATH $(pwd)/lib

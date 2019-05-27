@@ -1,5 +1,7 @@
 #include <cstdlib>
 
+#include <experimental/range>
+
 #include <nn/experimental/bits/ops/grad/softmax.hpp>
 #include <nn/experimental/bits/ops/grad/xentropy.hpp>
 #include <nn/experimental/bits/ops/utility.hpp>
@@ -9,8 +11,6 @@
 
 #include "trace.hpp"
 #include "utils.hpp"
-
-#include <experimental/range>
 
 using std::experimental::range;
 
@@ -33,9 +33,8 @@ class slp
                     const ttl::tensor_view<R, 2> &w,
                     const ttl::tensor_view<R, 1> &b)
     {
-        using add_bias = nn::ops::apply_bias<nn::ops::hw, std::plus<R>>;
         nn::ops::matmul()(ys, xs, w);
-        add_bias()(ref(ys), view(ys), b);
+        nn::ops::add_bias<nn::ops::hw>()(ref(ys), view(ys), b);
     }
 
     template <typename R>
@@ -68,7 +67,8 @@ template <typename R>
 R accuracy(const ttl::tensor_view<R, 2> &ys, const ttl::tensor_view<R, 2> &y_s)
 {
     using nn::experimental::ops::argmax;
-    const auto [n, k] = ys.shape().dims;
+    const auto [n, _k] = ys.shape().dims;
+    UNUSED(_k);
     int t = 0;
     int f = 0;
     for (auto l : range(n)) {
@@ -125,6 +125,7 @@ void train_slp_model(const D &ds,  //
     const int n_epochs = 1;
     int step = 0;
     for (auto _ : range(n_epochs)) {
+        UNUSED(_);
         for (auto offset : range(n / batch_size)) {
             ++step;
             printf("step: %d\n", step);
@@ -202,7 +203,8 @@ int main()
         nn::ops::writefile("b.idx")(view(b));
         test_slp_model(test, view(w), view(b));
     }
-    system("tar -cf params.idx.tar w.idx b.idx");
+    int code = system("tar -cf params.idx.tar w.idx b.idx");
+    UNUSED(code);
     {
         TRACE_SCOPE("test");
         ttl::tensor<float, 2> w(28 * 28, k);

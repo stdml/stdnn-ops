@@ -1,13 +1,16 @@
 #include <cstdlib>
+
 #include <string>
 
 #include <nn/ops>
 
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#    include <opencv2/opencv.hpp>
 #endif
 
-#include <stdtensor>
+#include <ttl/tensor>
+
+#include "utils.hpp"
 
 void example_mnist() {}
 
@@ -23,9 +26,11 @@ int main()
     (reader(filename))(ref(t));
 
     int i = 0;
-    system("mkdir -p images");
+    int code = system("mkdir -p images");
+    UNUSED(code);
     for (auto im : t) {
-        char name[20];
+        UNUSED(im);
+        char name[32];
         sprintf(name, "images/%d.png", ++i);
 #ifdef USE_OPENCV
         cv::Mat img(cv::Size(28, 28), CV_8UC(1), im.data());
