@@ -3,7 +3,7 @@ INCLUDE(ExternalProject)
 SET(STDTENSOR_GIT_URL https://github.com/lgarithm/stdtensor.git
     CACHE STRING "URL for clone stdtensor")
 
-SET(STDTENSOR_GIT_TAG "v0.2.0" CACHE STRING "git tag for checkout stdtensor")
+SET(STDTENSOR_GIT_TAG "v0.3.0" CACHE STRING "git tag for checkout stdtensor")
 
 SET(PREFIX ${CMAKE_SOURCE_DIR}/3rdparty)
 
