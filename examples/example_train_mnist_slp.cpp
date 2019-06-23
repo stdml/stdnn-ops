@@ -2,6 +2,8 @@
 
 #include <experimental/range>
 
+#include <ttl/algorithm>
+
 #include <nn/experimental/bits/ops/grad/softmax.hpp>
 #include <nn/experimental/bits/ops/grad/xentropy.hpp>
 #include <nn/experimental/bits/ops/utility.hpp>
@@ -107,8 +109,6 @@ void train_slp_model(const D &ds,  //
                      const ttl::tensor_ref<R, 1> &b,  //
                      const int batch_size = 100)
 {
-    using nn::experimental::ops::fill;
-
     const auto [n, height, width] = ds.first.shape().dims;
     const int k = 10;
 
@@ -127,7 +127,7 @@ void train_slp_model(const D &ds,  //
     ttl::tensor<R, 1> g_b(b.shape());
 
     g_l.data()[0] = static_cast<R>(.5);
-    fill(ref(g_ls), static_cast<float>(1.0 / batch_size));
+    ttl::fill(ref(g_ls), static_cast<float>(1.0 / batch_size));
 
     const int n_epochs = 1;
     int step = 0;
@@ -185,7 +185,6 @@ void test_slp_model(const D &ds, const ttl::tensor_view<R, 2> &w,
 int main()
 {
     using nn::experimental::datasets::load_mnist_data;
-    using nn::experimental::ops::fill;
 
     TRACE_SCOPE(__func__);
 
@@ -200,8 +199,8 @@ int main()
         ttl::tensor<float, 2> w(28 * 28, k);
         ttl::tensor<float, 1> b(k);
 
-        fill(ref(w), static_cast<float>(.5));
-        fill(ref(b), static_cast<float>(0));
+        ttl::fill(ref(w), static_cast<float>(.5));
+        ttl::fill(ref(b), static_cast<float>(0));
 
         train_slp_model(train, ref(w), ref(b));
         test_slp_model(test, view(w), view(b));

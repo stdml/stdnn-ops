@@ -18,16 +18,16 @@ class cast : public nn::ops::endofunction
     void operator()(const ttl::tensor_ref<R, r> &y,
                     const ttl::tensor_view<S, r> &x) const
     {
-        std::transform(x.data(), x.data_end(), y.data(),
-                       [](const S &e) { return static_cast<R>(e); });
+        ttl::cast(x, y);
     }
 };
 
-template <typename R, ttl::rank_t r>
-void fill(const ttl::tensor_ref<R, r> &t, R val)
-{
-    std::fill(t.data(), t.data() + t.shape().size(), val);
-}
+// TODO: make it an operator
+// template <typename R, ttl::rank_t r>
+// void fill(const ttl::tensor_ref<R, r> &t, R val)
+// {
+//     ttl::fill(t, val);
+// }
 
 class argmax : public nn::ops::reduce_function
 {
