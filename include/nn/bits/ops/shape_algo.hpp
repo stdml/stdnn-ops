@@ -1,5 +1,6 @@
 #pragma once
 #include <array>
+
 #include <nn/common.hpp>
 
 namespace nn::ops
@@ -46,5 +47,43 @@ shape<2> as_mat_shape(const shape<p + q> &s)
                                     std::multiplies<dim_t>());
     return shape<2>(m, n);
 }
+
+class endofunction
+{
+  public:
+    template <ttl::rank_t r> shape<r> operator()(const shape<r> &x) const
+    {
+        return x;
+    }
+};
+
+class reduce_function
+{
+  public:
+    template <ttl::rank_t r> shape<r - 1> operator()(const shape<r> &s) const
+    {
+        std::array<typename shape<r - 1>::dimension_type, r - 1> dims;
+        std::copy(s.dims.begin(), s.dims.end() - 1, dims.begin());
+        return shape<r - 1>(dims);
+    }
+};
+
+class vectorize_function
+{
+  protected:
+    using dim_t = shape<0>::dimension_type;
+    const dim_t k_;
+
+  public:
+    vectorize_function(const dim_t k) : k_(k) {}
+
+    template <ttl::rank_t r> shape<r + 1> operator()(const shape<r> &s) const
+    {
+        std::array<dim_t, r + 1> dims;
+        std::copy(s.dims.begin(), s.dims.end(), dims.begin());
+        dims[r] = k_;
+        return shape<r + 1>(dims);
+    }
+};
 
 }  // namespace nn::ops

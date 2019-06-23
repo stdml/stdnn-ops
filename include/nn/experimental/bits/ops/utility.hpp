@@ -3,49 +3,65 @@
 
 #include <algorithm>
 
+#include <ttl/algorithm>
+
 #include <nn/bits/ops/reshape.hpp>
 #include <nn/common.hpp>
 
 namespace nn::experimental::ops
 {
-using std::experimental::range;
 
-template <typename R, ttl::rank_t r>
-void fill(const ttl::tensor_ref<R, r> &t, R val)
+class cast : public nn::ops::endofunction
 {
-    std::fill(t.data(), t.data() + t.shape().size(), val);
-}
-
-template <typename R>
-nn::shape<1>::dimension_type argmax(const ttl::tensor_view<R, 1> &t)
-{
-    return std::max_element(t.data(), t.data() + t.shape().size()) - t.data();
-}
-
-class onehot
-{
-    using dim_t = shape<0>::dimension_type;
-    const dim_t k_;
-
   public:
-    onehot(const dim_t k) : k_(k) {}
+    using endofunction::operator();
 
-    // template <ttl::rank_t r> shape<r + 1> operator()(const shape<r> &s) const
-    // {
-    //     std::array<dim_t, r + 1> dims;
-    //     std::copy(s.dims.begin(), s.dims.end(), dims.begin());
-    //     dims[r] = k_;
-    //     return shape<r + 1>(dims);
-    // }
+    template <typename R, typename S, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, r> &y,
+                    const ttl::tensor_view<S, r> &x) const
+    {
+        ttl::cast(x, y);
+    }
+};
+
+// TODO: make it an operator
+// template <typename R, ttl::rank_t r>
+// void fill(const ttl::tensor_ref<R, r> &t, R val)
+// {
+//     ttl::fill(t, val);
+// }
+
+class argmax : public nn::ops::reduce_function
+{
+  public:
+    using reduce_function::operator();
+
+    template <typename R, typename N, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<N, r> &y,
+                    const ttl::tensor_view<R, r + 1> &x) const
+    {
+        const auto x_flat = nn::ops::as_matrix<r, 1, ttl::tensor_view<R, 2>>(x);
+        for (auto i : range(y.shape().size())) {
+            y.data()[i] = ttl::argmax(x_flat[i]);
+        }
+    }
+};
+
+class onehot : public nn::ops::vectorize_function
+{
+  public:
+    using vectorize_function::operator();
+
+    onehot(const dim_t k) : vectorize_function(k) {}
 
     template <typename R, typename N, ttl::rank_t r>
     void operator()(const ttl::tensor_ref<R, r + 1> &y,
                     const ttl::tensor_view<N, r> &x) const
     {
-        std::memset(y.data(), 0, sizeof(R) * y.shape().size());
+        constexpr R def = 0;
+        std::fill(y.data(), y.data_end(), def);
         const auto y_flat = nn::ops::as_matrix<r, 1, ttl::tensor_ref<R, 2>>(y);
-        const auto n = x.shape().size();
-        for (auto i : range(n)) {
+        for (auto i : range(x.shape().size())) {
             const dim_t j = x.data()[i];
             if (0 <= j && j < k_) {
                 y_flat.at(i, j) = static_cast<R>(1);

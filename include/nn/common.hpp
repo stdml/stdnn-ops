@@ -57,6 +57,11 @@ template <ttl::internal::rank_t r> using shape = ttl::internal::basic_shape<r>;
 using std::experimental::range;
 }  // namespace nn
 
+namespace nn::experimental::ops
+{
+using std::experimental::range;
+}  // namespace nn::experimental::ops
+
 template <ttl::internal::rank_t r>
 inline void contract_assert_eq_(const ttl::internal::basic_shape<r> &x,
                                 const ttl::internal::basic_shape<r> &y,
