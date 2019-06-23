@@ -14,6 +14,8 @@ namespace nn::experimental::ops
 class cast : public nn::ops::endofunction
 {
   public:
+    using endofunction::operator();
+
     template <typename R, typename S, ttl::rank_t r>
     void operator()(const ttl::tensor_ref<R, r> &y,
                     const ttl::tensor_view<S, r> &x) const
@@ -32,6 +34,8 @@ class cast : public nn::ops::endofunction
 class argmax : public nn::ops::reduce_function
 {
   public:
+    using reduce_function::operator();
+
     template <typename R, typename N, ttl::rank_t r>
     void operator()(const ttl::tensor_ref<N, r> &y,
                     const ttl::tensor_view<R, r + 1> &x) const
@@ -46,6 +50,8 @@ class argmax : public nn::ops::reduce_function
 class onehot : public nn::ops::vectorize_function
 {
   public:
+    using vectorize_function::operator();
+
     onehot(const dim_t k) : vectorize_function(k) {}
 
     template <typename R, typename N, ttl::rank_t r>

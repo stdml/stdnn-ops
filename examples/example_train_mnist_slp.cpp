@@ -69,9 +69,8 @@ template <typename R>
 R accuracy(const ttl::tensor_view<R, 2> &ys, const ttl::tensor_view<R, 2> &y_s)
 {
     const nn::experimental::ops::argmax argmax;
-    const nn::ops::reduce_function infer = argmax;
-    const ttl::tensor<uint32_t, 1> preditions(infer(ys.shape()));
-    const ttl::tensor<uint32_t, 1> labels(infer(y_s.shape()));
+    const ttl::tensor<uint32_t, 1> preditions(argmax(ys.shape()));
+    const ttl::tensor<uint32_t, 1> labels(argmax(y_s.shape()));
     argmax(ref(preditions), ys);
     argmax(ref(labels), y_s);
     const auto diff = ttl::hamming_distance(view(preditions), view(labels));
