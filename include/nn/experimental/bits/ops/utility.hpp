@@ -3,10 +3,10 @@
 
 #include <algorithm>
 
+#include <ttl/algorithm>
+
 #include <nn/bits/ops/reshape.hpp>
 #include <nn/common.hpp>
-
-#include <ttl/algorithm>
 
 namespace nn::experimental::ops
 {
