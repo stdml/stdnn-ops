@@ -65,26 +65,17 @@ void loss(const ttl::tensor_ref<R, 0> &l, const ttl::tensor_view<R, 2> &ys,
     l.data()[0] = nn::ops::summaries::mean()(view(ls));
 }
 
-template <typename R> int argmax(const ttl::tensor_view<R, 1> &t)
-{
-    nn::experimental::ops::argmax f;
-    ttl::tensor<int, 0> y;
-    f(ref(y), t);
-    return y.data()[0];
-}
-
 template <typename R>
 R accuracy(const ttl::tensor_view<R, 2> &ys, const ttl::tensor_view<R, 2> &y_s)
 {
-    const auto [n, _k] = ys.shape().dims;
-    UNUSED(_k);
-    int t = 0;
-    int f = 0;
-    for (auto l : range(n)) {
-        const bool b = argmax(ys[l]) == argmax(y_s[l]);
-        b ? ++t : ++f;
-    }
-    return static_cast<R>(t) / static_cast<R>(t + f);
+    const nn::experimental::ops::argmax argmax;
+    const nn::ops::reduce_function infer = argmax;
+    const ttl::tensor<uint32_t, 1> preditions(infer(ys.shape()));
+    const ttl::tensor<uint32_t, 1> labels(infer(y_s.shape()));
+    argmax(ref(preditions), ys);
+    argmax(ref(labels), y_s);
+    const auto diff = ttl::hamming_distance(view(preditions), view(labels));
+    return 1 - static_cast<R>(diff) / static_cast<R>(labels.shape().size());
 }
 
 template <typename D, typename R>

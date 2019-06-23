@@ -60,11 +60,11 @@ class endofunction
 class reduce_function
 {
   public:
-    template <ttl::rank_t r> shape<r> operator()(const shape<r + 1> &s) const
+    template <ttl::rank_t r> shape<r - 1> operator()(const shape<r> &s) const
     {
-        std::array<typename shape<r>::dimension_type, r> dims;
+        std::array<typename shape<r - 1>::dimension_type, r - 1> dims;
         std::copy(s.dims.begin(), s.dims.end() - 1, dims.begin());
-        return shape<r>(dims);
+        return shape<r - 1>(dims);
     }
 };
 

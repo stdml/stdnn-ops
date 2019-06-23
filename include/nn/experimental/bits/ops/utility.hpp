@@ -34,7 +34,7 @@ class argmax : public nn::ops::reduce_function
   public:
     template <typename R, typename N, ttl::rank_t r>
     void operator()(const ttl::tensor_ref<N, r> &y,
-                    const ttl::tensor_view<R, r + 1> &x)
+                    const ttl::tensor_view<R, r + 1> &x) const
     {
         const auto x_flat = nn::ops::as_matrix<r, 1, ttl::tensor_view<R, 2>>(x);
         for (auto i : range(y.shape().size())) {
