@@ -6,6 +6,8 @@
 #include <nn/bits/ops/reshape.hpp>
 #include <nn/common.hpp>
 
+#include <ttl/algorithm>
+
 namespace nn::experimental::ops
 {
 
@@ -27,11 +29,19 @@ void fill(const ttl::tensor_ref<R, r> &t, R val)
     std::fill(t.data(), t.data() + t.shape().size(), val);
 }
 
-template <typename R>
-nn::shape<1>::dimension_type argmax(const ttl::tensor_view<R, 1> &t)
+class argmax : public nn::ops::reduce_function
 {
-    return std::max_element(t.data(), t.data() + t.shape().size()) - t.data();
-}
+  public:
+    template <typename R, typename N, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<N, r> &y,
+                    const ttl::tensor_view<R, r + 1> &x)
+    {
+        const auto x_flat = nn::ops::as_matrix<r, 1, ttl::tensor_view<R, 2>>(x);
+        for (auto i : range(y.shape().size())) {
+            y.data()[i] = ttl::argmax(x_flat[i]);
+        }
+    }
+};
 
 class onehot : public nn::ops::vectorize_function
 {

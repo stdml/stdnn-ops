@@ -63,10 +63,17 @@ void loss(const ttl::tensor_ref<R, 0> &l, const ttl::tensor_view<R, 2> &ys,
     l.data()[0] = nn::ops::summaries::mean()(view(ls));
 }
 
+template <typename R> int argmax(const ttl::tensor_view<R, 1> &t)
+{
+    nn::experimental::ops::argmax f;
+    ttl::tensor<int, 0> y;
+    f(ref(y), t);
+    return y.data()[0];
+}
+
 template <typename R>
 R accuracy(const ttl::tensor_view<R, 2> &ys, const ttl::tensor_view<R, 2> &y_s)
 {
-    using nn::experimental::ops::argmax;
     const auto [n, _k] = ys.shape().dims;
     UNUSED(_k);
     int t = 0;
