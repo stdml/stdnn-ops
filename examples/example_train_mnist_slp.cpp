@@ -62,7 +62,7 @@ void loss(const ttl::tensor_ref<R, 0> &l, const ttl::tensor_view<R, 2> &ys,
 {
     ttl::tensor<R, 1> ls(ys.shape().dims[0]);
     nn::ops::xentropy()(ref(ls), y_s, ys);
-    l.data()[0] = nn::ops::summaries::mean()(view(ls));
+    nn::ops::mean()(ref(l), view(ls));
 }
 
 template <typename R>
@@ -133,7 +133,7 @@ void train_slp_model(const D &ds,  //
                 slp()(ref(zs), view(xs), view(w), view(b));
                 nn::ops::softmax()(ref(ys), view(zs));
                 nn::ops::xentropy()(ref(ls), view(y_s), view(ys));
-                l.data()[0] = nn::ops::summaries::mean()(view(ls));
+                nn::ops::mean()(ref(l), view(ls));
             }
             printf("loss: %f\n", l.data()[0]);
             {
