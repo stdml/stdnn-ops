@@ -76,6 +76,13 @@ class model_builder
         return var(tensor<R>(d...));
     }
 
+    template <typename R, ttl::rank_t r, ttl::rank_t r1>
+    auto reshape(const operation<R, r> &o, const nn::shape<r1> &shape)
+    {
+        ttl::tensor_ref<R, r1> t(o.output().data(), shape);
+        return make_result(t, [=] { o(); });
+    }
+
     template <typename R, typename Op, typename... Args>
     auto apply(const Op &op, const Args &... args)
     {

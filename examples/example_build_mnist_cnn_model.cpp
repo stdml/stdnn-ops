@@ -34,22 +34,31 @@ void load_data(const D &ds, int offset, int batch_size,
 }
 
 template <typename R>
-auto build_slp_model(model_builder &b, const nn::shape<2> &input_shape,
+auto build_cnn_model(model_builder &b, const nn::shape<4> &input_shape,
                      int logits)
 {
-    TRACE_SCOPE("build_slp_model");
-    const auto [batch_size, image_size] = input_shape.dims;
+    TRACE_SCOPE("build_cnn_model");
+    const auto [batch_size, height, width, channel] = input_shape.dims;
 
     const auto xs = b.var<R>(input_shape);
     const auto y_s = b.var<R>(batch_size, logits);
 
-    const auto w1 = b.covar<R>(image_size, logits);
-    const auto b1 = b.covar<R>(logits);
+    const int d = 64;
+    const auto w1 = b.covar<R>(nn::shape<4>(5, 5, 1, d));
+    const auto b1 = b.covar<R>(nn::shape<1>(d));
 
-    const auto l1 = b.apply<R>(nn::ops::add_bias<nn::ops::hw>(),
-                               b.apply<R>(nn::ops::matmul(), xs, w1), b1);
+    const auto l1 = b.apply<R>(nn::ops::add_bias<nn::ops::nhwc>(),
+                               b.apply<R>(nn::ops::conv<>(), xs, w1), b1);
+    const auto l1_flat =
+        b.reshape(l1, nn::ops::as_mat_shape<1, 3>(l1.output().shape()));
 
-    const auto probs = b.apply<R>(nn::ops::softmax(), l1);
+    const auto w2 =
+        b.covar<R>(nn::shape<2>(l1_flat.output().shape().dims[1], logits));
+    const auto b2 = b.covar<R>(nn::shape<1>(logits));
+    const auto l2 = b.apply<R>(nn::ops::add_bias<nn::ops::hw>(),
+                               b.apply<R>(nn::ops::matmul(), l1_flat, w2), b2);
+
+    const auto probs = b.apply<R>(nn::ops::softmax(), l2);
     const auto loss = b.apply<R>(nn::ops::xentropy(), y_s, probs);
 
     const auto predictions =
@@ -58,7 +67,7 @@ auto build_slp_model(model_builder &b, const nn::shape<2> &input_shape,
 
     const auto accuracy = b.apply<float>(nn::experimental::ops::similarity(),
                                          predictions, labels);
-    return std::make_tuple(xs, y_s, w1, b1, loss, accuracy);
+    return std::make_tuple(xs, y_s, w1, b1, w2, b2, loss, accuracy);
 }
 
 int main()
@@ -77,20 +86,26 @@ int main()
         const int batch_size = 10000;
         const int height = 28;
         const int width = 28;
-
         model_builder b;
-        const auto [xs, y_s, w1, b1, loss, accuracy] = build_slp_model<float>(
-            b, nn::shape<2>(batch_size, height * width), 10);
+        const auto [xs, y_s, w1, b1, w2, b2, loss, accuracy] =
+            build_cnn_model<float>(
+                b, nn::shape<4>(batch_size, height, width, 1), 10);
+
+        printf("w1: %s\n", show_shape(w1.output().shape()).c_str());
+        printf("b1: %s\n", show_shape(b1.output().shape()).c_str());
+        printf("w2: %s\n", show_shape(w2.output().shape()).c_str());
+        printf("b2: %s\n", show_shape(b2.output().shape()).c_str());
+
         printf("loss: %s\n", show_shape(loss.output().shape()).c_str());
         printf("accuracy: %s\n", show_shape(accuracy.output().shape()).c_str());
 
-        const std::string filename("params.idx.tar");
-        nn::ops::readtar(filename, "w.idx")(ref(w1.output()));
-        nn::ops::readtar(filename, "b.idx")(ref(b1.output()));
+        // const std::string filename("params.idx.tar");
+        // nn::ops::readtar(filename, "w.idx")(ref(w1.output()));
+        // nn::ops::readtar(filename, "b.idx")(ref(b1.output()));
 
-        load_data(test, 0, batch_size, ref(xs.output()), ref(y_s.output()));
-        accuracy();
-        printf("accuracy: %f\n", accuracy.output().data()[0]);
+        // load_data(test, 0, batch_size, ref(xs.output()), ref(y_s.output()));
+        // accuracy();
+        // printf("accuracy: %f\n", accuracy.output().data()[0]);
     }
     return 0;
 }
