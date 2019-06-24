@@ -65,16 +65,19 @@ void loss(const ttl::tensor_ref<R, 0> &l, const ttl::tensor_view<R, 2> &ys,
     nn::ops::mean()(ref(l), view(ls));
 }
 
-template <typename R>
-R accuracy(const ttl::tensor_view<R, 2> &ys, const ttl::tensor_view<R, 2> &y_s)
+template <typename R, typename R1>
+R accuracy(const ttl::tensor_view<R1, 2> &ys,
+           const ttl::tensor_view<R1, 2> &y_s)
 {
     const nn::experimental::ops::argmax argmax;
     const ttl::tensor<uint32_t, 1> preditions(argmax(ys.shape()));
     const ttl::tensor<uint32_t, 1> labels(argmax(y_s.shape()));
     argmax(ref(preditions), ys);
     argmax(ref(labels), y_s);
-    const auto diff = ttl::hamming_distance(view(preditions), view(labels));
-    return 1 - static_cast<R>(diff) / static_cast<R>(labels.shape().size());
+    const ttl::tensor<float, 0> sim;
+    nn::experimental::ops::similarity()(ref(sim),  //
+                                        view(preditions), view(labels));
+    return sim.data()[0];
 }
 
 template <typename D, typename R>
@@ -168,7 +171,7 @@ void test_slp_model(const D &ds, const ttl::tensor_view<R, 2> &w,
     load_data(ds, 0, n, ref(xs), ref(y_s));
 
     slp()(ref(ys), view(xs), view(w), view(b));
-    const R acc = accuracy(view(ys), view(y_s));
+    const auto acc = accuracy<float>(view(ys), view(y_s));
     printf("accuracy: %f\n", acc);
 }
 

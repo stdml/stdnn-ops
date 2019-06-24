@@ -2,6 +2,7 @@
 #include <cstring>
 
 #include <algorithm>
+#include <type_traits>
 
 #include <ttl/algorithm>
 
@@ -69,6 +70,27 @@ class onehot : public nn::ops::vectorize_function
                 // TODO: throw?
             }
         }
+    }
+};
+
+class similarity
+{
+  public:
+    template <ttl::rank_t r>
+    shape<0> operator()(const shape<r> &x, const shape<r> &y) const
+    {
+        contract_assert_eq(x, y);
+        return shape<0>();
+    }
+
+    template <typename R, typename R1, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, 0> &z,
+                    const ttl::tensor_view<R1, r> &x,
+                    const ttl::tensor_view<R1, r> &y) const
+    {
+        static_assert(std::is_floating_point<R>::value);
+        z.data()[0] = 1 - static_cast<R>(ttl::hamming_distance(x, y)) /
+                              static_cast<R>(x.shape().size());
     }
 };
 }  // namespace nn::experimental::ops
