@@ -28,24 +28,24 @@ void load_data(const D &ds, int offset, int batch_size,
     const auto images = ds.first.slice(offset, offset + batch_size);
     for (auto l : range(batch_size)) {
         const auto pixels = images[l];
-        std::transform(pixels.data(), pixels.data() + pixels.shape().size(),
-                       xs[l].data(), [](uint8_t p) { return p / 255.0; });
+        std::transform(pixels.data(), pixels.data_end(), xs[l].data(),
+                       [](uint8_t p) { return p / 255.0; });
     }
 }
 
-template <typename R, typename D>
-void build_slp_model(const D &ds, const int batch_size = 100)
+template <typename R>
+auto build_slp_model(const nn::shape<2> &input_shape, int logits)
 {
-    const auto [n, height, width] = ds.first.shape().dims;
-    const int k = 10;
+    TRACE_SCOPE("build_slp_model");
+    const auto [batch_size, image_size] = input_shape.dims;
 
     model_builder b;
 
-    const auto xs = b.var<R>(batch_size, height * width);
-    const auto y_s = b.var<R>(batch_size, k);
+    const auto xs = b.var<R>(batch_size, image_size);
+    const auto y_s = b.var<R>(batch_size, logits);
 
-    const auto w1 = b.var<R>(height * width, k);
-    const auto b1 = b.var<R>(k);
+    const auto w1 = b.covar<R>(image_size, logits);
+    const auto b1 = b.covar<R>(logits);
 
     const auto l1 = b.apply<R>(nn::ops::add_bias<nn::ops::hw>(),
                                b.apply<R>(nn::ops::matmul(), xs, w1), b1);
@@ -57,11 +57,9 @@ void build_slp_model(const D &ds, const int batch_size = 100)
         b.apply<uint32_t>(nn::experimental::ops::argmax(), probs);
     const auto labels = b.apply<uint32_t>(nn::experimental::ops::argmax(), y_s);
 
-    const auto acc = b.apply<float>(nn::experimental::ops::similarity(),
-                                    predictions, labels);
-
-    printf("loss: %s\n", show_shape(loss.output().shape()).c_str());
-    printf("accuracy: %s\n", show_shape(acc.output().shape()).c_str());
+    const auto accuracy = b.apply<float>(nn::experimental::ops::similarity(),
+                                         predictions, labels);
+    return std::make_tuple(std::move(b), xs, y_s, w1, b1, loss, accuracy);
 }
 
 int main()
@@ -76,10 +74,23 @@ int main()
     const auto test = load_mnist_data(prefix, "t10k");
 
     {
-        TRACE_SCOPE("train");
-        build_slp_model<float>(train);
-        build_slp_model<float>(test);
-    }
+        TRACE_SCOPE("test");
+        const int batch_size = 10000;
+        const int height = 28;
+        const int width = 28;
+        const auto [b, xs, y_s, w1, b1, loss, accuracy] =
+            build_slp_model<float>(nn::shape<2>(batch_size, height * width),
+                                   10);
+        printf("loss: %s\n", show_shape(loss.output().shape()).c_str());
+        printf("accuracy: %s\n", show_shape(accuracy.output().shape()).c_str());
 
+        const std::string filename("params.idx.tar");
+        nn::ops::readtar(filename, "w.idx")(ref(w1.output()));
+        nn::ops::readtar(filename, "b.idx")(ref(b1.output()));
+
+        load_data(test, 0, batch_size, ref(xs.output()), ref(y_s.output()));
+        accuracy();
+        printf("accuracy: %f\n", accuracy.output().data()[0]);
+    }
     return 0;
 }

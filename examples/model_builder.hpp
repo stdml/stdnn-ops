@@ -15,14 +15,26 @@ template <typename R, ttl::rank_t r> class operation
   public:
     operation(const T &y, const F &f) : y_(y), f_(f) {}
 
+    void operator()() const { f_(); }
+
     T output() const { return y_; }
 };
 
+void call_all() {}
+
+template <typename F1, typename... Fs>
+void call_all(const F1 &f1, const Fs &... fs)
+{
+    f1();
+    call_all(fs...);
+}
+
 class model_builder
 {
-    // TODO: use ttl::experimental::raw_tensor instead of
-    // std::unique_ptr<char[]>
-    std::vector<std::unique_ptr<char[]>> data_;
+    using raw_tensor = ttl::experimental::raw_tensor;
+    using encoder = raw_tensor::encoder_type;
+
+    std::vector<std::unique_ptr<raw_tensor>> data_;
 
     template <typename R, ttl::rank_t r>
     static operation<R, r> make_result(const ttl::tensor_ref<R, r> &y,
@@ -31,13 +43,13 @@ class model_builder
         return operation<R, r>(y, f);
     }
 
-  public:
+    //   public:
     template <typename R, ttl::rank_t r>
     ttl::tensor_ref<R, r> tensor(const nn::shape<r> &shape)
     {
-        char *data = new char[sizeof(R) * shape.size()];
-        data_.push_back(std::unique_ptr<char[]>(data));
-        return ttl::tensor_ref<R, r>(reinterpret_cast<R *>(data), shape);
+        raw_tensor *t = new raw_tensor(encoder::value<float>(), shape);
+        data_.push_back(std::unique_ptr<raw_tensor>(t));
+        return ttl::tensor_ref<R, r>(reinterpret_cast<R *>(t->data()), shape);
     }
 
     template <typename R, typename... D>
@@ -49,10 +61,17 @@ class model_builder
     template <typename R, ttl::rank_t r>
     auto var(const ttl::tensor_ref<R, r> &t)
     {
+        // TODO: check t is owned.
         return make_result(t, [] {});
     }
 
+  public:
     template <typename R, typename... D> auto var(const D... d)
+    {
+        return var(tensor<R>(d...));
+    }
+
+    template <typename R, typename... D> auto covar(const D... d)
     {
         return var(tensor<R>(d...));
     }
@@ -63,7 +82,8 @@ class model_builder
         const auto shape = op(args.output().shape()...);
         const auto t = tensor<R>(shape);
         const auto f = [=] {
-            // TODO: call args
+            // TODO: dedup
+            call_all(args...);
             op(t, view(args.output())...);
         };
         return make_result(t, f);
