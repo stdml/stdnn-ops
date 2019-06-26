@@ -30,7 +30,7 @@ void example_mlp()
     auto l3 = pool(ref(*l2));
     show_signature(*l3, *l2);
 
-    auto [d0, d1, d2, d3] = (*l3).shape().dims;
+    auto [d0, d1, d2, d3] = (*l3).shape().dims();
     ttl::tensor_ref<float, 2> l3_flat((*l3).data(), d0, d1 * d2 * d3);
     show_signature(l3_flat, *l3);
 

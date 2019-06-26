@@ -15,7 +15,7 @@ string to_string(const ttl::internal::basic_shape<r> &p)
     ss << "(";
     for (auto i : experimental::range(r)) {
         if (i > 0) { ss << ","; }
-        ss << (int)p.dims[i];
+        ss << (int)p.dims()[i];
     }
     ss << ")";
     return ss.str();

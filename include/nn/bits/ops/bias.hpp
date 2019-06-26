@@ -15,7 +15,7 @@ template <typename Op> class apply_bias<hw, Op>
   public:
     shape<2> operator()(const shape<2> &x, const shape<1> &y) const
     {
-        contract_assert(x.dims[1] == y.dims[0]);
+        contract_assert(x.dims()[1] == y.dims()[0]);
         return x;
     }
 
@@ -25,7 +25,7 @@ template <typename Op> class apply_bias<hw, Op>
                     const ttl::tensor_view<R, 1> &y) const
     {
         Op f;
-        const auto [h, w] = x.shape().dims;
+        const auto [h, w] = x.shape().dims();
         for (auto i : range(h)) {
             for (auto j : range(w)) { z.at(i, j) = f(x.at(i, j), y.at(j)); }
         }
@@ -37,7 +37,7 @@ template <typename Op> class apply_bias<nhwc, Op>
   public:
     shape<4> operator()(const shape<4> &x, const shape<1> &y) const
     {
-        contract_assert(ops::channel_size<nhwc>(x) == y.dims[0]);
+        contract_assert(ops::channel_size<nhwc>(x) == y.dims()[0]);
         return x;
     }
 
@@ -47,7 +47,7 @@ template <typename Op> class apply_bias<nhwc, Op>
                     const ttl::tensor_view<R, 1> &y) const
     {
         Op f;
-        const auto [n, h, w, c] = x.shape().dims;
+        const auto [n, h, w, c] = x.shape().dims();
         for (auto b : range(n)) {
             for (auto i : range(h)) {
                 for (auto j : range(w)) {
@@ -65,7 +65,7 @@ template <typename Op> class apply_bias<nchw, Op>
   public:
     shape<4> operator()(const shape<4> &x, const shape<1> &y) const
     {
-        contract_assert(ops::channel_size<nchw>(x) == y.dims[0]);
+        contract_assert(ops::channel_size<nchw>(x) == y.dims()[0]);
         return x;
     }
 
@@ -75,7 +75,7 @@ template <typename Op> class apply_bias<nchw, Op>
                     const ttl::tensor_view<R, 1> &y) const
     {
         Op f;
-        const auto [n, c, h, w] = x.shape().dims;
+        const auto [n, c, h, w] = x.shape().dims();
         for (auto b : range(n)) {
             for (auto l : range(c)) {
                 for (auto i : range(h)) {

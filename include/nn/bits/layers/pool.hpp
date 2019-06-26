@@ -43,7 +43,7 @@ template <> class pool_trait<ops::hw>
     pool_trait(const ksize_t &ksize) : pool_trait(ksize, padding_same()) {}
 
     pool_trait(const ksize_t &ksize, const padding_policy &padding)
-        : pool_trait(ksize, padding, stride(ksize.dims[0], ksize.dims[1]))
+        : pool_trait(ksize, padding, stride(ksize.dims()[0], ksize.dims()[1]))
     {
     }
 
@@ -56,11 +56,11 @@ template <> class pool_trait<ops::hw>
     op_trait_t op_trait(const shape<2> &x) const
     {
         return op_trait_t(
-            op_trait_t::ksize(ksize_.dims[0], ksize_.dims[1]),
+            op_trait_t::ksize(ksize_.dims()[0], ksize_.dims()[1]),
             op_trait_t::padding(
-                padding_(ksize_.dims[0], stride_.dims[0], 1, x.dims[0]),
-                padding_(ksize_.dims[1], stride_.dims[1], 1, x.dims[1])),
-            op_trait_t::stride(stride_.dims[0], stride_.dims[1]));
+                padding_(ksize_.dims()[0], stride_.dims()[0], 1, x.dims()[0]),
+                padding_(ksize_.dims()[1], stride_.dims()[1], 1, x.dims()[1])),
+            op_trait_t::stride(stride_.dims()[0], stride_.dims()[1]));
     }
 };
 

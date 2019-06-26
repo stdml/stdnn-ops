@@ -80,7 +80,7 @@ void test_valid_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
 {
     using sample_t = nn::ops::linear_sample_trait<size_t>;
     const auto padding = sample_t::valid_padding(3, s, 1, n);
-    const auto [u, v] = padding.dims;
+    const auto [u, v] = padding.dims();
     ASSERT_EQ(u, pad_l);
     ASSERT_EQ(v, pad_r);
 }
@@ -90,7 +90,7 @@ void test_same_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
 {
     using sample_t = nn::ops::linear_sample_trait<dim_t>;
     const auto padding = sample_t::same_padding(3, s, 1, n);
-    const auto [u, v] = padding.dims;
+    const auto [u, v] = padding.dims();
     ASSERT_EQ(u, pad_l);
     ASSERT_EQ(v, pad_r);
 }

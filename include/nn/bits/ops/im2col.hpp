@@ -30,8 +30,8 @@ template <> class im2col<hw, hwrs> : public im2col_trait<hw>
     void operator()(const ttl::tensor_ref<R, 4> &y,
                     const ttl::tensor_view<R, 2> &x) const
     {
-        const auto [h, w] = x.shape().dims;
-        const auto [h_, w_, r, s] = y.shape().dims;
+        const auto [h, w] = x.shape().dims();
+        const auto [h_, w_, r, s] = y.shape().dims();
 
         const sample_t &h_sample_ = std::get<0>(samples_);
         const sample_t &w_sample_ = std::get<1>(samples_);
@@ -70,8 +70,8 @@ template <> class im2col<hw, rshw> : public im2col_trait<hw>
     void operator()(const ttl::tensor_ref<R, 4> &y,
                     const ttl::tensor_view<R, 2> &x) const
     {
-        const auto [h, w] = x.shape().dims;
-        const auto [r, s, h_, w_] = y.shape().dims;
+        const auto [h, w] = x.shape().dims();
+        const auto [r, s, h_, w_] = y.shape().dims();
 
         const sample_t &h_sample_ = std::get<0>(samples_);
         const sample_t &w_sample_ = std::get<1>(samples_);
@@ -103,9 +103,9 @@ template <> class im2col<hwc, hwrsc> : public im2col_trait<hw>
   public:
     shape<5> operator()(const shape<3> &x) const
     {
-        const auto [r, s] = get_ksize().dims;
-        const auto [h, w, c] = x.dims;
-        const auto [h_, w_] = im2col_trait::operator()(shape<2>(h, w)).dims;
+        const auto [r, s] = get_ksize().dims();
+        const auto [h, w, c] = x.dims();
+        const auto [h_, w_] = im2col_trait::operator()(shape<2>(h, w)).dims();
         return shape<5>(h_, w_, r, s, c);
     }
 
@@ -113,8 +113,8 @@ template <> class im2col<hwc, hwrsc> : public im2col_trait<hw>
     void operator()(const ttl::tensor_ref<R, 5> &y,
                     const ttl::tensor_view<R, 3> &x) const
     {
-        const auto [h, w, c] = x.shape().dims;
-        const auto [h_, w_, r, s, _c] = y.shape().dims;
+        const auto [h, w, c] = x.shape().dims();
+        const auto [h_, w_, r, s, _c] = y.shape().dims();
         contract_assert(_c == c);
 
         const sample_t &h_sample_ = std::get<0>(samples_);

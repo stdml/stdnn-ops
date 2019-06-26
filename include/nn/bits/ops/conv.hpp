@@ -50,8 +50,8 @@ template <typename dim_t> class linear_conv_trait
     }
 
     linear_conv_trait(const padding_t &pad, dim_t stride, dim_t rate)
-        : pad_l_(std::get<0>(pad.dims)),
-          pad_r_(std::get<1>(pad.dims)),
+        : pad_l_(std::get<0>(pad.dims())),
+          pad_r_(std::get<1>(pad.dims())),
           rate_(rate),
           stride_(stride)
     {
@@ -131,8 +131,8 @@ template <> class conv_trait<hw>
 
     conv_trait(const padding_t &padding, const stride_t &stride,
                const rate_t &rate)
-        : h_trait_(padding[0], stride.dims[0], rate.dims[0]),
-          w_trait_(padding[1], stride.dims[1], rate.dims[1])
+        : h_trait_(padding[0], stride.dims()[0], rate.dims()[0]),
+          w_trait_(padding[1], stride.dims()[1], rate.dims()[1])
     {
     }
 
@@ -156,8 +156,8 @@ template <> class conv_trait<hw>
         contract_assert(filter_in_channel_size<filter_order>(y) == c);
         const auto d = filter_out_channel_size<filter_order>(y);
 
-        const auto h_ = h_trait_(std::get<0>(hw.dims), std::get<0>(rs.dims));
-        const auto w_ = w_trait_(std::get<1>(hw.dims), std::get<1>(rs.dims));
+        const auto h_ = h_trait_(std::get<0>(hw.dims()), std::get<0>(rs.dims()));
+        const auto w_ = w_trait_(std::get<1>(hw.dims()), std::get<1>(rs.dims()));
 
         return batched_image_shape<image_order>(n, shape<2>(h_, w_), d);
     }
@@ -185,7 +185,7 @@ template <> class conv<nhwc, rscd> : public conv_trait<hw>
         // [n, h, w, c], [r, s, c, d] -> [n, h', w', d]
         // [n, h', w', r, s, c], [r, s, c, d] -> [n, h', w', d]
         // [n, h, w, c] -> [n, h', w', r, s, c]
-        const auto [r, s] = filter_shape<rscd>(y.shape()).dims;
+        const auto [r, s] = filter_shape<rscd>(y.shape()).dims();
 
         using upper_op = im2col<hwc, hwrsc>;
         const auto upper = internal::make_batched(
@@ -219,7 +219,7 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
                     const ttl::tensor_view<R, 4> &y) const
     {
         using upper_op = im2col<hw, rshw>;
-        const auto [r, s] = filter_shape<dcrs>(y.shape()).dims;
+        const auto [r, s] = filter_shape<dcrs>(y.shape()).dims();
         const auto upper = internal::make_batched(
             upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
 
