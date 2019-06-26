@@ -6,7 +6,7 @@
 #include <experimental/range>
 #include <numeric>
 
-#include <stdtensor>
+#include <ttl/tensor>
 
 namespace nn::engines
 {

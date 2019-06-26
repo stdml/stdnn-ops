@@ -1,6 +1,6 @@
 // http://www.netlib.org/blas/
 #pragma once
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <cblas.h>
 

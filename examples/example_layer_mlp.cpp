@@ -1,6 +1,6 @@
 #include <string>
 
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <nn/layers>
 

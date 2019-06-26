@@ -1,5 +1,5 @@
 #pragma once
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <nn/bits/engines/linag.hpp>
 #include <nn/bits/ops/combinators.hpp>
@@ -156,8 +156,10 @@ template <> class conv_trait<hw>
         contract_assert(filter_in_channel_size<filter_order>(y) == c);
         const auto d = filter_out_channel_size<filter_order>(y);
 
-        const auto h_ = h_trait_(std::get<0>(hw.dims()), std::get<0>(rs.dims()));
-        const auto w_ = w_trait_(std::get<1>(hw.dims()), std::get<1>(rs.dims()));
+        const auto h_ =
+            h_trait_(std::get<0>(hw.dims()), std::get<0>(rs.dims()));
+        const auto w_ =
+            w_trait_(std::get<1>(hw.dims()), std::get<1>(rs.dims()));
 
         return batched_image_shape<image_order>(n, shape<2>(h_, w_), d);
     }

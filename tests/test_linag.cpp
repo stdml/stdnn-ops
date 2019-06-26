@@ -1,6 +1,6 @@
 #include <algorithm>
 
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <nn/ops>
 

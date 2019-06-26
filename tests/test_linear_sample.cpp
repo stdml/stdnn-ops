@@ -1,9 +1,9 @@
-#include "testing.hpp"
-
-#include <nn/ops>
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <nn/bits/ops/linear_sample.hpp>
+#include <nn/ops>
+
+#include "testing.hpp"
 
 void test_linear_sample_ksr_nm(int ksize, int stride, int rate, int n, int m)
 {

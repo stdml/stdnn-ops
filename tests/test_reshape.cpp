@@ -1,7 +1,8 @@
-#include "testing.hpp"
+#include <ttl/tensor>
 
 #include <nn/ops>
-#include <stdtensor>
+
+#include "testing.hpp"
 
 using nn::shape;
 using nn::ops::as_mat_shape;

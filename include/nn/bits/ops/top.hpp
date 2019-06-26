@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <vector>
 
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <nn/common.hpp>
 
