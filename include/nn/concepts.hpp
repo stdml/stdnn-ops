@@ -1,5 +1,5 @@
 #pragma once
-#include <stdtensor>
+#include <ttl/tensor>
 
 namespace nn::internal
 {

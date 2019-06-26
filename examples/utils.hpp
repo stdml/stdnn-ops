@@ -12,7 +12,7 @@ std::string show_shape(const ttl::internal::basic_shape<r> &shape,
     std::string ss;
     for (auto i : std::experimental::range(r)) {
         if (!ss.empty()) { ss += ", "; }
-        ss += std::to_string(shape.dims[i]);
+        ss += std::to_string(shape.dims()[i]);
     }
     return bracket_l + ss + bracket_r;
 }

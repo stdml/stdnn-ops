@@ -5,6 +5,7 @@ set -e
 USE_BLAS=0
 USE_OPENCV=0
 BUILD_TESTS=1
+VERBOSE=0
 
 parse_args() {
     for i in "$@"; do
@@ -20,6 +21,9 @@ parse_args() {
             ;;
         --no-tests)
             BUILD_TESTS=0
+            ;;
+        --verbose)
+            VERBOSE=1
             ;;
         *)
             echo "unknown argument $1"
@@ -66,7 +70,11 @@ add_cmake_flags() {
     add_cmake_flag USE_OPENCV ${USE_OPENCV}
     add_cmake_flag USE_OPENBLAS ${USE_BLAS}
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
-    add_cmake_flag STDTENSOR_GIT_TAG v0.3.0
+
+    # FIXME: depend on a tag for release version
+    add_cmake_flag STDTENSOR_GIT_TAG 6bd0479b79cc0862c5e12350a23a9f6db125556a
+
+    add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS ${VERBOSE}
 }
 
 cleanup_cmake_cache() {

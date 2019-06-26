@@ -72,7 +72,7 @@ class serializer
             is.read(reinterpret_cast<char *>(buffer), r * sizeof(uint32_t));
             std::transform(buffer, buffer + r, buffer, byte_endian_swapped);
             for (auto i : range(r)) {
-                contract_assert_eq(buffer[i], y.shape().dims[i]);
+                contract_assert_eq(buffer[i], y.shape().dims()[i]);
             }
         }
         is.read(reinterpret_cast<char *>(y.data()),
@@ -88,7 +88,7 @@ class serializer
         }
         {
             uint32_t buffer[r];
-            const auto dims = x.shape().dims;
+            const auto dims = x.shape().dims();
             std::transform(dims.begin(), dims.end(), buffer,
                            byte_endian_swapped);
             os.write(reinterpret_cast<const char *>(buffer),

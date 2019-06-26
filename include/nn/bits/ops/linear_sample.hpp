@@ -116,8 +116,8 @@ template <typename dim_t> class linear_sample_trait
 
     linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate,
                         const padding_t &pad)
-        : pad_l_(std::get<0>(pad.dims)),
-          pad_r_(std::get<1>(pad.dims)),
+        : pad_l_(std::get<0>(pad.dims())),
+          pad_r_(std::get<1>(pad.dims())),
           rate_(rate),
           stride_(stride),
           ksize_(ksize)
@@ -323,15 +323,15 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
               std::index_sequence<I...>)
     {
         static_assert(sizeof...(I) == r, "");
-        return {sample_t(std::get<I>(ksize.dims), std::get<I>(stride.dims),
-                         std::get<I>(rate.dims), std::get<I>(padding))...};
+        return {sample_t(std::get<I>(ksize.dims()), std::get<I>(stride.dims()),
+                         std::get<I>(rate.dims()), std::get<I>(padding))...};
     }
 
     template <std::size_t... I>
     shape<r> invoke(const shape<r> &x, std::index_sequence<I...>) const
     {
         static_assert(sizeof...(I) == r, "");
-        return shape<r>(std::get<I>(samples_)(std::get<I>(x.dims))...);
+        return shape<r>(std::get<I>(samples_)(std::get<I>(x.dims()))...);
     }
 
     template <std::size_t... I>

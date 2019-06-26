@@ -13,8 +13,8 @@ shape<4> batch_norm_infer(const shape<4> &x, const shape<1> &r_mean,
                           const shape<1> &r_var)
 {
     const auto c = ops::channel_size<image_order>(x);
-    contract_assert(c == std::get<0>(r_mean.dims));
-    contract_assert(c == std::get<0>(r_var.dims));
+    contract_assert(c == std::get<0>(r_mean.dims()));
+    contract_assert(c == std::get<0>(r_var.dims()));
     return x;
 }
 
@@ -37,7 +37,7 @@ template <> class batch_norm<nhwc>
     {
         constexpr R eps = .000001f;
 
-        const auto [n, h, w, c] = x.shape().dims;
+        const auto [n, h, w, c] = x.shape().dims();
 
         for (const auto l : range(n)) {
             for (const auto i : range(h)) {
@@ -70,7 +70,7 @@ template <> class batch_norm<nchw>
     {
         constexpr R eps = .000001f;
 
-        const auto [n, c, h, w] = x.shape().dims;
+        const auto [n, c, h, w] = x.shape().dims();
 
         for (const auto l : range(n)) {
             for (const auto k : range(c)) {
@@ -96,10 +96,10 @@ template <typename image_order> class batch_norm_with_bias
                         const shape<1> &gamma) const
     {
         const auto c = ops::channel_size<image_order>(x);
-        contract_assert(c == std::get<0>(r_mean.dims));
-        contract_assert(c == std::get<0>(r_var.dims));
-        contract_assert(c == std::get<0>(beta.dims));
-        contract_assert(c == std::get<0>(gamma.dims));
+        contract_assert(c == std::get<0>(r_mean.dims()));
+        contract_assert(c == std::get<0>(r_var.dims()));
+        contract_assert(c == std::get<0>(beta.dims()));
+        contract_assert(c == std::get<0>(gamma.dims()));
         return x;
     }
 

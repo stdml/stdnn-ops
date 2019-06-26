@@ -88,12 +88,12 @@ class conv_trait
     op_trait_t op_trait(const shape<2> &x) const
     {
         return op_trait_t(
-            op_trait_t::padding(padding_(ksize_.dims[0], stride_.dims[0],
-                                         rate_.dims[0], x.dims[0]),
-                                padding_(ksize_.dims[1], stride_.dims[1],
-                                         rate_.dims[1], x.dims[1])),
-            op_trait_t::stride(stride_.dims[0], stride_.dims[1]),
-            op_trait_t::rate(rate_.dims[0], rate_.dims[1]));
+            op_trait_t::padding(padding_(ksize_.dims()[0], stride_.dims()[0],
+                                         rate_.dims()[0], x.dims()[0]),
+                                padding_(ksize_.dims()[1], stride_.dims()[1],
+                                         rate_.dims()[1], x.dims()[1])),
+            op_trait_t::stride(stride_.dims()[0], stride_.dims()[1]),
+            op_trait_t::rate(rate_.dims()[0], rate_.dims()[1]));
     }
 };
 
