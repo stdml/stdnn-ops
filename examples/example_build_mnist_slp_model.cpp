@@ -38,7 +38,7 @@ auto build_slp_model(model_builder &b, const nn::shape<2> &input_shape,
                      int logits)
 {
     TRACE_SCOPE("build_slp_model");
-    const auto [batch_size, image_size] = input_shape.dims;
+    const auto [batch_size, image_size] = input_shape.dims();
 
     const auto xs = b.var<R>(input_shape);
     const auto y_s = b.var<R>(batch_size, logits);

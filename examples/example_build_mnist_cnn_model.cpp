@@ -38,7 +38,7 @@ auto build_cnn_model(model_builder &b, const nn::shape<4> &input_shape,
                      int logits)
 {
     TRACE_SCOPE("build_cnn_model");
-    const auto [batch_size, height, width, channel] = input_shape.dims;
+    const auto [batch_size, height, width, channel] = input_shape.dims();
 
     const auto xs = b.var<R>(input_shape);
     const auto y_s = b.var<R>(batch_size, logits);
@@ -53,7 +53,7 @@ auto build_cnn_model(model_builder &b, const nn::shape<4> &input_shape,
         b.reshape(l1, nn::ops::as_mat_shape<1, 3>(l1.output().shape()));
 
     const auto w2 =
-        b.covar<R>(nn::shape<2>(l1_flat.output().shape().dims[1], logits));
+        b.covar<R>(nn::shape<2>(l1_flat.output().shape().dims()[1], logits));
     const auto b2 = b.covar<R>(nn::shape<1>(logits));
     const auto l2 = b.apply<R>(nn::ops::add_bias<nn::ops::hw>(),
                                b.apply<R>(nn::ops::matmul(), l1_flat, w2), b2);
