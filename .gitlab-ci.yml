@@ -13,7 +13,7 @@ ubuntu:bionic:
   # https://packages.ubuntu.com/bionic/git
   - apt install -y build-essential cmake git
   script:
-  - ./configure
+  - ./configure --tests --benchmarks
   - make
   - make test
   - ./bin/bench-1
@@ -25,7 +25,7 @@ alpine:3.9:
   - apk update
   - apk add make cmake g++ git
   script:
-  - ./configure
+  - ./configure --tests --benchmarks
   - make
   - make test
   - ./bin/bench-1
