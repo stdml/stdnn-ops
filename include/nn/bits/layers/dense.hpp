@@ -20,7 +20,7 @@ class dense_trait
 
     shape<2> weight_shape(const shape<2> &x) const
     {
-        return shape<2>(x.dims[1], logits_);
+        return shape<2>(x.dims()[1], logits_);
     }
 
     shape<1> bias_shape(const shape<2> &x) const { return shape<1>(logits_); }

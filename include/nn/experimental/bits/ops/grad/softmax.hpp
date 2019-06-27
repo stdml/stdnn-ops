@@ -46,7 +46,7 @@ template <> class softmax<0>
                     const ttl::tensor_view<R, 2> &y,
                     const ttl::tensor_view<R, 2> &x) const
     {
-        for (auto i : range(x.shape().dims[0])) {
+        for (auto i : range(x.shape().dims()[0])) {
             operator()(gx[i], gy[i], y[i], x[i]);
         }
     }

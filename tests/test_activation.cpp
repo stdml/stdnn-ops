@@ -1,7 +1,8 @@
-#include "testing.hpp"
+#include <ttl/tensor>
 
 #include <nn/layers>
-#include <stdtensor>
+
+#include "testing.hpp"
 
 TEST(activation_test, test1)
 {

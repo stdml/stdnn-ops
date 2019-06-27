@@ -3,7 +3,7 @@
 
 #include <algorithm>
 
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <nn/common.hpp>
 
@@ -60,7 +60,7 @@ template <typename R> class softmax_impl<2, R>
     void operator()(const ttl::tensor_ref<R, 2> &y,
                     const ttl::tensor_view<R, 2> &x) const
     {
-        const auto [n, k] = x.shape().dims;
+        const auto [n, k] = x.shape().dims();
         const auto op = internal::softmax<R>(k, eps_);
         for (auto i : range(n)) { op(y[i].data(), x[i].data()); }
     }

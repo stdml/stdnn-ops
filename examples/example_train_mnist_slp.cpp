@@ -22,10 +22,10 @@ class slp
     nn::shape<2> operator()(const nn::shape<2> &x, const nn::shape<2> &y,
                             const nn::shape<1> &z) const
     {
-        const auto [n, m] = x.dims;
-        const auto [_m, k] = y.dims;
+        const auto [n, m] = x.dims();
+        const auto [_m, k] = y.dims();
         contract_assert_eq(m, _m);
-        contract_assert_eq(k, std::get<0>(z.dims));
+        contract_assert_eq(k, std::get<0>(z.dims()));
         return nn::shape<2>(n, k);
     }
 
@@ -46,7 +46,7 @@ class slp
          const ttl::tensor_view<R, 2> &xs, const ttl::tensor_view<R, 2> &w,
          const ttl::tensor_view<R, 1> &b)
     {
-        const auto [n, k] = g_ys.shape().dims;
+        const auto [n, k] = g_ys.shape().dims();
         for (auto l : range(k)) {
             R tot = 0;
             for (auto i : range(n)) { tot += g_ys.at(i, l); }
@@ -60,7 +60,7 @@ template <typename R>
 void loss(const ttl::tensor_ref<R, 0> &l, const ttl::tensor_view<R, 2> &ys,
           const ttl::tensor_view<R, 2> &y_s)
 {
-    ttl::tensor<R, 1> ls(ys.shape().dims[0]);
+    ttl::tensor<R, 1> ls(ys.shape().dims()[0]);
     nn::ops::xentropy()(ref(ls), y_s, ys);
     nn::ops::mean()(ref(l), view(ls));
 }
@@ -102,7 +102,7 @@ void train_slp_model(const D &ds,  //
                      const ttl::tensor_ref<R, 1> &b,  //
                      const int batch_size = 100)
 {
-    const auto [n, height, width] = ds.first.shape().dims;
+    const auto [n, height, width] = ds.first.shape().dims();
     const int k = 10;
 
     ttl::tensor<R, 2> xs(batch_size, height * width);
@@ -162,7 +162,7 @@ template <typename D, typename R>
 void test_slp_model(const D &ds, const ttl::tensor_view<R, 2> &w,
                     const ttl::tensor_view<R, 1> &b)
 {
-    const auto [n, height, width] = ds.first.shape().dims;
+    const auto [n, height, width] = ds.first.shape().dims();
     const int k = 10;
 
     ttl::tensor<R, 2> xs(n, height * width);

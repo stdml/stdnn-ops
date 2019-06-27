@@ -1,6 +1,6 @@
 // http://www.netlib.org/blas/
 #pragma once
-#include <stdtensor>
+#include <ttl/tensor>
 
 #include <cblas.h>
 
@@ -34,12 +34,12 @@ template <typename R> struct cblas_impl {
 
     template <typename T> static int len(const T &t)
     {
-        return std::get<0>(t.shape().dims);
+        return std::get<0>(t.shape().dims());
     }
 
     template <typename T> static int wid(const T &t)
     {
-        return std::get<1>(t.shape().dims);
+        return std::get<1>(t.shape().dims());
     }
 
     static void _gemm(const m_view_t &a, bool trans_a,  //

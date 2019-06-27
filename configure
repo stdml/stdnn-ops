@@ -4,7 +4,9 @@ set -e
 # defaults
 USE_BLAS=0
 USE_OPENCV=0
-BUILD_TESTS=1
+BUILD_TESTS=0
+BUILD_BENCHMARKS=0
+VERBOSE=0
 
 parse_args() {
     for i in "$@"; do
@@ -18,8 +20,20 @@ parse_args() {
         --use-opencv)
             USE_OPENCV=1
             ;;
+        --tests)
+            BUILD_TESTS=1
+            ;;
         --no-tests)
             BUILD_TESTS=0
+            ;;
+        --benchmarks)
+            BUILD_BENCHMARKS=1
+            ;;
+        --no-benchmarks)
+            BUILD_BENCHMARKS=0
+            ;;
+        --verbose)
+            VERBOSE=1
             ;;
         *)
             echo "unknown argument $1"
@@ -50,8 +64,14 @@ pass_cmake_flag_from_env() {
 
 add_cmake_flags() {
     pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX PREFIX
-    pass_cmake_flag_from_env GTEST_GIT_URL
-    pass_cmake_flag_from_env GBENCH_GIT_URL
+
+    if [ ${BUILD_TESTS} -eq 1 ]; then
+        pass_cmake_flag_from_env GTEST_GIT_URL
+    fi
+    if [ ${BUILD_BENCHMARKS} -eq 1 ]; then
+        pass_cmake_flag_from_env GBENCH_GIT_URL
+    fi
+
     pass_cmake_flag_from_env STDTRACER_GIT_URL
     pass_cmake_flag_from_env STDTENSOR_GIT_URL
 
@@ -66,7 +86,12 @@ add_cmake_flags() {
     add_cmake_flag USE_OPENCV ${USE_OPENCV}
     add_cmake_flag USE_OPENBLAS ${USE_BLAS}
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
-    add_cmake_flag STDTENSOR_GIT_TAG v0.3.0
+    add_cmake_flag BUILD_BENCHMARKS ${BUILD_BENCHMARKS}
+
+    # FIXME: depend on a tag for release version
+    add_cmake_flag STDTENSOR_GIT_TAG 6e46560028dfc20498530e5f6a1afc5e092b9cb6
+
+    add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS ${VERBOSE}
 }
 
 cleanup_cmake_cache() {

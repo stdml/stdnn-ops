@@ -1,9 +1,11 @@
 #include <cmath>
 
-#include "testing.hpp"
+#include <ttl/algorithm>
+#include <ttl/tensor>
 
 #include <nn/ops>
-#include <stdtensor>
+
+#include "testing.hpp"
 
 TEST(xentropy_test, test_1)
 {
@@ -14,8 +16,8 @@ TEST(xentropy_test, test_1)
         for (int k = 1; k <= 10; ++k) {
             const auto x = ttl::tensor<R, 1>(k);
             const auto y = ttl::tensor<R, 1>(x.shape());
-            fill(x, (R)1.0);
-            fill(y, e);
+            ttl::fill(ref(x), (R)1.0);
+            ttl::fill(ref(y), e);
 
             const auto loss = nn::ops::xentropy();
             const auto z = ttl::tensor<R, 0>(loss(x.shape(), y.shape()));
@@ -30,8 +32,8 @@ TEST(xentropy_test, test_1)
         for (int k = 1; k <= 10; ++k) {
             const auto x = ttl::tensor<R, 2>(n, k);
             const auto y = ttl::tensor<R, 2>(x.shape());
-            fill(x, (R)1.0);
-            fill(y, e);
+            ttl::fill(ref(x), (R)1.0);
+            ttl::fill(ref(y), e);
 
             const auto loss = nn::ops::xentropy();
             const auto z = ttl::tensor<R, 1>(loss(x.shape(), y.shape()));

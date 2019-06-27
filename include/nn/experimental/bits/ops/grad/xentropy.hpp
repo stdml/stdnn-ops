@@ -39,7 +39,7 @@ template <> class xentropy<1>
                     const ttl::tensor_view<R, 2> &x,
                     const ttl::tensor_view<R, 2> &y) const
     {
-        for (auto i : range(y.shape().dims[0])) {
+        for (auto i : range(y.shape().dims()[0])) {
             operator()(gx[i], gz[i], z[i], x[i], y[i]);
         }
     }

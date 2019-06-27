@@ -14,15 +14,15 @@ template <typename Op> class batched
     template <ttl::rank_t r> auto operator()(const shape<r> &shp) const
     {
         const auto sub = shp.template subshape<1>();
-        return batch(std::get<0>(shp.dims), op_(sub));
+        return batch(std::get<0>(shp.dims()), op_(sub));
     }
 
     template <typename R, ttl::rank_t r1, ttl::rank_t r2>
     void operator()(const ttl::tensor_ref<R, r1> &y,
                     const ttl::tensor_view<R, r2> &x) const
     {
-        const auto n = std::get<0>(x.shape().dims);
-        contract_assert(n == std::get<0>(y.shape().dims));
+        const auto n = std::get<0>(x.shape().dims());
+        contract_assert(n == std::get<0>(y.shape().dims()));
         for (auto i : range(n)) { op_(y[i], x[i]); }
     }
 };

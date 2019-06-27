@@ -9,8 +9,8 @@ template <typename E> class matmul_
   public:
     shape<2> operator()(const shape<2> &x, const shape<2> &y) const
     {
-        const auto [n, m] = x.dims;
-        const auto [_m, k] = y.dims;
+        const auto [n, m] = x.dims();
+        const auto [_m, k] = y.dims();
         contract_assert(m == _m);
         return shape<2>(n, k);
     }

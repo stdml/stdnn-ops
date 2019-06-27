@@ -10,11 +10,6 @@
 
 using std::experimental::range;
 
-template <typename R, ttl::rank_t r> void fill(const ttl::tensor<R, r> &t, R x)
-{
-    std::fill(t.data(), t.data() + t.shape().size(), x);
-}
-
 template <typename R, ttl::rank_t r>
 void gen_test_tensor(const ttl::tensor<R, r> &x, int &s)
 {

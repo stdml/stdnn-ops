@@ -18,7 +18,7 @@ template <> class transpose<nchw, nhwc>
   public:
     shape<4> operator()(const shape<4> &x) const
     {
-        const auto [n, h, w, c] = x.dims;
+        const auto [n, h, w, c] = x.dims();
         return shape<4>(n, c, h, w);
     }
 
@@ -26,7 +26,7 @@ template <> class transpose<nchw, nhwc>
     void operator()(const ttl::tensor_ref<R, 4> &y,
                     const ttl::tensor_view<S, 4> &x, const F &f = F()) const
     {
-        const auto [n, h, w, c] = x.shape().dims;
+        const auto [n, h, w, c] = x.shape().dims();
 
         for (auto l : range(n)) {
             for (auto k : range(c)) {
@@ -45,7 +45,7 @@ template <> class transpose<nhwc, nchw>
   public:
     shape<4> operator()(const shape<4> &x) const
     {
-        const auto [n, c, h, w] = x.dims;
+        const auto [n, c, h, w] = x.dims();
         return shape<4>(n, h, w, c);
     }
 
@@ -53,7 +53,7 @@ template <> class transpose<nhwc, nchw>
     void operator()(const ttl::tensor_ref<R, 4> &y,
                     const ttl::tensor_view<S, 4> &x, const F &f = F()) const
     {
-        const auto [n, c, h, w] = x.shape().dims;
+        const auto [n, c, h, w] = x.shape().dims();
 
         for (auto l : range(n)) {
             for (auto i : range(h)) {

@@ -15,10 +15,10 @@ shape<r> concat2shapes(const shape<r> &s, const shape<r> &t)
     std::array<dim_t, r> dims;
     for (auto i : range(r)) {
         if (i == p) {
-            dims[i] = s.dims[i] + t.dims[i];
+            dims[i] = s.dims()[i] + t.dims()[i];
         } else {
-            contract_assert(s.dims[i] == t.dims[i]);
-            dims[i] = s.dims[i];
+            contract_assert(s.dims()[i] == t.dims()[i]);
+            dims[i] = s.dims()[i];
         }
     }
     return shape<r>(dims);
@@ -41,9 +41,9 @@ template <ttl::rank_t p, ttl::rank_t q>
 shape<2> as_mat_shape(const shape<p + q> &s)
 {
     using dim_t = typename shape<p + q>::dimension_type;
-    const dim_t m = std::accumulate(s.dims.begin(), s.dims.begin() + p,
+    const dim_t m = std::accumulate(s.dims().begin(), s.dims().begin() + p,
                                     (dim_t)1, std::multiplies<dim_t>());
-    const dim_t n = std::accumulate(s.dims.begin() + p, s.dims.end(), (dim_t)1,
+    const dim_t n = std::accumulate(s.dims().begin() + p, s.dims().end(), (dim_t)1,
                                     std::multiplies<dim_t>());
     return shape<2>(m, n);
 }
@@ -63,7 +63,7 @@ class reduce_function
     template <ttl::rank_t r> shape<r - 1> operator()(const shape<r> &s) const
     {
         std::array<typename shape<r - 1>::dimension_type, r - 1> dims;
-        std::copy(s.dims.begin(), s.dims.end() - 1, dims.begin());
+        std::copy(s.dims().begin(), s.dims().end() - 1, dims.begin());
         return shape<r - 1>(dims);
     }
 };
@@ -80,7 +80,7 @@ class vectorize_function
     template <ttl::rank_t r> shape<r + 1> operator()(const shape<r> &s) const
     {
         std::array<dim_t, r + 1> dims;
-        std::copy(s.dims.begin(), s.dims.end(), dims.begin());
+        std::copy(s.dims().begin(), s.dims().end(), dims.begin());
         dims[r] = k_;
         return shape<r + 1>(dims);
     }

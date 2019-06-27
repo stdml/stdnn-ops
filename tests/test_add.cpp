@@ -1,7 +1,9 @@
-#include "testing.hpp"
+#include <ttl/algorithm>
+#include <ttl/tensor>
 
 #include <nn/ops>
-#include <stdtensor>
+
+#include "testing.hpp"
 
 TEST(add_test, test1)
 {
@@ -13,8 +15,8 @@ TEST(add_test, test1)
     using add = nn::ops::add;
     const auto x = ttl::tensor<int, 4>(n, h, w, c);
     const auto y = ttl::tensor<int, 4>(n, h, w, c);
-    fill(x, 1);
-    fill(y, 2);
+    ttl::fill(ref(x), 1);
+    ttl::fill(ref(y), 2);
 
     const auto op = add();
     const auto z = ttl::tensor<int, 4>(op(x.shape(), y.shape()));

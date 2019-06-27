@@ -32,7 +32,7 @@ class xentropy
     {
         contract_assert(x == y);
         std::array<typename shape<r - 1>::dimension_type, r - 1> dims;
-        std::copy(x.dims.begin(), x.dims.end() - 1, dims.begin());
+        std::copy(x.dims().begin(), x.dims().end() - 1, dims.begin());
         return shape<r - 1>(dims);
     }
 
@@ -43,7 +43,7 @@ class xentropy
     {
         const auto x_flat = as_matrix<r - 1, 1, ttl::tensor_view<R, 2>>(x);
         const auto y_flat = as_matrix<r - 1, 1, ttl::tensor_view<R, 2>>(y);
-        const auto [n, k] = x_flat.shape().dims;
+        const auto [n, k] = x_flat.shape().dims();
         for (auto i : range(n)) {
             z.data()[i] =
                 (internal::xentropy<R>(k))(x_flat[i].data(), y_flat[i].data());

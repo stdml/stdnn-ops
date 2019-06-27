@@ -1,15 +1,17 @@
-#include "testing.hpp"
+#include <ttl/algorithm>
+#include <ttl/tensor>
 
 #include <nn/ops>
-#include <stdtensor>
+
+#include "testing.hpp"
 
 template <typename Op, typename R>
 void test_apply_bias_nhwc(int n, int h, int w, int c, R a, R b, R value)
 {
     const auto x = ttl::tensor<R, 4>(n, h, w, c);
     const auto y = ttl::tensor<R, 1>(c);
-    fill(x, a);
-    fill(y, b);
+    ttl::fill(ref(x), a);
+    ttl::fill(ref(y), b);
 
     const auto add_bias = nn::ops::apply_bias<nn::ops::nhwc, Op>();
     const auto z = ttl::tensor<int, 4>(add_bias(x.shape(), y.shape()));
@@ -30,8 +32,8 @@ void test_apply_bias_nchw(int n, int h, int w, int c, R a, R b, R value)
 {
     const auto x = ttl::tensor<R, 4>(n, c, h, w);
     const auto y = ttl::tensor<R, 1>(c);
-    fill(x, a);
-    fill(y, b);
+    ttl::fill(ref(x), a);
+    ttl::fill(ref(y), b);
 
     const auto add_bias = nn::ops::apply_bias<nn::ops::nchw, Op>();
     const auto z = ttl::tensor<int, 4>(add_bias(x.shape(), y.shape()));

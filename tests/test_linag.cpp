@@ -1,6 +1,7 @@
 #include <algorithm>
 
-#include <stdtensor>
+#include <ttl/algorithm>
+#include <ttl/tensor>
 
 #include <nn/ops>
 
@@ -11,8 +12,8 @@ void test_mm(int k, int m, int n)
     using mul = nn::ops::matmul;
     const auto x = ttl::tensor<int, 2>(k, m);
     const auto y = ttl::tensor<int, 2>(m, n);
-    fill(x, 2);
-    fill(y, 3);
+    ttl::fill(ref(x), 2);
+    ttl::fill(ref(y), 3);
 
     const auto op = mul();
     const auto z = ttl::tensor<int, 2>(op(x.shape(), y.shape()));
@@ -45,8 +46,8 @@ void test_vv(int n)
     using R = int;
     const auto x = ttl::tensor<R, 1>(n);
     const auto y = ttl::tensor<R, 1>(n);
-    fill(x, 1);
-    fill(y, 2);
+    ttl::fill(ref(x), 1);
+    ttl::fill(ref(y), 2);
     const auto z = ttl::tensor<R, 1>(n);
     nn::engines::linag<nn::engines::default_engine>::vv(view(x), view(y),
                                                         ref(z));

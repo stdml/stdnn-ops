@@ -70,7 +70,7 @@ template <> class pool_trait<hw>
     pool_trait() : pool_trait(default_ksize) {}
 
     pool_trait(const ksize_t &ksize)
-        : pool_trait(ksize, stride(ksize.dims[0], ksize.dims[1]))
+        : pool_trait(ksize, stride(ksize.dims()[0], ksize.dims()[1]))
     {
     }
 
@@ -80,14 +80,14 @@ template <> class pool_trait<hw>
     }
 
     pool_trait(const ksize_t &ksize, const padding_t &padding)
-        : pool_trait(ksize, padding, stride(ksize.dims[0], ksize.dims[1]))
+        : pool_trait(ksize, padding, stride(ksize.dims()[0], ksize.dims()[1]))
     {
     }
 
     pool_trait(const ksize_t &ksize, const padding_t &padding,
                const stride_t &stride)
-        : h_sample_(ksize.dims[0], stride.dims[0], 1, std::get<0>(padding)),
-          w_sample_(ksize.dims[1], stride.dims[1], 1, std::get<1>(padding))
+        : h_sample_(ksize.dims()[0], stride.dims()[0], 1, std::get<0>(padding)),
+          w_sample_(ksize.dims()[1], stride.dims()[1], 1, std::get<1>(padding))
     {
     }
 
@@ -98,7 +98,7 @@ template <> class pool_trait<hw>
 
     shape<2> operator()(const shape<2> &x) const
     {
-        return shape<2>(h_sample_(x.dims[0]), w_sample_(x.dims[1]));
+        return shape<2>(h_sample_(x.dims()[0]), w_sample_(x.dims()[1]));
     }
 };
 
@@ -170,9 +170,9 @@ template <typename pool_algo> class pool<pool_algo, hw> : public pool_trait<hw>
     {
         using accumulator = typename internal::accumulator<pool_algo, R>::type;
 
-        const auto [h, w] = x.shape().dims;
-        const auto [h_, w_] = y.shape().dims;
-        const auto [r, s] = get_ksize().dims;
+        const auto [h, w] = x.shape().dims();
+        const auto [h_, w_] = y.shape().dims();
+        const auto [r, s] = get_ksize().dims();
 
         for (auto i_ : range(h_)) {
             for (auto j_ : range(w_)) {
@@ -205,9 +205,9 @@ template <typename pool_algo> class pool<pool_algo, hwc> : public pool_trait<hw>
     {
         using accumulator = typename internal::accumulator<pool_algo, R>::type;
 
-        const auto [h, w, c] = x.shape().dims;
-        const auto [h_, w_, _c] = y.shape().dims;
-        const auto [r, s] = get_ksize().dims;
+        const auto [h, w, c] = x.shape().dims();
+        const auto [h_, w_, _c] = y.shape().dims();
+        const auto [r, s] = get_ksize().dims();
         contract_assert_eq(c, _c);
 
         for (auto k : range(c)) {
@@ -258,7 +258,7 @@ class pool<pool_algo, nhwc> : public pool_trait<hw>
                     const ttl::tensor_view<R, 4> &x) const
     {
         pool<pool_algo, hwc> op(get_ksize(), get_stride());
-        for (auto i : range(x.shape().dims[0])) { op(y[i], x[i]); }
+        for (auto i : range(x.shape().dims()[0])) { op(y[i], x[i]); }
     }
 };
 
@@ -280,8 +280,8 @@ class pool<pool_algo, nchw> : public pool_trait<hw>
                     const ttl::tensor_view<R, 4> &x) const
     {
         pool<pool_algo, hw> op(get_ksize(), get_stride());
-        for (auto i : range(x.shape().dims[0])) {
-            for (auto j : range(x.shape().dims[1])) { op(y[i][j], x[i][j]); }
+        for (auto i : range(x.shape().dims()[0])) {
+            for (auto j : range(x.shape().dims()[1])) { op(y[i][j], x[i][j]); }
         }
     }
 };

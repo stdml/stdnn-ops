@@ -26,11 +26,11 @@ template <> class concat_channel4d_impl<nhwc, 3>
                     const ttl::tensor_view<R, 4> &y,
                     const ttl::tensor_view<R, 4> &z) const
     {
-        auto [n, h, w, c_all] = t.shape().dims;
+        auto [n, h, w, c_all] = t.shape().dims();
         // TODO: check equality
-        auto [_1n, _1h, _1w, c_1] = x.shape().dims;
-        auto [_2n, _2h, _2w, c_2] = y.shape().dims;
-        auto [_3n, _3h, _3w, c_3] = z.shape().dims;
+        auto [_1n, _1h, _1w, c_1] = x.shape().dims();
+        auto [_2n, _2h, _2w, c_2] = y.shape().dims();
+        auto [_3n, _3h, _3w, c_3] = z.shape().dims();
 
         const auto c1 = c_1;
         const auto c2 = c_2;
@@ -69,10 +69,10 @@ template <> class concat_channel4d_impl<nchw, 2>
                     const ttl::tensor_view<R, 4> &x,
                     const ttl::tensor_view<R, 4> &y) const
     {
-        auto [n, c_all, h, w] = t.shape().dims;
+        auto [n, c_all, h, w] = t.shape().dims();
         // TODO: check equality
-        auto [_1n, c_1, _1h, _1w] = x.shape().dims;
-        auto [_2n, c_2, _2h, _2w] = y.shape().dims;
+        auto [_1n, c_1, _1h, _1w] = x.shape().dims();
+        auto [_2n, c_2, _2h, _2w] = y.shape().dims();
 
         const auto c1 = c_1;
         const auto c2 = c_2;
