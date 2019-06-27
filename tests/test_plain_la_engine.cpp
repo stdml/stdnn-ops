@@ -1,3 +1,5 @@
+#include <ttl/algorithm>
+
 #include <nn/bits/engines/linag.hpp>
 
 #include "testing.hpp"
@@ -9,8 +11,8 @@ void test_mm(int k, int m, int n)
     using R = int;
     const auto x = ttl::tensor<R, 2>(k, m);
     const auto y = ttl::tensor<R, 2>(m, n);
-    fill(x, 2);
-    fill(y, 3);
+    ttl::fill(ref(x), 2);
+    ttl::fill(ref(y), 3);
 
     const auto z = ttl::tensor<R, 2>(k, n);
     la::mm(view(x), view(y), ref(z));
@@ -32,8 +34,8 @@ void test_mmt(int k, int m, int n)
     using R = int;
     const auto x = ttl::tensor<R, 2>(k, m);
     const auto y = ttl::tensor<R, 2>(n, m);
-    fill(x, 2);
-    fill(y, 3);
+    ttl::fill(ref(x), 2);
+    ttl::fill(ref(y), 3);
 
     const auto z = ttl::tensor<R, 2>(k, n);
     la::mmt(view(x), view(y), ref(z));
@@ -55,8 +57,8 @@ void test_mtm(int k, int m, int n)
     using R = int;
     const auto x = ttl::tensor<R, 2>(m, k);
     const auto y = ttl::tensor<R, 2>(m, n);
-    fill(x, 2);
-    fill(y, 3);
+    ttl::fill(ref(x), 2);
+    ttl::fill(ref(y), 3);
 
     const auto z = ttl::tensor<R, 2>(k, n);
     la::mtm(view(x), view(y), ref(z));
@@ -78,8 +80,8 @@ void test_mv(int n, int m)
     using R = int;
     const auto x = ttl::tensor<R, 2>(n, m);
     const auto y = ttl::tensor<R, 1>(m);
-    fill(x, 2);
-    fill(y, 3);
+    ttl::fill(ref(x), 2);
+    ttl::fill(ref(y), 3);
     const auto z = ttl::tensor<R, 1>(n);
     la::mv(view(x), view(y), ref(z));
     for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 2 * 3 * m); }
@@ -92,8 +94,8 @@ void test_vm(int n, int m)
     using R = int;
     const auto x = ttl::tensor<R, 1>(m);
     const auto y = ttl::tensor<R, 2>(m, n);
-    fill(x, 2);
-    fill(y, 3);
+    ttl::fill(ref(x), 2);
+    ttl::fill(ref(y), 3);
     const auto z = ttl::tensor<R, 1>(n);
     la::vm(view(x), view(y), ref(z));
     for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 2 * 3 * m); }
@@ -106,8 +108,8 @@ void test_vv(int n)
     using R = int;
     const auto x = ttl::tensor<R, 1>(n);
     const auto y = ttl::tensor<R, 1>(n);
-    fill(x, 1);
-    fill(y, 2);
+    ttl::fill(ref(x), 1);
+    ttl::fill(ref(y), 2);
     const auto z = ttl::tensor<R, 1>(n);
     la::vv(view(x), view(y), ref(z));
     for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 3); }

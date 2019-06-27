@@ -2,26 +2,18 @@
 #include <experimental/contract>
 #include <experimental/new_type>
 #include <experimental/range>
-#include <sstream>
 
+#include <ttl/debug>
 #include <ttl/tensor>
 
 namespace std
 {
-template <ttl::rank_t r>
-string to_string(const ttl::internal::basic_shape<r> &p)
+template <ttl::rank_t r> string to_string(const ttl::shape<r> &s)
 {
-    stringstream ss;
-    ss << "(";
-    for (auto i : experimental::range(r)) {
-        if (i > 0) { ss << ","; }
-        ss << (int)p.dims()[i];
-    }
-    ss << ")";
-    return ss.str();
+    return ttl::to_string(s);
 }
-
 }  // namespace std
+
 namespace nn
 {
 using ttl::shape;
