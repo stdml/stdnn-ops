@@ -1,4 +1,6 @@
 #pragma once
+#include <ttl/algorithm>
+
 #include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/shape_algo.hpp>
 #include <nn/bits/ops/traits.hpp>
