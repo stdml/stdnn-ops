@@ -1,5 +1,6 @@
 #pragma once
 #include <nn/bits/engines/linag.hpp>
+#include <nn/bits/ops/shape_algo.hpp>
 #include <nn/bits/ops/softmax.hpp>
 #include <nn/common.hpp>
 
@@ -14,9 +15,7 @@ template <> class softmax<0>
     shape<r> operator()(const shape<r> &gy, const shape<r> &y,
                         const shape<r> &x) const
     {
-        contract_assert_eq(y, nn::ops::softmax()(x));
-        contract_assert_eq(y, gy);
-        return x;
+        return nn::ops::gradient_shape<0>(nn::ops::softmax(), gy, y, x);
     }
 
     template <typename R>

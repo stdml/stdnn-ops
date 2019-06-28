@@ -19,6 +19,9 @@ namespace nn
 using ttl::shape;
 
 using std::experimental::range;
+
+using arity_t = uint8_t;
+
 }  // namespace nn
 
 namespace nn::experimental::ops

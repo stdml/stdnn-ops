@@ -1,6 +1,7 @@
 #pragma once
 #include <nn/bits/engines/linag.hpp>
 #include <nn/bits/ops/matmul.hpp>
+#include <nn/bits/ops/shape_algo.hpp>
 #include <nn/common.hpp>
 
 namespace nn::experimental::ops::grad
@@ -14,9 +15,7 @@ template <typename E> class matmul<0, E>
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,
                         const shape<2> &x, const shape<2> &y) const
     {
-        contract_assert_eq(z, nn::ops::matmul()(x, y));
-        contract_assert_eq(z, gz);
-        return x;
+        return nn::ops::gradient_shape<0>(nn::ops::matmul(), gz, z, x, y);
     }
 
     template <typename R>
@@ -36,9 +35,7 @@ template <typename E> class matmul<1, E>
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,
                         const shape<2> &x, const shape<2> &y) const
     {
-        contract_assert_eq(z, nn::ops::matmul()(x, y));
-        contract_assert_eq(z, gz);
-        return y;
+        return nn::ops::gradient_shape<1>(nn::ops::matmul(), gz, z, x, y);
     }
 
     template <typename R>

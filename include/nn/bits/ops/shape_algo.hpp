@@ -43,8 +43,8 @@ shape<2> as_mat_shape(const shape<p + q> &s)
     using dim_t = typename shape<p + q>::dimension_type;
     const dim_t m = std::accumulate(s.dims().begin(), s.dims().begin() + p,
                                     (dim_t)1, std::multiplies<dim_t>());
-    const dim_t n = std::accumulate(s.dims().begin() + p, s.dims().end(), (dim_t)1,
-                                    std::multiplies<dim_t>());
+    const dim_t n = std::accumulate(s.dims().begin() + p, s.dims().end(),
+                                    (dim_t)1, std::multiplies<dim_t>());
     return shape<2>(m, n);
 }
 
@@ -84,6 +84,15 @@ class vectorize_function
         dims[r] = k_;
         return shape<r + 1>(dims);
     }
+};
+
+template <arity_t i, typename Op, typename Shape, typename... Shapes>
+auto gradient_shape(const Op &infer, const Shape &gy, const Shape &y,
+                    const Shapes &... xs)
+{
+    contract_assert_eq(y, infer(xs...));
+    contract_assert_eq(y, gy);
+    return std::get<i>(std::make_tuple(xs...));
 };
 
 }  // namespace nn::ops

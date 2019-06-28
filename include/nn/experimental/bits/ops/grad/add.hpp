@@ -2,6 +2,7 @@
 #include <algorithm>
 
 #include <nn/bits/ops/elementary.hpp>
+#include <nn/bits/ops/shape_algo.hpp>
 #include <nn/common.hpp>
 
 namespace nn::experimental::ops::grad
@@ -15,9 +16,7 @@ template <> class add<0>
     shape<r> operator()(const shape<r> &gz, const shape<r> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        contract_assert_eq(z, nn::ops::add()(x, y));
-        contract_assert_eq(z, gz);
-        return x;
+        return nn::ops::gradient_shape<0>(nn::ops::add(), gz, z, x, y);
     }
 
     template <typename R, ttl::rank_t r>
@@ -38,9 +37,7 @@ template <> class add<1>
     shape<r> operator()(const shape<r> &gz, const shape<r> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        contract_assert_eq(z, nn::ops::add()(x, y));
-        contract_assert_eq(z, gz);
-        return y;
+        return nn::ops::gradient_shape<1>(nn::ops::add(), gz, z, x, y);
     }
 
     template <typename R, ttl::rank_t r>
