@@ -1,6 +1,7 @@
 #pragma once
 #include <experimental/range>
 
+#include <nn/bits/ops/shape_algo.hpp>
 #include <nn/bits/ops/xentropy.hpp>
 #include <nn/common.hpp>
 
@@ -15,9 +16,7 @@ template <> class xentropy<1>
     shape<r> operator()(const shape<r - 1> &gz, const shape<r - 1> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        contract_assert_eq(z, nn::ops::xentropy()(x, y));
-        contract_assert_eq(z, gz);
-        return y;
+        return nn::ops::gradient_shape<1>(nn::ops::xentropy(), gz, z, x, y);
     }
 
     template <typename R>
