@@ -49,7 +49,7 @@ template <> class add_bias<nn::ops::hw, 1>
                     const ttl::tensor_view<R, 2> &x,
                     const ttl::tensor_view<R, 1> &y) const
     {
-        ttl::fill(ref(gy), 0);
+        ttl::fill(ref(gy), static_cast<R>(0));
         for (const auto gzi : gz) {
             std::transform(gy.data(), gy.data_end(), gzi.data(), gy.data(),
                            std::plus<R>());
