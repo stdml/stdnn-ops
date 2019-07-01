@@ -64,5 +64,6 @@ template <typename F> class _binary_pointwise
 
 using add = _binary_pointwise<scalar_add>;
 using sub = _binary_pointwise<scalar_sub>;
+using mul = _binary_pointwise<scalar_mul>;
 
 }  // namespace nn::ops
