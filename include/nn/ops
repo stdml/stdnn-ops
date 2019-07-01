@@ -1,6 +1,6 @@
 #pragma once
-#include <nn/common.hpp>
-//
+
+#include <nn/bits/ops/axpy.hpp>
 #include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/concat.hpp>
 #include <nn/bits/ops/conv.hpp>
