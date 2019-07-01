@@ -85,15 +85,13 @@ void load_data(const D &ds, int offset, int batch_size,
                const ttl::tensor_ref<R, 2> &xs,
                const ttl::tensor_ref<R, 2> &y_s)
 {
-    using nn::experimental::ops::onehot;
-
-    onehot(10)(y_s, view(ds.second.slice(offset, offset + batch_size)));
-    const auto images = ds.first.slice(offset, offset + batch_size);
-    for (auto l : range(batch_size)) {
-        const auto pixels = images[l];
-        std::transform(pixels.data(), pixels.data() + pixels.shape().size(),
-                       xs[l].data(), [](uint8_t p) { return p / 255.0; });
-    }
+    const auto f = [](uint8_t p) { return p / 255.0; };
+    nn::ops::pointwise<decltype(f)> normalize_pixel(f);
+    normalize_pixel(ttl::tensor_ref<R, 3>(xs.data(), batch_size, 28,
+                                          28) /* FIXME: use reshape */,
+                    view(ds.first.slice(offset, offset + batch_size)));
+    nn::experimental::ops::onehot(10)(
+        y_s, view(ds.second.slice(offset, offset + batch_size)));
 }
 
 template <typename D, typename R>
