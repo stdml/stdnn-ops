@@ -1,6 +1,8 @@
 #pragma once
 #include <ttl/algorithm>
 
+#include <nn/bits/ops/reshape.hpp>
+#include <nn/bits/ops/shape_algo.hpp>
 #include <nn/bits/ops/summary.hpp>
 #include <nn/common.hpp>
 

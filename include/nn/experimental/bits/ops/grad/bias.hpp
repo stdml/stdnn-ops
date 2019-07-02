@@ -57,7 +57,7 @@ template <> class add_bias<nn::ops::hw, 1>
 template <> class add_bias<nn::ops::nhwc, 0>
 {
   public:
-    shape<2> operator()(const shape<4> &gz, const shape<4> &z,
+    shape<4> operator()(const shape<4> &gz, const shape<4> &z,
                         const shape<4> &x, const shape<1> &y) const
     {
         return nn::ops::gradient_shape<0>(nn::ops::add_bias<nn::ops::nhwc>(),
