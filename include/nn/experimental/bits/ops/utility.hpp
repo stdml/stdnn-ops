@@ -41,7 +41,7 @@ class argmax : public nn::ops::reduce_function
     void operator()(const ttl::tensor_ref<N, r> &y,
                     const ttl::tensor_view<R, r + 1> &x) const
     {
-        const auto x_flat = nn::ops::as_matrix<r, 1, ttl::tensor_view<R, 2>>(x);
+        const auto x_flat = nn::ops::as_matrix<r, 1>(x);
         for (auto i : range(y.shape().size())) {
             y.data()[i] = ttl::argmax(x_flat[i]);
         }
@@ -61,7 +61,7 @@ class onehot : public nn::ops::vectorize_function
     {
         constexpr R def = 0;
         std::fill(y.data(), y.data_end(), def);
-        const auto y_flat = nn::ops::as_matrix<r, 1, ttl::tensor_ref<R, 2>>(y);
+        const auto y_flat = nn::ops::as_matrix<r, 1>(y);
         for (auto i : range(x.shape().size())) {
             const dim_t j = x.data()[i];
             if (0 <= j && j < k_) {

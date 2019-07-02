@@ -79,7 +79,7 @@ auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
     auto l5_4 = pool(pool::ksize(2, 2))(ref(*l5_3));
     PPRINT(*l5_4);
 
-    auto l5_flat = nn::ops::as_matrix<1, 3, ttl::tensor_ref<R, 2>>(*l5_4);
+    auto l5_flat = nn::ops::as_matrix<1, 3>(ref(*l5_4));
     auto l6 = dense_relu(4096)(l5_flat, p("fc6_W"), p("fc6_b"));
     auto l7 = dense_relu(4096)(ref(*l6), p("fc7_W"), p("fc7_b"));
     auto l8 = dense(k)(ref(*l7), p("fc8_W"), p("fc8_b"));
