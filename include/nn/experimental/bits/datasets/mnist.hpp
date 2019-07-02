@@ -5,6 +5,11 @@
 
 namespace nn::experimental::datasets
 {
+struct mnist_data_set {
+    const ttl::tensor<uint8_t, 3> images;
+    const ttl::tensor<uint8_t, 1> labels;
+};
+
 // http://yann.lecun.com/exdb/mnist/
 auto load_mnist_data(const std::string &data_dir, const std::string &name)
 {
@@ -22,6 +27,9 @@ auto load_mnist_data(const std::string &data_dir, const std::string &name)
     const std::string prefix = data_dir + "/" + name;
     nn::ops::readfile(prefix + "-images-idx3-ubyte")(ref(images));
     nn::ops::readfile(prefix + "-labels-idx1-ubyte")(ref(labels));
-    return std::make_pair(std::move(images), std::move(labels));
+    return mnist_data_set{
+        .images = std::move(images),
+        .labels = std::move(labels),
+    };
 }
 }  // namespace nn::experimental::datasets
