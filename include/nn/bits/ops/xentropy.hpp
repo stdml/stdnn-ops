@@ -1,9 +1,10 @@
 #pragma once
-#include <algorithm>
 #include <cmath>
+
+#include <algorithm>
+#include <experimental/contract>
 #include <numeric>
 
-#include <experimental/contract>
 #include <nn/bits/ops/reshape.hpp>
 
 namespace nn::ops
@@ -41,8 +42,8 @@ class xentropy
                     const ttl::tensor_view<R, r> &x,
                     const ttl::tensor_view<R, r> &y) const
     {
-        const auto x_flat = as_matrix<r - 1, 1, ttl::tensor_view<R, 2>>(x);
-        const auto y_flat = as_matrix<r - 1, 1, ttl::tensor_view<R, 2>>(y);
+        const auto x_flat = as_matrix<r - 1, 1>(x);
+        const auto y_flat = as_matrix<r - 1, 1>(y);
         const auto [n, k] = x_flat.shape().dims();
         for (auto i : range(n)) {
             z.data()[i] =

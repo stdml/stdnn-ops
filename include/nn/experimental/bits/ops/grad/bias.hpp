@@ -92,8 +92,7 @@ template <> class add_bias<nn::ops::nhwc, 1>
                     const ttl::tensor_view<R, 4> &x,
                     const ttl::tensor_view<R, 1> &y) const
     {
-        nn::ops::internal::outter_contraction(
-            gy, nn::ops::as_matrix<3, 1, ttl::tensor_view<R, 2>>(gz));
+        nn::ops::internal::outter_contraction(gy, nn::ops::as_matrix<3, 1>(gz));
     }
 };
 

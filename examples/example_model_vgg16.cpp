@@ -84,7 +84,7 @@ class vgg16_model
 
         auto l5_4 = conv_layers(x);
         PPRINT(*l5_4);
-        auto l5_flat = nn::ops::as_matrix<1, 3, ttl::tensor_ref<R, 2>>(*l5_4);
+        auto l5_flat = nn::ops::as_matrix<1, 3>(ref(*l5_4));
         PPRINT(l5_flat);
         auto out = dense_layers(l5_flat);
         PPRINT(*out);
