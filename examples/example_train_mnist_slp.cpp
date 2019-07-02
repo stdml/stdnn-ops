@@ -89,9 +89,9 @@ void load_data(const D &ds, int offset, int batch_size,
     nn::ops::pointwise<decltype(f)> normalize_pixel(f);
     normalize_pixel(ttl::tensor_ref<R, 3>(xs.data(), batch_size, 28,
                                           28) /* FIXME: use reshape */,
-                    view(ds.first.slice(offset, offset + batch_size)));
+                    view(ds.images.slice(offset, offset + batch_size)));
     nn::experimental::ops::onehot(10)(
-        y_s, view(ds.second.slice(offset, offset + batch_size)));
+        y_s, view(ds.labels.slice(offset, offset + batch_size)));
 }
 
 template <typename D, typename R>
@@ -100,7 +100,7 @@ void train_slp_model(const D &ds,  //
                      const ttl::tensor_ref<R, 1> &b,  //
                      const int batch_size = 100)
 {
-    const auto [n, height, width] = ds.first.shape().dims();
+    const auto [n, height, width] = ds.images.shape().dims();
     const int k = 10;
 
     ttl::tensor<R, 2> xs(batch_size, height * width);
@@ -160,7 +160,7 @@ template <typename D, typename R>
 void test_slp_model(const D &ds, const ttl::tensor_view<R, 2> &w,
                     const ttl::tensor_view<R, 1> &b)
 {
-    const auto [n, height, width] = ds.first.shape().dims();
+    const auto [n, height, width] = ds.images.shape().dims();
     const int k = 10;
 
     ttl::tensor<R, 2> xs(n, height * width);
