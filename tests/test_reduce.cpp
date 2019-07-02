@@ -4,14 +4,6 @@
 
 #include "testing.hpp"
 
-using nn::shape;
-using nn::ops::as_mat_shape;
-
-namespace nn
-{
-using ops::internal::transform;
-}
-
 /*
 0  1  2  |  3
 3  4  5  | 12
