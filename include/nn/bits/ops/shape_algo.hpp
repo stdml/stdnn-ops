@@ -86,9 +86,9 @@ class vectorize_function
     }
 };
 
-template <arity_t i, typename Op, typename Shape, typename... Shapes>
-auto gradient_shape(const Op &infer, const Shape &gy, const Shape &y,
-                    const Shapes &... xs)
+template <arity_t i, typename Op, ttl::rank_t ry, ttl::rank_t... rx>
+auto gradient_shape(const Op &infer, const shape<ry> &gy, const shape<ry> &y,
+                    const shape<rx> &... xs)
 {
     contract_assert_eq(y, infer(xs...));
     contract_assert_eq(y, gy);
