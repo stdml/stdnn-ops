@@ -86,6 +86,14 @@ class vectorize_function
     }
 };
 
+template <typename F, typename Y, typename... Xs>
+void check_shape(const F &f, const Y &y, const Xs &... xs)
+{
+    if (y.shape() != f(xs.shape()...)) {
+        throw std::logic_error("shape check failed");
+    }
+}
+
 template <arity_t i, typename Op, ttl::rank_t ry, ttl::rank_t... rx>
 auto gradient_shape(const Op &infer, const shape<ry> &gy, const shape<ry> &y,
                     const shape<rx> &... xs)
