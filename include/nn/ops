@@ -6,6 +6,7 @@
 #include <nn/bits/ops/conv.hpp>
 #include <nn/bits/ops/elementary.hpp>
 #include <nn/bits/ops/im2col.hpp>
+#include <nn/bits/ops/init.hpp>
 #include <nn/bits/ops/io.hpp>
 #include <nn/bits/ops/matmul.hpp>
 #include <nn/bits/ops/noop.hpp>
