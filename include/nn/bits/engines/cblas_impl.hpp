@@ -83,12 +83,5 @@ template <typename R> struct cblas_impl {
         blas::gemv(CblasRowMajor, CblasTrans, len(b), wid(b), alpha, b.data(),
                    wid(b), a.data(), inc, beta, c.data(), inc);
     }
-
-    // a + b -> c
-    static void vv(const v_view_t &a, const v_view_t &b, const v_ref_t &c)
-    {
-        std::memcpy(c.data(), b.data(), sizeof(R) * len(c));
-        blas::axpy(len(a), alpha, a.data(), inc, c.data(), inc);
-    }
 };
 }  // namespace nn::engines

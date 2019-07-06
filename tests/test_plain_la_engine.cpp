@@ -102,20 +102,3 @@ void test_vm(int n, int m)
 }
 
 TEST(plain_la_test, test_vm) { test_all_permutations(test_vm, 2, 3); }
-
-void test_vv(int n)
-{
-    using R = int;
-    const auto x = ttl::tensor<R, 1>(n);
-    const auto y = ttl::tensor<R, 1>(n);
-    ttl::fill(ref(x), 1);
-    ttl::fill(ref(y), 2);
-    const auto z = ttl::tensor<R, 1>(n);
-    la::vv(view(x), view(y), ref(z));
-    for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 3); }
-}
-
-TEST(plain_la_test, test_vv)
-{
-    for (int i = 1; i <= 100; ++i) { test_vv(i); }
-}
