@@ -99,15 +99,5 @@ template <typename T> struct plain_impl {
             c.at(i) = tmp;
         }
     }
-
-    // a + b -> c
-    static void vv(const v_view_t &a, const v_view_t &b, const v_ref_t &c)
-    {
-        const auto n = a.shape().dims()[0];
-        contract_assert(b.shape().dims()[0] == n);
-        contract_assert(c.shape().dims()[0] == n);
-        std::transform(a.data(), a.data() + n, b.data(), c.data(),
-                       std::plus<T>());
-    }
 };
 }  // namespace nn::engines

@@ -1,7 +1,7 @@
 #pragma once
-#include <nn/bits/engines/config.hpp>
-
 #include <ttl/tensor>
+
+#include <nn/bits/engines/config.hpp>
 
 namespace nn::engines
 {
@@ -55,15 +55,6 @@ template <typename E> struct linag {
     {
         using engine = typename backend<E>::template type<R>;
         engine::vm(a, b, c);
-    }
-
-    // a + b -> c
-    template <typename R>
-    static void vv(const v_view_t<R> &a, const v_view_t<R> &b,
-                   const v_ref_t<R> &c)
-    {
-        using engine = typename backend<E>::template type<R>;
-        engine::vv(a, b, c);
     }
 };
 }  // namespace nn::engines

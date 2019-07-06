@@ -40,21 +40,3 @@ TEST(matmul_test, test1)
     test_mm_all(5, 7, 9);
     test_mm_all(10, 100, 1000);
 }
-
-void test_vv(int n)
-{
-    using R = int;
-    const auto x = ttl::tensor<R, 1>(n);
-    const auto y = ttl::tensor<R, 1>(n);
-    ttl::fill(ref(x), 1);
-    ttl::fill(ref(y), 2);
-    const auto z = ttl::tensor<R, 1>(n);
-    nn::engines::linag<nn::engines::default_engine>::vv(view(x), view(y),
-                                                        ref(z));
-    for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 3); }
-}
-
-TEST(linag_test, test_vv)
-{
-    for (int i = 1; i <= 100; ++i) { test_vv(i); }
-}
