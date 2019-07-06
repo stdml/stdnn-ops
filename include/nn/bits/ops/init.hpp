@@ -9,6 +9,26 @@
 
 namespace nn::ops
 {
+class zeros
+{
+  public:
+    template <typename R, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, r> &x) const
+    {
+        ttl::fill(x, static_cast<R>(0));
+    }
+};
+
+class ones
+{
+  public:
+    template <typename R, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, r> &x) const
+    {
+        ttl::fill(x, static_cast<R>(1));
+    }
+};
+
 template <typename R> class constant
 {
     const R value_;
