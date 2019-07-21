@@ -1,6 +1,4 @@
 #pragma once
-#include <experimental/range>
-
 #include <nn/bits/ops/shape_algo.hpp>
 #include <nn/bits/ops/xentropy.hpp>
 #include <nn/common.hpp>
@@ -26,7 +24,7 @@ template <> class xentropy<1>
                     const ttl::tensor_view<R, 1> &x,
                     const ttl::tensor_view<R, 1> &y) const
     {
-        for (auto i : range(y.shape().size())) {
+        for (auto i : range<0>(x)) {
             gx.data()[i] = gz.data()[0] * (-x.data()[i] / y.data()[i]);
         }
     }
@@ -38,7 +36,7 @@ template <> class xentropy<1>
                     const ttl::tensor_view<R, 2> &x,
                     const ttl::tensor_view<R, 2> &y) const
     {
-        for (auto i : range(y.shape().dims()[0])) {
+        for (auto i : range<0>(x)) {
             operator()(gx[i], gz[i], z[i], x[i], y[i]);
         }
     }

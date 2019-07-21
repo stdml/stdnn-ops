@@ -4,8 +4,6 @@
 
 #include "testing.hpp"
 
-using std::experimental::range;
-
 TEST(col2im_test, test1)
 {
     using image_order = nn::ops::hwc;

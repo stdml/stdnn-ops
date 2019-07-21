@@ -1,9 +1,9 @@
 #pragma once
 #include <experimental/contract>
 #include <experimental/new_type>
-#include <experimental/range>
 
 #include <ttl/debug>
+#include <ttl/range>
 #include <ttl/tensor>
 
 namespace std
@@ -16,9 +16,8 @@ template <ttl::rank_t r> string to_string(const ttl::shape<r> &s)
 
 namespace nn
 {
+using ttl::range;
 using ttl::shape;
-
-using std::experimental::range;
 
 using arity_t = uint8_t;
 
@@ -26,7 +25,7 @@ using arity_t = uint8_t;
 
 namespace nn::experimental::ops
 {
-using std::experimental::range;
+using ttl::range;
 }  // namespace nn::experimental::ops
 
 template <ttl::internal::rank_t r>

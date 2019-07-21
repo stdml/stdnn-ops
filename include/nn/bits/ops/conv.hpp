@@ -194,7 +194,7 @@ template <> class conv<nhwc, rscd> : public conv_trait<hw>
             upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
 
         ttl::tensor<R, 6> x_upper(upper(x.shape()));
-        upper(ref(x_upper), view(x));
+        upper(ref(x_upper), x);
 
         nn::engines::linag<nn::engines::default_engine>::mm(
             as_matrix<3, 3>(view(x_upper)), as_matrix<3, 1>(y),
@@ -227,7 +227,7 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
         ttl::tensor<R, 5> x_upper(upper(x.shape().template subshape<1>()));
         const auto n = batch_size<nchw>(z.shape());
         for (auto l : range(n)) {
-            upper(ref(x_upper), view(x[l]));
+            upper(ref(x_upper), x[l]);
             nn::engines::linag<nn::engines::default_engine>::mm(
                 as_matrix<1, 3>(y), as_matrix<3, 2>(view(x_upper)),
                 as_matrix<1, 2>(z[l]));

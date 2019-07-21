@@ -3,14 +3,14 @@
 
 #include <algorithm>
 #include <experimental/contract>
-#include <experimental/range>
 #include <numeric>
 
+#include <ttl/range>
 #include <ttl/tensor>
 
 namespace nn::engines
 {
-using std::experimental::range;
+using ttl::range;
 
 template <typename T> struct plain_impl {
     using m_ref_t = ttl::matrix_ref<T>;
