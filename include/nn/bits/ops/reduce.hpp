@@ -18,9 +18,9 @@ class mean : public nn::ops::reduce_function
                     const ttl::tensor_view<R, r + 1> &x) const
     {
         const auto x_flat = nn::ops::as_matrix<r, 1>(x);
-        for (auto i : range(y.shape().size())) {
+        for (auto i : range<0>(x_flat)) {
             // TODO: add mean to ttl/algorithm
-            y.data()[i] = nn::ops::summaries::mean()(view(x_flat[i]));
+            y.data()[i] = nn::ops::summaries::mean()(x_flat[i]);
         }
     }
 };

@@ -1,8 +1,7 @@
 #include <cstdlib>
 
-#include <experimental/range>
-
 #include <ttl/algorithm>
+#include <ttl/range>
 
 #include <nn/experimental/bits/ops/grad/softmax.hpp>
 #include <nn/experimental/bits/ops/grad/xentropy.hpp>
@@ -14,7 +13,7 @@
 #include "trace.hpp"
 #include "utils.hpp"
 
-using std::experimental::range;
+using ttl::range;
 
 class slp
 {
@@ -36,7 +35,7 @@ class slp
                     const ttl::tensor_view<R, 1> &b)
     {
         nn::ops::matmul()(ys, xs, w);
-        nn::ops::add_bias<nn::ops::hw>()(ref(ys), view(ys), b);
+        nn::ops::add_bias<nn::ops::hw>()(ys, view(ys), b);
     }
 
     template <typename R>
@@ -168,7 +167,7 @@ void test_slp_model(const D &ds, const ttl::tensor_view<R, 2> &w,
     ttl::tensor<R, 2> y_s(n, k);
     load_data(ds, 0, n, ref(xs), ref(y_s));
 
-    slp()(ref(ys), view(xs), view(w), view(b));
+    slp()(ref(ys), view(xs), w, b);
     const auto acc = accuracy<float>(view(ys), view(y_s));
     printf("accuracy: %f\n", acc);
 }

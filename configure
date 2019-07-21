@@ -89,7 +89,7 @@ add_cmake_flags() {
     add_cmake_flag BUILD_BENCHMARKS ${BUILD_BENCHMARKS}
 
     # FIXME: depend on a tag for release version
-    add_cmake_flag STDTENSOR_GIT_TAG 6e46560028dfc20498530e5f6a1afc5e092b9cb6
+    add_cmake_flag STDTENSOR_GIT_TAG $(head -n 1 ./deps/stdtensor)
 
     add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS ${VERBOSE}
 }

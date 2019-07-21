@@ -84,7 +84,7 @@ class conv<nn::ops::nhwc, nn::ops::rscd, 1>
             upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
 
         ttl::tensor<R, 6> x_upper(upper(x.shape()));  // FIXME: get from pool
-        upper(ref(x_upper), view(x));  // FIXME: x_upper may be cached
+        upper(ref(x_upper), x);  // FIXME: x_upper may be cached
 
         nn::engines::linag<nn::engines::default_engine>::mtm(
             nn::ops::as_matrix<3, 3>(view(x_upper)),

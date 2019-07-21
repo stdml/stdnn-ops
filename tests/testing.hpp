@@ -1,14 +1,14 @@
 #pragma once
 #include <algorithm>
-#include <experimental/range>
 
+#include <ttl/range>
 #include <ttl/tensor>
 
 #include <nn/ops>
 
 #include <gtest/gtest.h>
 
-using std::experimental::range;
+using ttl::range;
 
 template <typename R, ttl::rank_t r>
 void gen_test_tensor(const ttl::tensor<R, r> &x, int &s)
