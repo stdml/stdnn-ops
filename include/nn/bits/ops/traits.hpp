@@ -19,6 +19,11 @@ struct hwrs;
 struct hwrsc;
 struct rshw;
 
+template <typename T> ttl::rank_t rank_of;
+template <> constexpr ttl::rank_t rank_of<hw> = 2;
+template <> constexpr ttl::rank_t rank_of<nchw> = 4;
+template <> constexpr ttl::rank_t rank_of<nhwc> = 4;
+
 template <typename T> ttl::rank_t batch_position;
 template <> constexpr ttl::rank_t batch_position<nchw> = 0;
 template <> constexpr ttl::rank_t batch_position<nhwc> = 0;
@@ -40,6 +45,11 @@ template <> constexpr ttl::rank_t width_position<chw> = 2;
 template <> constexpr ttl::rank_t width_position<hwc> = 1;
 template <> constexpr ttl::rank_t width_position<nchw> = 3;
 template <> constexpr ttl::rank_t width_position<nhwc> = 2;
+
+template <typename T> ttl::rank_t bias_position;
+template <> constexpr ttl::rank_t bias_position<hw> = 1;
+template <> constexpr ttl::rank_t bias_position<nchw> = channel_position<nchw>;
+template <> constexpr ttl::rank_t bias_position<nhwc> = channel_position<nhwc>;
 
 template <typename order, ttl::rank_t r>
 shape<4>::dimension_type batch_size(const shape<r> &x)
