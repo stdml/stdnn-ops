@@ -46,10 +46,8 @@ template <> constexpr ttl::rank_t width_position<hwc> = 1;
 template <> constexpr ttl::rank_t width_position<nchw> = 3;
 template <> constexpr ttl::rank_t width_position<nhwc> = 2;
 
-template <typename T> ttl::rank_t bias_position;
+template <typename T> constexpr ttl::rank_t bias_position = channel_position<T>;
 template <> constexpr ttl::rank_t bias_position<hw> = 1;
-template <> constexpr ttl::rank_t bias_position<nchw> = channel_position<nchw>;
-template <> constexpr ttl::rank_t bias_position<nhwc> = channel_position<nhwc>;
 
 template <typename order, ttl::rank_t r>
 shape<4>::dimension_type batch_size(const shape<r> &x)
