@@ -7,8 +7,8 @@ namespace nn::ops
 {
 template <typename image_order, typename Op> class apply_bias
 {
-    static constexpr ttl::rank_t r = rank_of<image_order>;
-    static constexpr ttl::rank_t p = bias_position<image_order>;
+    static constexpr auto r = rank_of<image_order>;
+    static constexpr auto p = bias_position<image_order>;
 
   public:
     shape<r> operator()(const shape<r> &x, const shape<1> &y) const
