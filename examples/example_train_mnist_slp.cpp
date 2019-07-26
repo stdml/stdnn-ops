@@ -5,7 +5,6 @@
 
 #include <nn/experimental/bits/ops/grad/softmax.hpp>
 #include <nn/experimental/bits/ops/grad/xentropy.hpp>
-#include <nn/experimental/bits/ops/utility.hpp>
 #include <nn/experimental/datasets>
 #include <nn/layers>
 #include <nn/ops>
@@ -68,14 +67,14 @@ template <typename R, typename R1>
 R accuracy(const ttl::tensor_view<R1, 2> &ys,
            const ttl::tensor_view<R1, 2> &y_s)
 {
-    const nn::experimental::ops::argmax argmax;
+    const nn::ops::argmax argmax;
     const ttl::tensor<uint32_t, 1> preditions(argmax(ys.shape()));
     const ttl::tensor<uint32_t, 1> labels(argmax(y_s.shape()));
     argmax(ref(preditions), ys);
     argmax(ref(labels), y_s);
     const ttl::tensor<float, 0> sim;
-    nn::experimental::ops::similarity()(ref(sim),  //
-                                        view(preditions), view(labels));
+    nn::ops::similarity()(ref(sim),  //
+                          view(preditions), view(labels));
     return sim.data()[0];
 }
 
@@ -89,8 +88,8 @@ void load_data(const D &ds, int offset, int batch_size,
     normalize_pixel(ttl::tensor_ref<R, 3>(xs.data(), batch_size, 28,
                                           28) /* FIXME: use reshape */,
                     view(ds.images.slice(offset, offset + batch_size)));
-    nn::experimental::ops::onehot(10)(
-        y_s, view(ds.labels.slice(offset, offset + batch_size)));
+    nn::ops::onehot(10)(y_s,
+                        view(ds.labels.slice(offset, offset + batch_size)));
 }
 
 template <typename D, typename R>

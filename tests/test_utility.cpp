@@ -1,4 +1,4 @@
-#include <nn/experimental/bits/ops/utility.hpp>
+#include <nn/bits/ops/utility.hpp>
 
 #include "testing.hpp"
 
@@ -6,7 +6,7 @@
 
 TEST(utility_test, test_similarity)
 {
-    nn::experimental::ops::similarity op;
+    nn::ops::similarity op;
     const int n = 100;
     ttl::tensor<int, 1> x(n);
     ttl::tensor<int, 1> y(n);
