@@ -3,7 +3,7 @@
 #include <nn/bits/ops/xentropy.hpp>
 #include <nn/common.hpp>
 
-namespace nn::experimental::ops::grad
+namespace nn::ops::grad
 {
 template <int> class xentropy;
 
@@ -41,4 +41,4 @@ template <> class xentropy<1>
         }
     }
 };
-}  // namespace nn::experimental::ops::grad
+}  // namespace nn::ops::grad

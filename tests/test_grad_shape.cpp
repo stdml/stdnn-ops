@@ -1,7 +1,7 @@
-#include <nn/experimental/bits/ops/grad/add.hpp>
-#include <nn/experimental/bits/ops/grad/matmul.hpp>
-#include <nn/experimental/bits/ops/grad/softmax.hpp>
-#include <nn/experimental/bits/ops/grad/xentropy.hpp>
+#include <nn/bits/ops/gradients/add.hpp>
+#include <nn/bits/ops/gradients/matmul.hpp>
+#include <nn/bits/ops/gradients/softmax.hpp>
+#include <nn/bits/ops/gradients/xentropy.hpp>
 #include <nn/ops>
 
 #include "testing.hpp"
@@ -42,7 +42,7 @@ void test_binary_grad_shape(const F &f,                //
 TEST(grad_shape_test, test_softmax)
 {
     using F = nn::ops::softmax;
-    using G0 = nn::experimental::ops::grad::softmax<0>;
+    using G0 = nn::ops::grad::softmax<0>;
     F f;
     G0 g0;
     test_unary_grad_shape(f, g0, nn::shape<1>(10));
@@ -51,8 +51,8 @@ TEST(grad_shape_test, test_softmax)
 TEST(grad_shape_test, test_add)
 {
     using F = nn::ops::add;
-    using G0 = nn::experimental::ops::grad::add<0>;
-    using G1 = nn::experimental::ops::grad::add<1>;
+    using G0 = nn::ops::grad::add<0>;
+    using G1 = nn::ops::grad::add<1>;
     F f;
     G0 g0;
     G1 g1;
@@ -62,8 +62,8 @@ TEST(grad_shape_test, test_add)
 TEST(grad_shape_test, test_matmul)
 {
     using F = nn::ops::matmul;
-    using G0 = nn::experimental::ops::grad::matmul<0>;
-    using G1 = nn::experimental::ops::grad::matmul<1>;
+    using G0 = nn::ops::grad::matmul<0>;
+    using G1 = nn::ops::grad::matmul<1>;
     F f;
     G0 g0;
     G1 g1;
@@ -76,8 +76,8 @@ TEST(grad_shape_test, test_matmul)
 // TEST(grad_shape_test, test_xentropy)
 // {
 //     using F = nn::ops::xentropy;
-//     using G0 = nn::experimental::ops::grad::xentropy<0>;
-//     using G1 = nn::experimental::ops::grad::xentropy<1>;
+//     using G0 = nn::ops::grad::xentropy<0>;
+//     using G1 = nn::ops::grad::xentropy<1>;
 //     F f;
 //     G0 g0;
 //     G1 g1;

@@ -3,9 +3,8 @@
 #include <ttl/algorithm>
 #include <ttl/range>
 
-#include <nn/experimental/bits/ops/grad/softmax.hpp>
-#include <nn/experimental/bits/ops/grad/xentropy.hpp>
-#include <nn/experimental/bits/ops/utility.hpp>
+#include <nn/bits/ops/gradients/softmax.hpp>
+#include <nn/bits/ops/gradients/xentropy.hpp>
 #include <nn/experimental/datasets>
 #include <nn/layers>
 #include <nn/ops>
@@ -68,14 +67,14 @@ template <typename R, typename R1>
 R accuracy(const ttl::tensor_view<R1, 2> &ys,
            const ttl::tensor_view<R1, 2> &y_s)
 {
-    const nn::experimental::ops::argmax argmax;
+    const nn::ops::argmax argmax;
     const ttl::tensor<uint32_t, 1> preditions(argmax(ys.shape()));
     const ttl::tensor<uint32_t, 1> labels(argmax(y_s.shape()));
     argmax(ref(preditions), ys);
     argmax(ref(labels), y_s);
     const ttl::tensor<float, 0> sim;
-    nn::experimental::ops::similarity()(ref(sim),  //
-                                        view(preditions), view(labels));
+    nn::ops::similarity()(ref(sim),  //
+                          view(preditions), view(labels));
     return sim.data()[0];
 }
 
@@ -89,8 +88,8 @@ void load_data(const D &ds, int offset, int batch_size,
     normalize_pixel(ttl::tensor_ref<R, 3>(xs.data(), batch_size, 28,
                                           28) /* FIXME: use reshape */,
                     view(ds.images.slice(offset, offset + batch_size)));
-    nn::experimental::ops::onehot(10)(
-        y_s, view(ds.labels.slice(offset, offset + batch_size)));
+    nn::ops::onehot(10)(y_s,
+                        view(ds.labels.slice(offset, offset + batch_size)));
 }
 
 template <typename D, typename R>
@@ -138,11 +137,11 @@ void train_slp_model(const D &ds,  //
             printf("loss: %f\n", l.data()[0]);
             {
                 // PPRINT(g_ls);
-                nn::experimental::ops::grad::xentropy<1>()(
-                    ref(g_ys), view(g_ls), view(ls), view(y_s), view(ys));
+                nn::ops::grad::xentropy<1>()(ref(g_ys), view(g_ls), view(ls),
+                                             view(y_s), view(ys));
                 // PPRINT(g_ys);
-                nn::experimental::ops::grad::softmax<0>()(ref(g_zs), view(g_ys),
-                                                          view(ys), view(zs));
+                nn::ops::grad::softmax<0>()(ref(g_zs), view(g_ys), view(ys),
+                                            view(zs));
                 // PPRINT(g_zs);
                 slp().grad(ref(g_w), ref(g_b), view(g_zs), view(zs), view(xs),
                            view(w), view(b));

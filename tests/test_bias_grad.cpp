@@ -1,4 +1,4 @@
-#include <nn/experimental/bits/ops/grad/bias.hpp>
+#include <nn/bits/ops/gradients/bias.hpp>
 #include <nn/ops>
 
 #include "testing.hpp"
@@ -30,8 +30,8 @@ TEST(linear_bias_test, test_1)
     using R = int32_t;
 
     using F = nn::ops::add_bias<nn::ops::hw>;
-    using G0 = nn::experimental::ops::grad::add_bias<nn::ops::hw, 0>;
-    using G1 = nn::experimental::ops::grad::add_bias<nn::ops::hw, 1>;
+    using G0 = nn::ops::grad::add_bias<nn::ops::hw, 0>;
+    using G1 = nn::ops::grad::add_bias<nn::ops::hw, 1>;
     G0 g0;
     G1 g1;
     F f;
@@ -46,8 +46,8 @@ TEST(linear_bias_test, test_2)
     using R = int32_t;
 
     using F = nn::ops::add_bias<nn::ops::nhwc>;
-    using G0 = nn::experimental::ops::grad::add_bias<nn::ops::nhwc, 0>;
-    using G1 = nn::experimental::ops::grad::add_bias<nn::ops::nhwc, 1>;
+    using G0 = nn::ops::grad::add_bias<nn::ops::nhwc, 0>;
+    using G1 = nn::ops::grad::add_bias<nn::ops::nhwc, 1>;
 
     G0 g0;
     G1 g1;

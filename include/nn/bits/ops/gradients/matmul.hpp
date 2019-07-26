@@ -4,7 +4,7 @@
 #include <nn/bits/ops/shape_algo.hpp>
 #include <nn/common.hpp>
 
-namespace nn::experimental::ops::grad
+namespace nn::ops::grad
 {
 
 template <int, typename E = nn::engines::default_engine> class matmul;
@@ -48,4 +48,4 @@ template <typename E> class matmul<1, E>
         nn::engines::linag<E>::mtm(x, gz, gy);
     }
 };
-}  // namespace nn::experimental::ops::grad
+}  // namespace nn::ops::grad

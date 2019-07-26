@@ -5,7 +5,7 @@
 #include <nn/bits/ops/shape_algo.hpp>
 #include <nn/common.hpp>
 
-namespace nn::experimental::ops::grad
+namespace nn::ops::grad
 {
 template <int> class add;
 
@@ -51,4 +51,4 @@ template <> class add<1>
     }
 };
 
-}  // namespace nn::experimental::ops::grad
+}  // namespace nn::ops::grad

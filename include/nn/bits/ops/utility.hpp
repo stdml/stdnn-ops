@@ -9,7 +9,7 @@
 #include <nn/bits/ops/reshape.hpp>
 #include <nn/common.hpp>
 
-namespace nn::experimental::ops
+namespace nn::ops
 {
 
 class cast : public nn::ops::endofunction
@@ -24,13 +24,6 @@ class cast : public nn::ops::endofunction
         ttl::cast(x, y);
     }
 };
-
-// TODO: make it an operator
-// template <typename R, ttl::rank_t r>
-// void fill(const ttl::tensor_ref<R, r> &t, R val)
-// {
-//     ttl::fill(t, val);
-// }
 
 class argmax : public nn::ops::reduce_function
 {
@@ -93,4 +86,4 @@ class similarity
                               static_cast<R>(x.shape().size());
     }
 };
-}  // namespace nn::experimental::ops
+}  // namespace nn::ops

@@ -4,7 +4,7 @@
 #include <nn/bits/ops/softmax.hpp>
 #include <nn/common.hpp>
 
-namespace nn::experimental::ops::grad
+namespace nn::ops::grad
 {
 template <int> class softmax;
 
@@ -50,4 +50,4 @@ template <> class softmax<0>
         }
     }
 };
-}  // namespace nn::experimental::ops::grad
+}  // namespace nn::ops::grad

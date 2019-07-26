@@ -1,5 +1,4 @@
 #pragma once
-
 #include <nn/bits/ops/axpy.hpp>
 #include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/concat.hpp>
@@ -17,4 +16,5 @@
 #include <nn/bits/ops/summary.hpp>
 #include <nn/bits/ops/top.hpp>
 #include <nn/bits/ops/transpose.hpp>
+#include <nn/bits/ops/utility.hpp>
 #include <nn/bits/ops/xentropy.hpp>
