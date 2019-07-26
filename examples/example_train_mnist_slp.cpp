@@ -3,8 +3,8 @@
 #include <ttl/algorithm>
 #include <ttl/range>
 
-#include <nn/experimental/bits/ops/grad/softmax.hpp>
-#include <nn/experimental/bits/ops/grad/xentropy.hpp>
+#include <nn/bits/ops/gradients/softmax.hpp>
+#include <nn/bits/ops/gradients/xentropy.hpp>
 #include <nn/experimental/datasets>
 #include <nn/layers>
 #include <nn/ops>
@@ -137,11 +137,11 @@ void train_slp_model(const D &ds,  //
             printf("loss: %f\n", l.data()[0]);
             {
                 // PPRINT(g_ls);
-                nn::experimental::ops::grad::xentropy<1>()(
-                    ref(g_ys), view(g_ls), view(ls), view(y_s), view(ys));
+                nn::ops::grad::xentropy<1>()(ref(g_ys), view(g_ls), view(ls),
+                                             view(y_s), view(ys));
                 // PPRINT(g_ys);
-                nn::experimental::ops::grad::softmax<0>()(ref(g_zs), view(g_ys),
-                                                          view(ys), view(zs));
+                nn::ops::grad::softmax<0>()(ref(g_zs), view(g_ys), view(ys),
+                                            view(zs));
                 // PPRINT(g_zs);
                 slp().grad(ref(g_w), ref(g_b), view(g_zs), view(zs), view(xs),
                            view(w), view(b));

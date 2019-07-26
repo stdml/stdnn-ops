@@ -1,4 +1,4 @@
-#include <nn/experimental/bits/ops/grad/add.hpp>
+#include <nn/bits/ops/gradients/add.hpp>
 #include <nn/ops>
 
 #include "testing.hpp"
@@ -8,8 +8,8 @@ TEST(affine_grad_test, test_1)
     using R = int32_t;
 
     using F = nn::ops::add;
-    using G0 = nn::experimental::ops::grad::add<0>;
-    using G1 = nn::experimental::ops::grad::add<1>;
+    using G0 = nn::ops::grad::add<0>;
+    using G1 = nn::ops::grad::add<1>;
     G0 g0;
     G1 g1;
     F f;

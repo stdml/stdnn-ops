@@ -7,7 +7,7 @@
 #include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
 
-namespace nn::experimental::ops::grad
+namespace nn::ops::grad
 {
 
 template <typename image_order, int> class add_bias;
@@ -78,4 +78,4 @@ template <> class add_bias<nn::ops::nhwc, 1>
     }
 };
 
-}  // namespace nn::experimental::ops::grad
+}  // namespace nn::ops::grad

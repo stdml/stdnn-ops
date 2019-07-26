@@ -1,7 +1,7 @@
 
 #include <ttl/algorithm>
 
-#include <nn/experimental/bits/ops/grad/conv.hpp>
+#include <nn/bits/ops/gradients/conv.hpp>
 
 #include "testing.hpp"
 
@@ -11,8 +11,8 @@ TEST(conv_grad_test, test1)
     using filter_order = nn::ops::rscd;
 
     using F = nn::ops::conv<image_order, filter_order>;
-    using G0 = nn::experimental::ops::grad::conv<image_order, filter_order, 0>;
-    using G1 = nn::experimental::ops::grad::conv<image_order, filter_order, 1>;
+    using G0 = nn::ops::grad::conv<image_order, filter_order, 0>;
+    using G1 = nn::ops::grad::conv<image_order, filter_order, 1>;
 
     const F f;
     const G0 g0(f);

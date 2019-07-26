@@ -3,7 +3,7 @@
 #include <nn/bits/ops/conv.hpp>
 #include <nn/common.hpp>
 
-namespace nn::experimental::ops::grad
+namespace nn::ops::grad
 {
 template <typename image_order, typename filter_order, int> class conv;
 
@@ -93,4 +93,4 @@ class conv<nn::ops::nhwc, nn::ops::rscd, 1>
     }
 };
 
-}  // namespace nn::experimental::ops::grad
+}  // namespace nn::ops::grad
