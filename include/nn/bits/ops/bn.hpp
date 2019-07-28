@@ -2,8 +2,8 @@
 #include <cmath>
 
 #include <nn/bits/ops/bias.hpp>
-#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
+#include <nn/traits>
 
 namespace nn::ops
 {

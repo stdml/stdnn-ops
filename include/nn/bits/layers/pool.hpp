@@ -2,7 +2,7 @@
 #include <nn/bits/layers/call.hpp>
 #include <nn/bits/layers/layer.hpp>
 #include <nn/bits/ops/pool.hpp>
-#include <nn/bits/ops/traits.hpp>
+#include <nn/traits>
 
 namespace nn::layers
 {

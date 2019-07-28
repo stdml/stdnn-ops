@@ -4,8 +4,8 @@
 #include <nn/bits/ops/im2col.hpp>
 #include <nn/bits/ops/linear_sample.hpp>
 #include <nn/bits/ops/reshape.hpp>
-#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
+#include <nn/traits>
 
 namespace nn::ops
 {

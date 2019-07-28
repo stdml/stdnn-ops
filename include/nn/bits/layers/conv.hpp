@@ -5,7 +5,7 @@
 #include <nn/bits/ops/conv.hpp>
 #include <nn/bits/ops/linear_sample.hpp>
 #include <nn/bits/ops/noop.hpp>
-#include <nn/bits/ops/traits.hpp>
+#include <nn/traits>
 
 namespace nn::layers
 {

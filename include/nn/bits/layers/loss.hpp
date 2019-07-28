@@ -1,8 +1,6 @@
 #pragma once
-
 #include <nn/bits/layers/layer.hpp>
 #include <nn/bits/ops/matmul.hpp>
-#include <nn/bits/ops/traits.hpp>
 
 namespace nn::layers
 {

@@ -1,6 +1,7 @@
 #pragma once
 #include <nn/bits/ops/axpy.hpp>
 #include <nn/bits/ops/bias.hpp>
+#include <nn/bits/ops/bn.hpp>
 #include <nn/bits/ops/concat.hpp>
 #include <nn/bits/ops/conv.hpp>
 #include <nn/bits/ops/elementary.hpp>
