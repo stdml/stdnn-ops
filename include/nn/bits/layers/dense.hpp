@@ -1,10 +1,8 @@
 #pragma once
-
 #include <nn/bits/layers/call.hpp>
 #include <nn/bits/layers/layer.hpp>
 #include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/matmul.hpp>
-#include <nn/bits/ops/traits.hpp>
 
 namespace nn::layers
 {
@@ -48,5 +46,4 @@ template <typename Act = ops::noop> class dense : public dense_trait
         return make_layer(y, w, b);
     }
 };
-
 }  // namespace nn::layers

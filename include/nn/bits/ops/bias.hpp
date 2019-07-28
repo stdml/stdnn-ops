@@ -1,7 +1,7 @@
 #pragma once
 #include <nn/bits/ops/elementary.hpp>
-#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
+#include <nn/traits>
 
 namespace nn::ops
 {

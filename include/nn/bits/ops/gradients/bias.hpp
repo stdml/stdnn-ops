@@ -4,8 +4,8 @@
 #include <nn/bits/ops/bias.hpp>
 #include <nn/bits/ops/reduce.hpp>
 #include <nn/bits/ops/shape_algo.hpp>
-#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
+#include <nn/traits>
 
 namespace nn::ops::grad
 {

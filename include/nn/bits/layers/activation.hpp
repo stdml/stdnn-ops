@@ -3,7 +3,6 @@
 #include <nn/bits/layers/call.hpp>
 #include <nn/bits/layers/layer.hpp>
 #include <nn/bits/ops/matmul.hpp>
-#include <nn/bits/ops/traits.hpp>
 
 namespace nn::layers
 {

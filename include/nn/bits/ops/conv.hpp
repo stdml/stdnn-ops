@@ -5,8 +5,8 @@
 #include <nn/bits/ops/combinators.hpp>
 #include <nn/bits/ops/im2col.hpp>
 #include <nn/bits/ops/reshape.hpp>
-#include <nn/bits/ops/traits.hpp>
 #include <nn/common.hpp>
+#include <nn/traits>
 
 namespace nn::ops
 {
