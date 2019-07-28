@@ -33,7 +33,7 @@ IncludeCategories:
   - Regex:           ^<experimental/(contract|ith|new_type)>
     Priority:        2
   # third party headers
-  - Regex:           ^<(ttl/algorithm|ttl/debug|ttl/range|ttl/tensor)>
+  - Regex:           ^<(ttl/algorithm|ttl/debug|ttl/range|ttl/shape|ttl/tensor)>
     Priority:        3
   # public nn headers
   - Regex:           ^<nn
