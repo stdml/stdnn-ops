@@ -1,21 +1,39 @@
 #include <ttl/tensor>
 
+#include <nn/bits/ops/gradients/reshape.hpp>
 #include <nn/bits/ops/reshape.hpp>
 
 #include "testing.hpp"
 
-template <typename R>
-void test_flatten(const int n, const int h, const int w, const int c)
-{
-    ttl::tensor<R, 4> x(n, h, w, c);
-    nn::ops::copy_flatten<1, 3> f;
-    ttl::tensor<R, 2> y(f(x.shape()));
-    ASSERT_EQ(y.shape(), ttl::make_shape(n, h * w * c));
-    f(ref(y), view(x));
-}
+template <typename R, ttl::rank_t... rs> struct test_flatten {
+    static constexpr ttl::rank_t in_rank =
+        ttl::internal::int_seq_sum<ttl::rank_t, rs...>::value;
+    static constexpr ttl::rank_t out_rank = sizeof...(rs);
+
+    void operator()(const ttl::shape<in_rank> &x_shape) const
+    {
+        nn::ops::copy_flatten<rs...> f;
+        nn::ops::grad::copy_flatten<rs...> g;
+
+        ttl::tensor<R, in_rank> x(x_shape);
+        ttl::tensor<R, out_rank> y(f(x_shape));
+        ttl::tensor<R, out_rank> gy(y.shape());
+        ttl::tensor<R, in_rank> gx(g(gy.shape(), y.shape(), x.shape()));
+
+        std::iota(x.data(), x.data_end(), 1);
+        std::iota(gy.data(), gy.data_end(), 2);
+
+        f(ref(y), view(x));
+        g(ref(gx), view(gy), view(y), view(x));
+
+        assert_tensor_eq(view(flatten(y)), view(flatten(x)));
+        assert_tensor_eq(view(flatten(gx)), view(flatten(gy)));
+    }
+};
 
 TEST(reshape_test, test1)
 {
-    test_flatten<int>(10, 28, 28, 3);
-    test_flatten<float>(10, 28, 28, 3);
+    test_flatten<int, 1, 3>()(ttl::make_shape(10, 28, 28, 3));
+    test_flatten<int, 2, 2>()(ttl::make_shape(10, 28, 28, 3));
+    test_flatten<int, 3, 1>()(ttl::make_shape(10, 28, 28, 3));
 }
