@@ -19,7 +19,9 @@ void gen_test_tensor(const ttl::tensor<R, r> &x, int &s)
     });
 }
 
-template <typename R> struct assert_eq;
+template <typename R> struct assert_eq {
+    void operator()(const R &x, const R &y) { ASSERT_EQ(x, y); }
+};
 
 template <> struct assert_eq<float> {
     void operator()(float x, float y) { ASSERT_FLOAT_EQ(x, y); }
@@ -50,11 +52,13 @@ inline void unused(void *) {}
     }
 
 template <typename R, ttl::rank_t r>
-void assert_tensor_eq(const ttl::tensor<R, r> &x, const ttl::tensor<R, r> &y)
+void assert_tensor_eq(const ttl::tensor_view<R, r> &x,
+                      const ttl::tensor_view<R, r> &y)
 {
     ASSERT_EQ(x.shape(), y.shape());
-    const auto n = x.shape().size();
-    for (auto i : range(n)) { ASSERT_EQ(x.data()[i], y.data()[i]); }
+    for (auto i : ttl::range(x.shape().size())) {
+        assert_eq<R>()(x.data()[i], y.data()[i]);
+    }
 }
 
 template <typename T> void pprint(const T &t, const char *name)

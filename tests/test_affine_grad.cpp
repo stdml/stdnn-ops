@@ -47,12 +47,12 @@ TEST(affine_grad_test, test_1)
         {
             ttl::tensor<R, 1> z2(z.shape());
             f(ref(z2), view(x), view(y1));
-            assert_tensor_eq(z1, z2);
+            assert_tensor_eq(view(z1), view(z2));
         }
         {
             ttl::tensor<R, 1> z2(z.shape());
             f(ref(z2), view(x1), view(y));
-            assert_tensor_eq(z1, z2);
+            assert_tensor_eq(view(z1), view(z2));
         }
     }
 }

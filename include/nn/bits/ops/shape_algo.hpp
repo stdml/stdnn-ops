@@ -7,7 +7,6 @@ namespace nn::ops
 {
 namespace internal
 {
-
 template <ttl::rank_t p, ttl::rank_t r>
 shape<r> concat2shapes(const shape<r> &s, const shape<r> &t)
 {
@@ -34,19 +33,7 @@ shape<r> concat_shape(const shape<r> &s, const S &... ss)
 {
     return concat2shapes<p, r>(s, concat_shape<p, r>(ss...));
 }
-
 }  // namespace internal
-
-template <ttl::rank_t p, ttl::rank_t q>
-shape<2> as_mat_shape(const shape<p + q> &s)
-{
-    using dim_t = typename shape<p + q>::dimension_type;
-    const dim_t m = std::accumulate(s.dims().begin(), s.dims().begin() + p,
-                                    (dim_t)1, std::multiplies<dim_t>());
-    const dim_t n = std::accumulate(s.dims().begin() + p, s.dims().end(),
-                                    (dim_t)1, std::multiplies<dim_t>());
-    return shape<2>(m, n);
-}
 
 class endofunction
 {
@@ -102,5 +89,4 @@ auto gradient_shape(const Op &infer, const shape<ry> &gy, const shape<ry> &y,
     contract_assert_eq(y, gy);
     return std::get<i>(std::make_tuple(xs...));
 };
-
 }  // namespace nn::ops
