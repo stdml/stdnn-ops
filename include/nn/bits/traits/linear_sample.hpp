@@ -18,9 +18,9 @@ template <typename dim_t> class linear_sample_trait
     const padding_t padding_;
 
   public:  // static
-    static constexpr dim_t default_rate = 1;
-    static constexpr dim_t default_stride = 1;
-    static constexpr dim_t default_pad_lr = 0;
+    static constexpr dim_t default_rate = filter_t::default_rate;
+    static constexpr dim_t default_stride = filter_t::default_stride;
+    static constexpr dim_t default_pad_lr = padding_t::default_pad_lr;
 
     static constexpr padding_t padding(dim_t p) { return padding_t(p, p); }
 
@@ -74,8 +74,9 @@ template <typename dim_t> class linear_sample_trait
     }
 
   public:  // constructors
-    linear_sample_trait(const dim_t ksize, const dim_t stride = 1,
-                        const dim_t rate = 1, const dim_t pad_lr = 0)
+    linear_sample_trait(const dim_t ksize, const dim_t stride = default_stride,
+                        const dim_t rate = default_rate,
+                        const dim_t pad_lr = default_pad_lr)
         : filter_(ksize, stride, rate), padding_(pad_lr)
     {
     }

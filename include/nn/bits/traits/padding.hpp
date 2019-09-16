@@ -12,7 +12,9 @@ template <typename N> class linear_padding_trait
     const N right_;
 
   public:
-    linear_padding_trait(const N lr = 0) : left_(lr), right_(lr) {}
+    static constexpr N default_pad_lr = 0;
+
+    linear_padding_trait(const N lr = default_pad_lr) : left_(lr), right_(lr) {}
 
     linear_padding_trait(const N l, const N r) : left_(l), right_(r) {}
 

@@ -14,7 +14,13 @@ template <typename N> class linear_filter_trait
     const N rate_;
 
   public:
-    linear_filter_trait(const N ksize = 1, const N stride = 1, const N rate = 1)
+    static constexpr N default_ksize = 1;
+    static constexpr N default_stride = 1;
+    static constexpr N default_rate = 1;
+
+    linear_filter_trait(const N ksize = default_ksize,
+                        const N stride = default_stride,
+                        const N rate = default_rate)
         : ksize_(ksize), stride_(stride), rate_(rate)
     {
         // static_assert(std::is_unsigned<N>::value, "");
