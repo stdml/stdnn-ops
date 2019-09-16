@@ -1,176 +1,13 @@
 #pragma once
+#include <ttl/shape>
+
+#include <nn/bits/traits/linear_sample.hpp>
 #include <nn/common.hpp>
 
-/*!
-e.g.
-
-012345678901234567890123456789
-0123456789ABCDEF0123456789ABCD // n = 30, pad_l = pad_r = 0
-*   *   *                      // ksize = 3, rate = 4, patch_size = 9
-       *   *   *               // stride = 7
-              *   *   *
-                     *   *   *
-                               // m = (30 - 9) / 7 + 1 = 4
-
-*/
-
-namespace nn::ops
+namespace nn
 {
-
-template <typename dim_t> class linear_sample_trait
+namespace traits
 {
-    const dim_t pad_l_;  // TODO: make it template parameter
-    const dim_t pad_r_;  // TODO: make it template parameter
-
-    const dim_t rate_;
-    const dim_t stride_;
-    const dim_t ksize_;
-
-    struct padding_trait;
-
-  public:
-    static constexpr dim_t default_rate = 1;
-    static constexpr dim_t default_stride = 1;
-    static constexpr dim_t default_pad_lr = 0;
-
-    using padding_t = std::experimental::new_type<shape<2>, padding_trait>;
-
-    static constexpr padding_t padding(dim_t p) { return padding_t(p, p); }
-
-    static constexpr padding_t padding(dim_t left, dim_t right)
-    {
-        return padding_t(left, right);
-    };
-
-    static dim_t patch_size(dim_t k, dim_t r) { return r * (k - 1) + 1; }
-
-    static padding_t even_padding(dim_t p)
-    {
-        return padding_t(p / 2, p - p / 2);
-    }
-
-    static padding_t valid_padding(dim_t k, dim_t s, dim_t r, dim_t n)
-    {
-        const dim_t ps = patch_size(k, r);
-        // p is the minimal p such that (n + p - ps) == 0 (mod s)
-        // p == ps - n (mod s)
-        return even_padding((ps + s - (n % s)) % s);
-    }
-
-    static padding_t same_padding(dim_t k, dim_t s, dim_t r, dim_t n)
-    {
-        const dim_t ps = patch_size(k, r);
-        const dim_t n0 = n % s;
-        // p = ps - s - (n % s)
-        // TODO: support negative padding
-        contract_assert(ps >= s + n0);
-        return even_padding(ps - s - n0);
-    }
-
-    using padding_policy = std::function<padding_t(dim_t, dim_t, dim_t, dim_t)>;
-
-    // maybe TODO: make it a value instead of a function
-    static padding_policy padding_valid()
-    {
-        return padding_policy(valid_padding);
-    }
-
-    // maybe TODO: make it a value instead of a function
-    static padding_policy padding_same()
-    {
-        return padding_policy(same_padding);
-    }
-
-    static padding_policy padding_fixed(const padding_t &p)
-    {
-        return [p = p](dim_t k, dim_t s, dim_t r, dim_t n) { return p; };
-    }
-
-  public:
-    linear_sample_trait(dim_t ksize)
-        : linear_sample_trait(ksize, default_stride)
-    {
-    }
-
-    linear_sample_trait(dim_t ksize, dim_t stride)
-        : linear_sample_trait(ksize, stride, default_rate)
-    {
-    }
-
-    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate)
-        : linear_sample_trait(ksize, stride, rate, default_pad_lr)
-    {
-    }
-
-    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_lr)
-        : linear_sample_trait(ksize, stride, rate, padding(pad_lr))
-    {
-    }
-
-    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate, dim_t pad_l,
-                        dim_t pad_r)
-        : linear_sample_trait(ksize, stride, rate, padding(pad_l, pad_r))
-    {
-        // TODO: deprecate it
-    }
-
-    linear_sample_trait(dim_t ksize, dim_t stride, dim_t rate,
-                        const padding_t &pad)
-        : pad_l_(std::get<0>(pad.dims())),
-          pad_r_(std::get<1>(pad.dims())),
-          rate_(rate),
-          stride_(stride),
-          ksize_(ksize)
-    {
-        contract_assert(rate_ >= 1);
-        contract_assert(stride_ >= 1);
-        contract_assert(ksize_ >= 1);
-        contract_assert(pad_l_ >= 0);
-        contract_assert(pad_r_ >= 0);
-    }
-
-    dim_t get_ksize() const { return ksize_; }
-
-    dim_t get_stride() const { return stride_; }
-
-    padding_t get_padding() const { return padding(pad_l_, pad_r_); }
-
-    /*! Compute the output size from input size. */
-    dim_t operator()(dim_t n) const
-    {
-        const dim_t n_padded = n + pad_l_ + pad_r_;
-        const dim_t ps = patch_size(ksize_, rate_);
-        contract_assert(n_padded >= ps);
-        contract_assert((n_padded - ps) % stride_ == 0);
-        return (n_padded - ps) / stride_ + 1;
-    }
-
-    /*! Compute the index $i^\prime$ of padded input from the output index and
-     * the kernel index, the original index $i$ should be $i^prime - pad_l$ if
-     * $pad_l <= i^\prime <  pad_l + n$.
-     *
-     *
-     * identities:
-     *      (0, 0) -> 0
-     *      (m - 1, ksize_ - 1) -> n - 1
-     * */
-    // requires: 0 <= j < m
-    // requires: 0 <= k < ksize_
-    dim_t operator()(dim_t j, dim_t k) const
-    {
-        // j^\prime = j * stride_;
-        // patch_offset = k * rate_;
-        return j * stride_ + k * rate_;
-    }
-
-    bool inside(dim_t i, dim_t n) const
-    {
-        return pad_l_ <= i && i < pad_l_ + n;
-    }
-
-    dim_t unpad(dim_t i) const { return i - pad_l_; }
-};
-
 namespace internal
 {
 template <size_t idx, typename T> static T constant(const T &x) { return x; }
@@ -187,7 +24,6 @@ static std::array<T, sizeof...(I)> replicate(const T &x,
 {
     return std::array<T, sizeof...(I)>({constant<I>(x)...});
 }
-
 }  // namespace internal
 
 template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
@@ -225,7 +61,7 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
                                    std::make_index_sequence<r>());
     }
 
-  public:
+  public:  // static
     static padding_1d_t padding_1d(dim_t p) { return padding_1d_t(p, p); }
 
     static padding_1d_t padding_1d(dim_t left, dim_t right)
@@ -272,6 +108,7 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
         return rate_t(d...);
     };
 
+  public:  // constructors
     multi_linear_sample_trait(const ksize_t &ksize)
         : multi_linear_sample_trait(ksize, default_padding(), default_stride())
     {
@@ -305,6 +142,7 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
     {
     }
 
+  public:
     ksize_t get_ksize() const
     {
         return get_ksize(std::make_index_sequence<r>());
@@ -341,5 +179,5 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
         return ksize_t(std::get<I>(samples_).get_ksize()...);
     }
 };
-
-}  // namespace nn::ops
+}  // namespace traits
+}  // namespace nn

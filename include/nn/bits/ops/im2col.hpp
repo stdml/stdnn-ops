@@ -1,6 +1,6 @@
 #pragma once
-#include <nn/bits/ops/linear_sample.hpp>
 #include <nn/bits/ops/reshape.hpp>
+#include <nn/bits/traits/multi_linear_sample.hpp>
 #include <nn/common.hpp>
 #include <nn/traits>
 
