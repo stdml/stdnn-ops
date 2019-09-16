@@ -51,7 +51,16 @@ void test_pool2d(pool2d_params_t p)
 
 template <class pool_method> void _test_pool2d_all_bind_1()
 {
-    pool2d_params_t p;
+    pool2d_params_t p = {
+        .ksize_h = 2,
+        .ksize_w = 2,
+        .stride_h = 2,
+        .stride_w = 2,
+        .pad_h_left = 0,
+        .pad_h_right = 0,
+        .pad_w_left = 0,
+        .pad_w_right = 0,
+    };
     test_pool2d<pool_method, nn::ops::nhwc>(p);
     test_pool2d<pool_method, nn::ops::nchw>(p);
 }
@@ -100,7 +109,18 @@ void test_im2col(im2col_params_t p)
 
 void test_im2col_all()
 {
-    im2col_params_t p;
+    im2col_params_t p = {
+        .ksize_h = 3,
+        .ksize_w = 3,
+        .stride_h = 1,
+        .stride_w = 1,
+        .rate_h = 1,
+        .rate_w = 1,
+        .pad_h_left = 0,
+        .pad_h_right = 0,
+        .pad_w_left = 0,
+        .pad_w_right = 0,
+    };
     test_im2col<nn::ops::hw, nn::ops::rshw>(p);
     test_im2col<nn::ops::hw, nn::ops::hwrs>(p);
     test_im2col<nn::ops::hwc, nn::ops::hwrsc>(p);
@@ -154,7 +174,16 @@ void test_conv2d(conv2d_params_t p)
 
 void test_conv2d_all()
 {
-    conv2d_params_t p;
+    conv2d_params_t p = {
+        .stride_h = 1,
+        .stride_w = 1,
+        .rate_h = 1,
+        .rate_w = 1,
+        .pad_h_left = 0,
+        .pad_h_right = 0,
+        .pad_w_left = 0,
+        .pad_w_right = 0,
+    };
     test_conv2d<nn::ops::nhwc, nn::ops::rscd>(p);
     test_conv2d<nn::ops::nchw, nn::ops::dcrs>(p);
 }
