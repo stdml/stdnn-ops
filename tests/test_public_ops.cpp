@@ -21,7 +21,7 @@ TEST(test_public_ops, test_public_symbols)
     TEST_OP_EXIST(ones);
     TEST_OP_EXIST(uniform_distribution);
     TEST_OP_EXIST(zeros);
-    // TEST_OP_EXIST(truncated_normal);
+    TEST_OP_EXIST(truncated_normal);
     // TEST_OP_EXIST(constant);
 
     // linear algebra

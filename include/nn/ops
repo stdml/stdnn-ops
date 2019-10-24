@@ -1,3 +1,4 @@
+// # -*- mode: c++ -*-
 #pragma once
 #include <nn/bits/ops/axpy.hpp>
 #include <nn/bits/ops/bias.hpp>
@@ -5,6 +6,7 @@
 #include <nn/bits/ops/concat.hpp>
 #include <nn/bits/ops/conv.hpp>
 #include <nn/bits/ops/elementary.hpp>
+#include <nn/bits/ops/hash.hpp>
 #include <nn/bits/ops/im2col.hpp>
 #include <nn/bits/ops/init.hpp>
 #include <nn/bits/ops/io.hpp>

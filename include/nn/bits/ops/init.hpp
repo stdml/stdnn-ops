@@ -55,28 +55,46 @@ class uniform_distribution
     }
 };
 
-template <typename R> class truncated_normal
+class truncated_normal
 {
-    const R stddev_;
-    const R bound_;
+    const double stddev_;
+    const double bound_;
+
+    template <typename R, ttl::rank_t r, typename Engine>
+    void operator()(const ttl::tensor_ref<R, r> &y, Engine &engine) const
+    {
+        std::normal_distribution<R> d(0, stddev_);
+        std::generate(y.data(), y.data_end(), [&]() {
+            R v = d(engine);
+            while (std::fabs(v) > bound_) { v = d(engine); }
+            return v;
+        });
+    }
 
   public:
-    truncated_normal(const R &stddev)
+    truncated_normal(const double &stddev)
         : stddev_(stddev), bound_(2 * std::fabs(stddev))
     {
     }
 
-    template <ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &x) const
+    template <typename R, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, r> &y) const
     {
+        static_assert(std::is_floating_point<R>::value, "");
         std::random_device rd;
         std::mt19937 gen(rd());
-        std::normal_distribution<R> d(0, stddev_);
-        std::generate(x.data(), x.data_end(), [&]() {
-            R v = d(gen);
-            while (std::fabs(v) > bound_) { v = d(gen); }
-            return v;
-        });
+        (*this)(y, gen);
+    }
+
+    template <typename R, ttl::rank_t r>
+    void operator()(const ttl::tensor_ref<R, r> &y,
+                    const ttl::tensor_view<uint32_t, 0> &x) const
+    {
+        static_assert(std::is_floating_point<R>::value, "");
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        gen.seed(x.data()[0]);
+        (*this)(y, gen);
     }
 };
 }  // namespace nn::ops
