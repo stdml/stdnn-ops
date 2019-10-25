@@ -47,6 +47,7 @@ TEST(test_public_ops, test_public_symbols)
     // * conv
     TEST_OP_EXIST(conv<nn::ops::nhwc _ nn::ops::rscd>);
     TEST_OP_EXIST(conv<nn::ops::nchw _ nn::ops::dcrs>);
+    TEST_OP_EXIST(conv1d);
     // * bias
     TEST_OP_EXIST(add_bias<nn::ops::hw>);
     TEST_OP_EXIST(add_bias<nn::ops::nhwc>);

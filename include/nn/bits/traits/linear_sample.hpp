@@ -13,7 +13,7 @@ template <typename dim_t> class linear_sample_trait
     using filter_t = linear_filter_trait<dim_t>;
     using padding_t = linear_padding_trait<dim_t>;
 
-  private:
+  protected:
     const filter_t filter_;
     const padding_t padding_;
 

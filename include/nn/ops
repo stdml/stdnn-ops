@@ -5,6 +5,7 @@
 #include <nn/bits/ops/bn.hpp>
 #include <nn/bits/ops/concat.hpp>
 #include <nn/bits/ops/conv.hpp>
+#include <nn/bits/ops/conv1d.hpp>
 #include <nn/bits/ops/elementary.hpp>
 #include <nn/bits/ops/hash.hpp>
 #include <nn/bits/ops/im2col.hpp>
