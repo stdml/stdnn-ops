@@ -24,15 +24,13 @@ TEST(init_test, test_truncated_normal)
     init(ref(x), view(seed));
     init(ref(y), view(seed));
 
-    ttl::tensor_view<char, 1> a(reinterpret_cast<char *>(x.data()),
-                                x.data_size());
-    ttl::tensor_view<char, 1> b(reinterpret_cast<char *>(y.data()),
-                                y.data_size());
+    assert_bytes_eq(view(x), view(y));
+
     ttl::tensor<uint32_t, 0> h;
     ttl::tensor<uint32_t, 0> k;
 
     const nn::ops::crc<> crc32;
-    crc32(ref(h), a);
-    crc32(ref(k), b);
+    crc32(ref(h), view(x));
+    crc32(ref(k), view(y));
     ASSERT_EQ(h.data()[0], k.data()[0]);
 }
