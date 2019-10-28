@@ -27,7 +27,7 @@ IncludeCategories:
     Priority:        1
   # standard C++ headers
   # TODO: add as needed
-  - Regex:           ^<(algorithm|array|condition_variable|functional|iostream|map|memory|mutex|numeric|random|sstream|stdexcept|string|thread|type_traits|vector)>$
+  - Regex:           ^<(algorithm|array|condition_variable|functional|iomanip|iostream|map|memory|mutex|numeric|random|sstream|stdexcept|string|thread|type_traits|vector)>$
     Priority:        2
   # user added experimental STL headers
   - Regex:           ^<experimental/(contract|ith|new_type)>

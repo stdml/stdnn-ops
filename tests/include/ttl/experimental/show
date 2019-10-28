@@ -1,0 +1,18 @@
+// -*- mode: c++ -*-
+#pragma once
+#include <ttl/experimental/bits/show.hpp>
+
+namespace ttl
+{
+template <typename R, ttl::rank_t r>
+internal::show_t<R, r> show(const ttl::tensor_view<R, r> &t)
+{
+    return internal::show_t<R, r>(t);
+}
+
+template <typename R, ttl::rank_t r>
+internal::show_t<R, r> show(const ttl::tensor<R, r> &t)
+{
+    return show(view(t));
+}
+}  // namespace ttl
