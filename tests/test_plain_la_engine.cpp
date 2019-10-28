@@ -1,8 +1,7 @@
 #include <ttl/algorithm>
 
 #include <nn/bits/engines/linag.hpp>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 using la = nn::engines::linag<nn::engines::plain>;
 

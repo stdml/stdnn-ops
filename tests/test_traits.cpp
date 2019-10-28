@@ -1,6 +1,5 @@
+#include <nn/testing>
 #include <nn/traits>
-
-#include "testing.hpp"
 
 TEST(traits_test, test_1)
 {

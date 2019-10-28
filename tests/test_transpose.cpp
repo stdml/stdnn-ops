@@ -1,8 +1,6 @@
-#include "testing.hpp"
-
-#include <nn/ops>
-
 #include <nn/bits/ops/transpose.hpp>
+#include <nn/ops>
+#include <nn/testing>
 
 void test_transpose(int n, int h, int w, int c)
 {

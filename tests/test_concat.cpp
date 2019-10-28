@@ -1,6 +1,5 @@
-#include "testing.hpp"
-
 #include <nn/ops>
+#include <nn/testing>
 
 using nn::ops::internal::concat_shape;
 

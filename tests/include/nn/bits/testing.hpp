@@ -4,7 +4,7 @@
 #include <ttl/range>
 #include <ttl/tensor>
 
-#include <nn/ops>
+#include <nn/ops>  // FIXME: don't include
 
 #include <gtest/gtest.h>
 

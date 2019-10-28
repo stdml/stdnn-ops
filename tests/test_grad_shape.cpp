@@ -3,8 +3,7 @@
 #include <nn/bits/ops/gradients/softmax.hpp>
 #include <nn/bits/ops/gradients/xentropy.hpp>
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 template <typename R, typename S>
 ttl::tensor<R, S::rank> make_tensor(const S &shape)

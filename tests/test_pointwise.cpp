@@ -2,8 +2,7 @@
 #include <ttl/tensor>
 
 #include <nn/bits/ops/pointwise.hpp>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(pointwise_test, test_relu)
 {

@@ -1,8 +1,7 @@
 #include <ttl/tensor>
 
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(conv_test, test1)
 {

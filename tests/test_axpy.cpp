@@ -1,8 +1,7 @@
 #include <ttl/algorithm>
 
 #include <nn/bits/ops/axpy.hpp>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(axpy, test1)
 {

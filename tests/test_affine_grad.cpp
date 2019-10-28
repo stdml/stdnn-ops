@@ -1,7 +1,6 @@
 #include <nn/bits/ops/gradients/add.hpp>
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(affine_grad_test, test_1)
 {

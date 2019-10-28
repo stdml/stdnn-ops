@@ -1,6 +1,5 @@
-#include "testing.hpp"
-
 #include <nn/models>
+#include <nn/testing>
 
 TEST(namescope_sample_test, test_1)
 {

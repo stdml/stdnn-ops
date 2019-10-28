@@ -1,7 +1,6 @@
 #include <nn/bits/ops/hash.hpp>
 #include <nn/bits/ops/init.hpp>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(init_test, test_uniform)
 {

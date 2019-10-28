@@ -1,6 +1,5 @@
-#include "testing.hpp"
-
 #include <nn/ops>
+#include <nn/testing>
 
 TEST(summary_test, test_1)
 {
