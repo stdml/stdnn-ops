@@ -44,7 +44,7 @@ int test_all_permutations(const T &t, I... i)
     return p;
 }
 
-inline void unused(void *) {}
+inline void unused(const void *) {}
 
 #define UNUSED(e)                                                              \
     {                                                                          \
