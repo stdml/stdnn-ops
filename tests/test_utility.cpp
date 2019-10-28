@@ -1,6 +1,5 @@
 #include <nn/bits/ops/utility.hpp>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 // TODO: test other utility ops
 

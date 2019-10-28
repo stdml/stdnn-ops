@@ -1,6 +1,6 @@
 #include <nn/ops>
+#include <nn/testing>
 
-#include "testing.hpp"
 #include "testing_traits.hpp"
 
 struct pool2d_params_t {

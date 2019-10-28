@@ -4,8 +4,7 @@
 #include <ttl/tensor>
 
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(xentropy_test, test_1)
 {

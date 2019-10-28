@@ -1,8 +1,7 @@
 #include <ttl/tensor>
 
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(im2col_test, test1)
 {

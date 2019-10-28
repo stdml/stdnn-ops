@@ -1,6 +1,5 @@
 #include <nn/layers>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 template <typename dense> void test_dense_layer()
 {

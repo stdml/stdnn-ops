@@ -2,8 +2,7 @@
 
 #include <nn/bits/ops/gradients/reshape.hpp>
 #include <nn/bits/ops/reshape.hpp>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 template <typename R, ttl::rank_t... rs> struct test_flatten {
     static constexpr ttl::rank_t in_rank =

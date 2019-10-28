@@ -1,4 +1,4 @@
-#include "testing.hpp"
+#include <nn/testing>
 
 int main(int argc, char *argv[])
 {

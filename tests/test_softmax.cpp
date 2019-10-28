@@ -2,8 +2,7 @@
 #include <ttl/tensor>
 
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 TEST(softmax_test, test_1)
 {

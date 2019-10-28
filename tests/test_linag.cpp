@@ -4,8 +4,7 @@
 #include <ttl/tensor>
 
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 void test_mm(int k, int m, int n)
 {

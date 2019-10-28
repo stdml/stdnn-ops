@@ -4,7 +4,7 @@
 #include <ttl/range>
 #include <ttl/tensor>
 
-#include <nn/ops>
+#include <nn/ops>  // FIXME: don't include
 
 #include <gtest/gtest.h>
 
@@ -44,7 +44,7 @@ int test_all_permutations(const T &t, I... i)
     return p;
 }
 
-inline void unused(void *) {}
+inline void unused(const void *) {}
 
 #define UNUSED(e)                                                              \
     {                                                                          \
@@ -59,6 +59,29 @@ void assert_tensor_eq(const ttl::tensor_view<R, r> &x,
     for (auto i : ttl::range(x.shape().size())) {
         assert_eq<R>()(x.data()[i], y.data()[i]);
     }
+}
+
+template <typename R, ttl::rank_t r>
+ttl::tensor_view<uint8_t, 1> view_bytes(const ttl::tensor_view<R, r> &x)
+{
+    return ttl::tensor_view<uint8_t, 1>(
+        reinterpret_cast<const uint8_t *>(x.data()), x.data_size());
+}
+
+template <typename R, ttl::rank_t r>
+bool bytes_eq(const ttl::tensor_view<R, r> &x, const ttl::tensor_view<R, r> &y)
+{
+    if (x.shape() != y.shape()) { return false; }
+    const auto a = view_bytes(x);
+    const auto b = view_bytes(y);
+    return std::equal(a.data(), a.data_end(), b.data());
+}
+
+template <typename R, ttl::rank_t r>
+void assert_bytes_eq(const ttl::tensor_view<R, r> &x,
+                     const ttl::tensor_view<R, r> &y)
+{
+    ASSERT_TRUE(bytes_eq(x, y));
 }
 
 template <typename T> void pprint(const T &t, const char *name)

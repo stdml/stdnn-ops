@@ -1,7 +1,6 @@
 #include <nn/bits/ops/gradients/bias.hpp>
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 template <typename R, typename F, typename G0, typename G1, ttl::rank_t r0,
           ttl::rank_t r1>

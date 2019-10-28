@@ -1,6 +1,6 @@
 #include <nn/layers>
+#include <nn/testing>
 
-#include "testing.hpp"
 #include "testing_traits.hpp"
 
 struct conv2d_layer_params_t {

@@ -2,8 +2,7 @@
 #include <ttl/tensor>
 
 #include <nn/ops>
-
-#include "testing.hpp"
+#include <nn/testing>
 
 template <typename Op, typename R>
 void test_apply_bias_nhwc(int n, int h, int w, int c, R a, R b, R value)
