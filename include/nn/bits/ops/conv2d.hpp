@@ -1,6 +1,4 @@
 #pragma once
-#include <ttl/tensor>
-
 #include <nn/bits/engines/linag.hpp>
 #include <nn/bits/ops/combinators.hpp>
 #include <nn/bits/ops/im2col.hpp>

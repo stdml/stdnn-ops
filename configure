@@ -4,8 +4,11 @@ set -e
 # defaults
 USE_BLAS=0
 USE_OPENCV=0
+BUILD_LIB=0
+BUILD_EXAMPLES=0
 BUILD_TESTS=0
 BUILD_BENCHMARKS=0
+USE_EXTERN=0
 VERBOSE=0
 
 parse_args() {
@@ -20,6 +23,12 @@ parse_args() {
         --use-opencv)
             USE_OPENCV=1
             ;;
+        --lib)
+            BUILD_LIB=1
+            ;;
+        --examples)
+            BUILD_EXAMPLES=1
+            ;;
         --tests)
             BUILD_TESTS=1
             ;;
@@ -31,6 +40,9 @@ parse_args() {
             ;;
         --no-benchmarks)
             BUILD_BENCHMARKS=0
+            ;;
+        --extern)
+            USE_EXTERN=1
             ;;
         --verbose)
             VERBOSE=1
@@ -80,13 +92,16 @@ add_cmake_flags() {
     add_cmake_flag CMAKE_BUILD_TYPE Release
     add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS 1
     add_cmake_flag CMAKE_VERBOSE_MAKEFILE 1
-    add_cmake_flag BUILD_PACKAGES 1
 
     # add_cmake_flag USE_OPT 1
     add_cmake_flag USE_OPENCV ${USE_OPENCV}
     add_cmake_flag USE_OPENBLAS ${USE_BLAS}
+    add_cmake_flag BUILD_LIB ${BUILD_LIB}
+    add_cmake_flag BUILD_EXAMPLES ${BUILD_EXAMPLES}
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
     add_cmake_flag BUILD_BENCHMARKS ${BUILD_BENCHMARKS}
+    add_cmake_flag BUILD_PACKAGES 1
+    add_cmake_flag USE_EXTERN ${USE_EXTERN}
 
     # FIXME: depend on a tag for release version
     add_cmake_flag STDTENSOR_GIT_TAG $(head -n 1 ./deps/stdtensor)

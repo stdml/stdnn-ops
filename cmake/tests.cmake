@@ -20,7 +20,11 @@ LINK_DIRECTORIES(${PREFIX}/lib64) # for alpine
 FUNCTION(ADD_GTEST target)
     ADD_EXECUTABLE(${target} ${ARGN} tests/main.cpp)
     TARGET_LINK_LIBRARIES(${target} gtest)
-    ADD_DEPENDENCIES(${target} libgtest-dev libstdtensor)
+    TARGET_USE_STDTENSOR(${target})
+    IF(USE_EXTERN)
+        TARGET_LINK_LIBRARIES(${target} stdnn-ops)
+    ENDIF()
+    ADD_DEPENDENCIES(${target} libgtest-dev)
     TARGET_INCLUDE_DIRECTORIES(${target} PRIVATE ${PREFIX}/include)
     TARGET_INCLUDE_DIRECTORIES(${target}
                                PRIVATE ${CMAKE_SOURCE_DIR}/tests/include)
