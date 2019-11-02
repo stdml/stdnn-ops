@@ -102,6 +102,7 @@ add_cmake_flags() {
     add_cmake_flag BUILD_BENCHMARKS ${BUILD_BENCHMARKS}
     add_cmake_flag BUILD_PACKAGES 1
     add_cmake_flag USE_EXTERN ${USE_EXTERN}
+    add_cmake_flag BUILD_GTEST ${BUILD_GTEST}
 
     if [ ${BUILD_TESTS} -eq 1 ] && [ ${BUILD_GTEST} -eq 1 ]; then
         pass_cmake_flag_from_env GTEST_GIT_URL
@@ -120,9 +121,11 @@ cleanup_cmake_cache() {
     if [ -f CMakeCache.txt ]; then
         rm CMakeCache.txt
     fi
-    for cmake_cache in $(find 3rdparty/ | grep CMakeCache.txt); do
-        rm $cmake_cache
-    done
+    if [ -d 3rdparty ]; then
+        for cmake_cache in $(find 3rdparty/ | grep CMakeCache.txt); do
+            rm $cmake_cache
+        done
+    fi
 }
 
 parse_args $@
