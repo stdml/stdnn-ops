@@ -4,11 +4,15 @@ set -e
 # defaults
 USE_BLAS=0
 USE_OPENCV=0
+USE_EXTERN=0
+
 BUILD_LIB=0
 BUILD_EXAMPLES=0
 BUILD_TESTS=0
 BUILD_BENCHMARKS=0
-USE_EXTERN=0
+
+BUILD_GTEST=0
+
 VERBOSE=0
 
 parse_args() {
@@ -34,6 +38,9 @@ parse_args() {
             ;;
         --no-tests)
             BUILD_TESTS=0
+            ;;
+        --build-gtest)
+            BUILD_GTEST=1
             ;;
         --benchmarks)
             BUILD_BENCHMARKS=1
@@ -77,13 +84,6 @@ pass_cmake_flag_from_env() {
 add_cmake_flags() {
     pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX PREFIX
 
-    if [ ${BUILD_TESTS} -eq 1 ]; then
-        pass_cmake_flag_from_env GTEST_GIT_URL
-    fi
-    if [ ${BUILD_BENCHMARKS} -eq 1 ]; then
-        pass_cmake_flag_from_env GBENCH_GIT_URL
-    fi
-
     pass_cmake_flag_from_env STDTRACER_GIT_URL
     pass_cmake_flag_from_env STDTENSOR_GIT_URL
 
@@ -102,6 +102,13 @@ add_cmake_flags() {
     add_cmake_flag BUILD_BENCHMARKS ${BUILD_BENCHMARKS}
     add_cmake_flag BUILD_PACKAGES 1
     add_cmake_flag USE_EXTERN ${USE_EXTERN}
+
+    if [ ${BUILD_TESTS} -eq 1 ] && [ ${BUILD_GTEST} -eq 1 ]; then
+        pass_cmake_flag_from_env GTEST_GIT_URL
+    fi
+    if [ ${BUILD_BENCHMARKS} -eq 1 ]; then
+        pass_cmake_flag_from_env GBENCH_GIT_URL
+    fi
 
     # FIXME: depend on a tag for release version
     add_cmake_flag STDTENSOR_GIT_TAG $(head -n 1 ./deps/stdtensor)

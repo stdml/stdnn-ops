@@ -14,7 +14,7 @@ before_install:
 - export CXX=g++-7
 
 script:
-- ./configure --lib --examples --tests --benchmarks
+- ./configure --lib --examples --tests --benchmarks --build-gtest
 - make
 - make test
 - cloc include
