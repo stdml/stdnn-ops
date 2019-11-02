@@ -32,15 +32,6 @@ IF(USE_OPT)
     ADD_DEFINITIONS(-ffast-math)
 ENDIF()
 
-IF(BUILD_TESTS)
-    ENABLE_TESTING()
-    INCLUDE(cmake/tests.cmake)
-ENDIF()
-
-IF(BUILD_BENCHMARKS)
-    INCLUDE(cmake/benchmarks.cmake)
-ENDIF()
-
 IF(USE_OPENBLAS)
     MESSAGE("Using OpenBLAS")
     # https://cmake.org/cmake/help/v3.0/module/FindBLAS.html
@@ -50,9 +41,19 @@ IF(USE_OPENBLAS)
     INCLUDE_DIRECTORIES(${OpenBLAS_INCLUDE_DIRS})
 ENDIF()
 
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
+
+IF(BUILD_TESTS)
+    ENABLE_TESTING()
+    INCLUDE(cmake/tests.cmake)
+ENDIF()
+
+IF(BUILD_BENCHMARKS)
+    INCLUDE(cmake/benchmarks.cmake)
+ENDIF()
+
 IF(BUILD_LIB)
     ADD_LIBRARY(stdnn-ops src/nn/ops.cpp)
-    TARGET_INCLUDE_DIRECTORIES(stdnn-ops PRIVATE ${CMAKE_SOURCE_DIR}/include)
     TARGET_USE_STDTENSOR(stdnn-ops)
 ENDIF()
 

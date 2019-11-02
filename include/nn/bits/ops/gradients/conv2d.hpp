@@ -1,6 +1,6 @@
 #pragma once
 #include <nn/bits/ops/col2im.hpp>
-#include <nn/bits/ops/conv.hpp>
+#include <nn/bits/ops/conv2d.hpp>
 #include <nn/common.hpp>
 
 namespace nn::ops::grad
@@ -92,5 +92,4 @@ class conv<nn::ops::nhwc, nn::ops::rscd, 1>
             nn::ops::as_matrix<3, 1>(gy));
     }
 };
-
 }  // namespace nn::ops::grad

@@ -11,7 +11,6 @@ ENDIF()
 
 FUNCTION(ADD_NN_OPS_EXAMPLE target)
     ADD_EXECUTABLE(${target} ${ARGN})
-    TARGET_INCLUDE_DIRECTORIES(${target} PRIVATE ${CMAKE_SOURCE_DIR}/include)
     IF(USE_EXTERN)
         TARGET_LINK_LIBRARIES(${target} stdnn-ops)
     ENDIF()
