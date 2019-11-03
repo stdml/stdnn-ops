@@ -1,6 +1,6 @@
-#include "benchmark.hpp"
-
 #include <nn/ops>
+
+#include "benchmark.hpp"
 
 template <int d1, int d2, int d3, int k, int p, int s, typename image_order,
           typename pool_algo>
@@ -49,3 +49,5 @@ static void bench_max_pool_3x3_same_hwc_256_384_19(benchmark::State &state)
 }
 BENCHMARK(bench_max_pool_3x3_same_hwc_256_384_19)
     ->Unit(benchmark::kMillisecond);
+
+BENCHMARK_MAIN();

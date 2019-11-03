@@ -12,6 +12,7 @@ BUILD_TESTS=0
 BUILD_BENCHMARKS=0
 
 BUILD_GTEST=0
+BUILD_GBENCH=0
 
 VERBOSE=0
 
@@ -44,6 +45,9 @@ parse_args() {
             ;;
         --benchmarks)
             BUILD_BENCHMARKS=1
+            ;;
+        --build-gbench)
+            BUILD_GBENCH=1
             ;;
         --no-benchmarks)
             BUILD_BENCHMARKS=0
@@ -103,11 +107,12 @@ add_cmake_flags() {
     add_cmake_flag BUILD_PACKAGES 1
     add_cmake_flag USE_EXTERN ${USE_EXTERN}
     add_cmake_flag BUILD_GTEST ${BUILD_GTEST}
+    add_cmake_flag BUILD_GBENCH ${BUILD_GBENCH}
 
     if [ ${BUILD_TESTS} -eq 1 ] && [ ${BUILD_GTEST} -eq 1 ]; then
         pass_cmake_flag_from_env GTEST_GIT_URL
     fi
-    if [ ${BUILD_BENCHMARKS} -eq 1 ]; then
+    if [ ${BUILD_BENCHMARKS} -eq 1 ] && [ ${BUILD_GBENCH} -eq 1 ]; then
         pass_cmake_flag_from_env GBENCH_GIT_URL
     fi
 
