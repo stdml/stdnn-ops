@@ -6,6 +6,8 @@ USE_BLAS=0
 USE_OPENCV=0
 USE_EXTERN=0
 
+BLAS_HOME=
+
 BUILD_LIB=0
 BUILD_EXAMPLES=0
 BUILD_TESTS=0
@@ -21,6 +23,9 @@ parse_args() {
         case $i in
         --prefix=*)
             PREFIX="${i#*=}"
+            ;;
+        --with-blas=*)
+            BLAS_HOME="${i#*=}"
             ;;
         --use-blas)
             USE_BLAS=1
@@ -114,6 +119,10 @@ add_cmake_flags() {
     # add_cmake_flag USE_OPT 1
     add_cmake_flag USE_OPENCV ${USE_OPENCV}
     add_cmake_flag USE_OPENBLAS ${USE_BLAS}
+    if [ ! -z "${BLAS_HOME}" ]; then
+        add_cmake_flag BLAS_HOME ${BLAS_HOME}
+    fi
+
     add_cmake_flag BUILD_LIB ${BUILD_LIB}
     add_cmake_flag BUILD_EXAMPLES ${BUILD_EXAMPLES}
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}

@@ -33,12 +33,7 @@ IF(USE_OPT)
 ENDIF()
 
 IF(USE_OPENBLAS)
-    MESSAGE("Using OpenBLAS")
-    # https://cmake.org/cmake/help/v3.0/module/FindBLAS.html
-    SET(BLA_VENDOR "OpenBLAS")
-    FIND_PACKAGE(BLAS REQUIRED)
-    ADD_DEFINITIONS(-DSTDNN_OPS_HAVE_CBLAS)
-    INCLUDE_DIRECTORIES(${OpenBLAS_INCLUDE_DIRS})
+    INCLUDE(cmake/blas.cmake)
 ENDIF()
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
