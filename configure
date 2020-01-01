@@ -85,15 +85,29 @@ pass_cmake_flag_from_env() {
     fi
 }
 
+CMAKE_PREFIX_PATH=
+
+add_cmake_prefix() {
+    echo "adding to CMAKE_PREFIX_PATH with $1"
+    CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$1"
+}
+
+add_cmake_prefixes() {
+    add_cmake_prefix $HOME/local
+    add_cmake_prefix $HOME/local/gtest
+    add_cmake_prefix $HOME/local/openblas
+}
+
 add_cmake_flags() {
     pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX PREFIX
 
     pass_cmake_flag_from_env STDTRACER_GIT_URL
     pass_cmake_flag_from_env STDTENSOR_GIT_URL
 
-    add_cmake_flag EXECUTABLE_OUTPUT_PATH $(pwd)/bin
-    # add_cmake_flag LIBRARY_OUTPUT_PATH $(pwd)/lib
+    add_cmake_flag EXECUTABLE_OUTPUT_PATH $PWD/bin
+    # add_cmake_flag LIBRARY_OUTPUT_PATH $PWD/lib
     add_cmake_flag CMAKE_BUILD_TYPE Release
+    add_cmake_flag CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
     add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS 1
     add_cmake_flag CMAKE_VERBOSE_MAKEFILE 1
 
@@ -133,7 +147,12 @@ cleanup_cmake_cache() {
     fi
 }
 
-parse_args $@
-add_cmake_flags
-cleanup_cmake_cache
-cmake . $CMAKE_FLAGS
+main() {
+    parse_args $@
+    add_cmake_prefixes
+    add_cmake_flags
+    cleanup_cmake_cache
+    cmake . $CMAKE_FLAGS
+}
+
+main $@
