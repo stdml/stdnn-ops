@@ -18,11 +18,6 @@ template <ttl::rank_t r> string to_string(const ttl::shape<r> &s)
 namespace ttl
 {
 using arity_t = uint8_t;
-
-namespace nn::experimental::ops
-{
-using ttl::range;
-}  // namespace nn::experimental::ops
 }  // namespace ttl
 
 template <ttl::rank_t r, typename Dim>

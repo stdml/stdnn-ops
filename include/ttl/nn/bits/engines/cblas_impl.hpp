@@ -4,7 +4,7 @@
 
 #include <cblas.h>
 
-namespace nn::engines
+namespace ttl::nn::engines
 {
 template <typename R> struct _cblas;
 
@@ -84,4 +84,4 @@ template <typename R> struct cblas_impl {
                    wid(b), a.data(), inc, beta, c.data(), inc);
     }
 };
-}  // namespace nn::engines
+}  // namespace ttl::nn::engines

@@ -1,6 +1,7 @@
+// # -*- mode: c++ -*-
 #pragma once
 #include <ttl/nn/common.hpp>
-
+//
 #include <ttl/nn/bits/layers/activation.hpp>
 #include <ttl/nn/bits/layers/bn.hpp>
 #include <ttl/nn/bits/layers/concat.hpp>
