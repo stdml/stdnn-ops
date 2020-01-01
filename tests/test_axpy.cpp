@@ -18,7 +18,7 @@ TEST(axpy, test1)
     ttl::tensor<R, 1> z(op(a.shape(), x.shape(), y.shape()));
     op(ref(z), view(a), view(x), view(y));
 
-    for (auto i : range(n)) { ASSERT_EQ(z.data()[i], 10); }
+    for (auto i : ttl::range(n)) { ASSERT_EQ(z.data()[i], 10); }
 }
 
 namespace ttl
@@ -45,5 +45,5 @@ TEST(axpy, test2)
 
     ttl::nn::ops::axpy()(ref(z), view(ttl::scalar(2)), view(x), view(y));
 
-    for (auto i : range(n)) { ASSERT_EQ(z.data()[i], 10); }
+    for (auto i : ttl::range(n)) { ASSERT_EQ(z.data()[i], 10); }
 }

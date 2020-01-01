@@ -9,7 +9,7 @@ template <typename T> void test_io(const T &x)
     (ttl::nn::ops::writefile(filename))(view(x));
     (ttl::nn::ops::readfile(filename))(ref(y));
 
-    for (auto i : range(x.shape().size())) {
+    for (auto i : ttl::range(x.shape().size())) {
         ASSERT_EQ(x.data()[i], y.data()[i]);
     }
 }

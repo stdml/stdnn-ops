@@ -6,7 +6,7 @@ TEST(pool_test, test_hw)
     const auto x = ttl::tensor<int, 2>(4, 4);
     const auto y = ttl::tensor<int, 2>(2, 2);
 
-    for (auto i : range(16)) { x.data()[i] = i; }
+    for (auto i : ttl::range(16)) { x.data()[i] = i; }
 
     using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hw>;
     pool()(ref(y), view(x));
@@ -25,9 +25,9 @@ TEST(pool_test, test_hwc)
 
     {
         int cnt = 0;
-        for (auto k : range(n)) {
-            for (auto i : range(4)) {
-                for (auto j : range(4)) { x.at(i, j, k) = cnt++; }
+        for (auto k : ttl::range(n)) {
+            for (auto i : ttl::range(4)) {
+                for (auto j : ttl::range(4)) { x.at(i, j, k) = cnt++; }
             }
         }
     }
@@ -35,7 +35,7 @@ TEST(pool_test, test_hwc)
     using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hwc>;
     pool()(ref(y), view(x));
 
-    for (auto i : range(n)) {
+    for (auto i : ttl::range(n)) {
         ASSERT_EQ(y.at(0, 0, i), 5 + 16 * i);
         ASSERT_EQ(y.at(0, 1, i), 7 + 16 * i);
         ASSERT_EQ(y.at(1, 0, i), 13 + 16 * i);
@@ -79,10 +79,10 @@ TEST(pool_test, test_4d)
         using max_pool_nchw =
             ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nchw>;
         const auto x = ttl::tensor<float, 4>(n, c, h, w);
-        for (auto l : range(n)) {
-            for (auto k : range(c)) {
-                for (auto i : range(h)) {
-                    for (auto j : range(w)) {
+        for (auto l : ttl::range(n)) {
+            for (auto k : ttl::range(c)) {
+                for (auto i : ttl::range(h)) {
+                    for (auto j : ttl::range(w)) {
                         x.at(l, k, i, j) =
                             (l * 10 + k) * 1000 * 1000 + i * 1000 + j;
                     }
@@ -94,10 +94,10 @@ TEST(pool_test, test_4d)
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
             ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, c, 64, 128));
             op(ref(y), view(x));
-            for (auto l : range(n)) {
-                for (auto k : range(c)) {
-                    for (auto i : range(64)) {
-                        for (auto j : range(128)) {
+            for (auto l : ttl::range(n)) {
+                for (auto k : ttl::range(c)) {
+                    for (auto i : ttl::range(64)) {
+                        for (auto j : ttl::range(128)) {
                             const float val = (l * 10 + k) * 1000 * 1000 +
                                               (i * 2 + 1) * 1000 + (j * 2 + 1);
                             ASSERT_EQ(y.at(l, k, i, j), val);
