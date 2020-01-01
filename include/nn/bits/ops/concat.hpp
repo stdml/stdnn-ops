@@ -34,7 +34,6 @@ template <> class concat_channel4d_impl<nhwc, 3>
 
         const auto c1 = c_1;
         const auto c2 = c_2;
-        const auto c3 = c_3;
 
         for (auto l : range(n)) {
             for (auto i : range(h)) {
