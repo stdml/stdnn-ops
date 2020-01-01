@@ -11,8 +11,6 @@
 #include "trace.hpp"
 #include "utils.hpp"
 
-using ttl::range;
-
 class slp
 {
   public:
@@ -43,10 +41,9 @@ class slp
          const ttl::tensor_view<R, 2> &xs, const ttl::tensor_view<R, 2> &w,
          const ttl::tensor_view<R, 1> &b)
     {
-        const auto [n, k] = g_ys.shape().dims();
-        for (auto l : range(k)) {
+        for (auto l : ttl::range<1>(g_ys)) {
             R tot = 0;
-            for (auto i : range(n)) { tot += g_ys.at(i, l); }
+            for (auto i : ttl::range<0>(g_ys)) { tot += g_ys.at(i, l); }
             g_b.at(l) = tot;
         }
         ttl::nn::engines::linag<ttl::nn::engines::default_engine>::mtm(xs, g_ys,
@@ -120,9 +117,9 @@ void train_slp_model(const D &ds,  //
 
     const int n_epochs = 1;
     int step = 0;
-    for (auto _ : range(n_epochs)) {
+    for (auto _ : ttl::range(n_epochs)) {
         UNUSED(_);
-        for (auto offset : range(n / batch_size)) {
+        for (auto offset : ttl::range(n / batch_size)) {
             ++step;
             printf("step: %d\n", step);
             // if (step > 2) { break; }

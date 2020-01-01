@@ -13,8 +13,6 @@
 
 #include "utils.hpp"
 
-using ttl::range;
-
 class vgg16_model
 {
     const size_t k = 1000;
@@ -97,11 +95,6 @@ class vgg16_model
     }
 };
 
-template <typename T> typename T::value_type *data_end(const T &t)
-{
-    return t.data() + t.shape().size();
-}
-
 std::vector<std::string> load_class_names(const std::string &filename)
 {
     std::vector<std::string> names;
@@ -127,8 +120,8 @@ int main(int argc, char *argv[])
         cv::Mat resized_image(cv::Size(vgg16.w, vgg16.h), CV_8UC(3),
                               input.data());
         cv::resize(img, resized_image, resized_image.size(), 0, 0);
-        for (auto i : range(vgg16.h)) {
-            for (auto j : range(vgg16.w)) {
+        for (auto i : ttl::range(vgg16.h)) {
+            for (auto j : ttl::range(vgg16.w)) {
                 x.at(0, i, j, 0) = input.at(0, i, j, 2);
                 x.at(0, i, j, 1) = input.at(0, i, j, 1);
                 x.at(0, i, j, 2) = input.at(0, i, j, 0);
@@ -139,13 +132,14 @@ int main(int argc, char *argv[])
 #endif
         std::vector<float> mean({123.68, 116.779, 103.939});
         ttl::nn::ops::apply_bias<ttl::nn::ops::nhwc, std::minus<float>>()(
-            ref(x), view(x), ttl::tensor_view<float, 1>(mean.data(), 3));
+            ref(x), view(x),
+            ttl::tensor_view<float, 1>(mean.data(), mean.size()));
     }
 
     int m = 5;
     const auto [y, z] = vgg16(ref(x), m);
 
-    for (auto i : range(m)) {
+    for (auto i : ttl::range(m)) {
         printf("%u: %f %s\n", z.at(i), y.at(i), names[z.at(i)].c_str());
     }
 
