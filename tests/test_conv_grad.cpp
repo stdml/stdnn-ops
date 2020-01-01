@@ -1,7 +1,7 @@
 
 #include <ttl/algorithm>
 
-#include <nn/bits/ops/gradients/conv.hpp>
+#include <nn/bits/ops/gradients/conv2d.hpp>
 #include <nn/testing>
 
 TEST(conv_grad_test, test1)

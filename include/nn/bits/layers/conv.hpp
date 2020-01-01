@@ -2,7 +2,7 @@
 #include <nn/bits/layers/call.hpp>
 #include <nn/bits/layers/layer.hpp>
 #include <nn/bits/ops/bias.hpp>
-#include <nn/bits/ops/conv.hpp>
+#include <nn/bits/ops/conv2d.hpp>
 #include <nn/bits/ops/noop.hpp>
 #include <nn/bits/traits/multi_linear_sample.hpp>
 #include <nn/traits>

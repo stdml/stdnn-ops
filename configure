@@ -4,8 +4,16 @@ set -e
 # defaults
 USE_BLAS=0
 USE_OPENCV=0
+USE_EXTERN=0
+
+BUILD_LIB=0
+BUILD_EXAMPLES=0
 BUILD_TESTS=0
 BUILD_BENCHMARKS=0
+
+BUILD_GTEST=0
+BUILD_GBENCH=0
+
 VERBOSE=0
 
 parse_args() {
@@ -20,17 +28,32 @@ parse_args() {
         --use-opencv)
             USE_OPENCV=1
             ;;
+        --lib)
+            BUILD_LIB=1
+            ;;
+        --examples)
+            BUILD_EXAMPLES=1
+            ;;
         --tests)
             BUILD_TESTS=1
             ;;
         --no-tests)
             BUILD_TESTS=0
             ;;
+        --build-gtest)
+            BUILD_GTEST=1
+            ;;
         --benchmarks)
             BUILD_BENCHMARKS=1
             ;;
+        --build-gbench)
+            BUILD_GBENCH=1
+            ;;
         --no-benchmarks)
             BUILD_BENCHMARKS=0
+            ;;
+        --extern)
+            USE_EXTERN=1
             ;;
         --verbose)
             VERBOSE=1
@@ -65,13 +88,6 @@ pass_cmake_flag_from_env() {
 add_cmake_flags() {
     pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX PREFIX
 
-    if [ ${BUILD_TESTS} -eq 1 ]; then
-        pass_cmake_flag_from_env GTEST_GIT_URL
-    fi
-    if [ ${BUILD_BENCHMARKS} -eq 1 ]; then
-        pass_cmake_flag_from_env GBENCH_GIT_URL
-    fi
-
     pass_cmake_flag_from_env STDTRACER_GIT_URL
     pass_cmake_flag_from_env STDTENSOR_GIT_URL
 
@@ -80,13 +96,25 @@ add_cmake_flags() {
     add_cmake_flag CMAKE_BUILD_TYPE Release
     add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS 1
     add_cmake_flag CMAKE_VERBOSE_MAKEFILE 1
-    add_cmake_flag BUILD_PACKAGES 1
 
     # add_cmake_flag USE_OPT 1
     add_cmake_flag USE_OPENCV ${USE_OPENCV}
     add_cmake_flag USE_OPENBLAS ${USE_BLAS}
+    add_cmake_flag BUILD_LIB ${BUILD_LIB}
+    add_cmake_flag BUILD_EXAMPLES ${BUILD_EXAMPLES}
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
     add_cmake_flag BUILD_BENCHMARKS ${BUILD_BENCHMARKS}
+    add_cmake_flag BUILD_PACKAGES 1
+    add_cmake_flag USE_EXTERN ${USE_EXTERN}
+    add_cmake_flag BUILD_GTEST ${BUILD_GTEST}
+    add_cmake_flag BUILD_GBENCH ${BUILD_GBENCH}
+
+    if [ ${BUILD_TESTS} -eq 1 ] && [ ${BUILD_GTEST} -eq 1 ]; then
+        pass_cmake_flag_from_env GTEST_GIT_URL
+    fi
+    if [ ${BUILD_BENCHMARKS} -eq 1 ] && [ ${BUILD_GBENCH} -eq 1 ]; then
+        pass_cmake_flag_from_env GBENCH_GIT_URL
+    fi
 
     # FIXME: depend on a tag for release version
     add_cmake_flag STDTENSOR_GIT_TAG $(head -n 1 ./deps/stdtensor)
@@ -98,9 +126,11 @@ cleanup_cmake_cache() {
     if [ -f CMakeCache.txt ]; then
         rm CMakeCache.txt
     fi
-    for cmake_cache in $(find 3rdparty/ | grep CMakeCache.txt); do
-        rm $cmake_cache
-    done
+    if [ -d 3rdparty ]; then
+        for cmake_cache in $(find 3rdparty/ | grep CMakeCache.txt); do
+            rm $cmake_cache
+        done
+    fi
 }
 
 parse_args $@

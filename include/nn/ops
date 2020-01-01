@@ -1,24 +1,23 @@
 // # -*- mode: c++ -*-
 #pragma once
-#include <nn/bits/ops/axpy.hpp>
-#include <nn/bits/ops/bias.hpp>
-#include <nn/bits/ops/bn.hpp>
-#include <nn/bits/ops/concat.hpp>
-#include <nn/bits/ops/conv.hpp>
-#include <nn/bits/ops/conv1d.hpp>
-#include <nn/bits/ops/elementary.hpp>
-#include <nn/bits/ops/hash.hpp>
-#include <nn/bits/ops/im2col.hpp>
-#include <nn/bits/ops/init.hpp>
-#include <nn/bits/ops/io.hpp>
-#include <nn/bits/ops/matmul.hpp>
-#include <nn/bits/ops/noop.hpp>
-#include <nn/bits/ops/pointwise.hpp>
-#include <nn/bits/ops/pool.hpp>
-#include <nn/bits/ops/reduce.hpp>
-#include <nn/bits/ops/softmax.hpp>
-#include <nn/bits/ops/summary.hpp>
-#include <nn/bits/ops/top.hpp>
-#include <nn/bits/ops/transpose.hpp>
-#include <nn/bits/ops/utility.hpp>
-#include <nn/bits/ops/xentropy.hpp>
+#include <nn/ops.hpp>
+
+#ifndef STDNN_OPS_EXTERN_TEMPLATE
+#    include <nn/bits/ops/impl/conv1d.hpp>
+#else
+// TODO: extern template ...
+
+namespace nn::ops
+{
+extern template void conv1d::
+operator()(const ttl::tensor_ref<float, 1> &z,
+           const ttl::tensor_view<float, 1> &x,
+           const ttl::tensor_view<float, 1> &y) const;
+
+extern template void conv<nhwc>::
+operator()(const ttl::tensor_ref<float, 4> &z,
+           const ttl::tensor_view<float, 4> &x,
+           const ttl::tensor_view<float, 4> &y) const;
+}  // namespace nn::ops
+
+#endif

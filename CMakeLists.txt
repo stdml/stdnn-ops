@@ -15,31 +15,21 @@ ADD_DEFINITIONS(-Wall)
 ADD_DEFINITIONS(-Werror)
 ADD_DEFINITIONS(-Wfatal-errors)
 
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/3rdparty/include)
-INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
-
-LINK_DIRECTORIES(${CMAKE_SOURCE_DIR}/3rdparty/lib)
-
 OPTION(USE_OPT "Turn on optimization flags." OFF)
 OPTION(USE_OPENBLAS "Build with blas." OFF)
-OPTION(USE_OPENCV "Build with opencv." OFF)
 OPTION(BUILD_TESTS "Build tests." OFF)
 OPTION(BUILD_BENCHMARKS "Build benchmarks." OFF)
-OPTION(BUILD_EXAMPLES "Build examples." ON)
+OPTION(BUILD_EXAMPLES "Build examples." OFF)
 OPTION(BUILD_PACKAGES "Build release packages." OFF)
-OPTION(TRACE_EXAMPLES "Enable trace for examples." ON)
+OPTION(BUILD_LIB "Build library." OFF)
+OPTION(USE_EXTERN "use extern template." OFF)
+
+IF(USE_EXTERN)
+    ADD_DEFINITIONS(-DSTDNN_OPS_EXTERN_TEMPLATE)
+ENDIF()
 
 IF(USE_OPT)
     ADD_DEFINITIONS(-ffast-math)
-ENDIF()
-
-IF(BUILD_TESTS)
-    ENABLE_TESTING()
-    INCLUDE(cmake/tests.cmake)
-ENDIF()
-
-IF(BUILD_BENCHMARKS)
-    INCLUDE(cmake/benchmarks.cmake)
 ENDIF()
 
 IF(USE_OPENBLAS)
@@ -51,8 +41,20 @@ IF(USE_OPENBLAS)
     INCLUDE_DIRECTORIES(${OpenBLAS_INCLUDE_DIRS})
 ENDIF()
 
-IF(USE_OPENCV)
-    FIND_PACKAGE(OpenCV REQUIRED)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include)
+
+IF(BUILD_TESTS)
+    ENABLE_TESTING()
+    INCLUDE(cmake/tests.cmake)
+ENDIF()
+
+IF(BUILD_BENCHMARKS)
+    INCLUDE(cmake/benchmarks.cmake)
+ENDIF()
+
+IF(BUILD_LIB)
+    ADD_LIBRARY(stdnn-ops src/nn/ops.cpp)
+    TARGET_USE_STDTENSOR(stdnn-ops)
 ENDIF()
 
 IF(BUILD_EXAMPLES)
