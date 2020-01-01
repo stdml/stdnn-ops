@@ -46,7 +46,7 @@ TEST(col2im_test, test1)
         const uint32_t l = 16;
         ASSERT_EQ(y.shape().size(), l);
         ASSERT_EQ(static_cast<uint32_t>(result.size()), l);
-        for (auto i : range(l)) { ASSERT_EQ(result[i], y.data()[i]); }
+        for (auto i : ttl::range(l)) { ASSERT_EQ(result[i], y.data()[i]); }
     }
 
     {
@@ -60,6 +60,6 @@ TEST(col2im_test, test1)
         const uint32_t l = 9;
         ASSERT_EQ(x.shape().size(), l);
         ASSERT_EQ(static_cast<uint32_t>(result.size()), l);
-        for (auto i : range(l)) { ASSERT_EQ(result[i], x.data()[i]); }
+        for (auto i : ttl::range(l)) { ASSERT_EQ(result[i], x.data()[i]); }
     }
 }

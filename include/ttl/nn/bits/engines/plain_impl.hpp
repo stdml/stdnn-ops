@@ -10,8 +10,6 @@
 
 namespace ttl::nn::engines
 {
-using ttl::range;
-
 template <typename T> struct plain_impl {
     using m_ref_t = ttl::matrix_ref<T>;
     using m_view_t = ttl::matrix_view<T>;

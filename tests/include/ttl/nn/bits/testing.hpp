@@ -7,8 +7,6 @@
 
 #include <gtest/gtest.h>
 
-using ttl::range;
-
 template <typename R, ttl::rank_t r>
 void gen_test_tensor(const ttl::tensor<R, r> &x, int &s)
 {
@@ -98,7 +96,7 @@ void show_tensor(const ttl::tensor<R, r> &x, const std::string name = "t")
     pprint(x, name.c_str());
     const auto n = x.shape().size();
     printf("  data: {");
-    for (auto i : range(n)) {
+    for (auto i : ttl::range(n)) {
         if (i > 0) { printf(", "); }
         printf("%s", show_scalar(x.data()[i]).c_str());
     }

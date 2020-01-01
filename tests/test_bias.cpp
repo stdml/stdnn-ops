@@ -16,10 +16,10 @@ void test_apply_bias_nhwc(int n, int h, int w, int c, R a, R b, R value)
     ASSERT_EQ(z.shape(), x.shape());
     add_bias(ref(z), view(x), view(y));
 
-    for (auto k : range(n)) {
-        for (auto i : range(h)) {
-            for (auto j : range(w)) {
-                for (auto l : range(c)) { ASSERT_EQ(z.at(k, i, j, l), value); }
+    for (auto k : ttl::range(n)) {
+        for (auto i : ttl::range(h)) {
+            for (auto j : ttl::range(w)) {
+                for (auto l : ttl::range(c)) { ASSERT_EQ(z.at(k, i, j, l), value); }
             }
         }
     }
@@ -38,10 +38,10 @@ void test_apply_bias_nchw(int n, int h, int w, int c, R a, R b, R value)
     ASSERT_EQ(z.shape(), x.shape());
     add_bias(ref(z), view(x), view(y));
 
-    for (auto k : range(n)) {
-        for (auto l : range(c)) {
-            for (auto i : range(h)) {
-                for (auto j : range(w)) { ASSERT_EQ(z.at(k, l, i, j), value); }
+    for (auto k : ttl::range(n)) {
+        for (auto l : ttl::range(c)) {
+            for (auto i : ttl::range(h)) {
+                for (auto j : ttl::range(w)) { ASSERT_EQ(z.at(k, l, i, j), value); }
             }
         }
     }
