@@ -5,11 +5,10 @@
 #include <fstream>
 
 #include <ttl/bits/idx_encoding.hpp>
-
 #include <ttl/nn/bits/ops/io_tar.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
 namespace internal
@@ -152,7 +151,7 @@ class readtar
     template <typename R, ttl::rank_t r>
     void operator()(const ttl::tensor_ref<R, r> &y) const
     {
-        const auto idx = nn::ops::internal::make_tar_index(filename_);
+        const auto idx = ttl::nn::ops::internal::make_tar_index(filename_);
         const auto info = idx(name_);
         std::ifstream fs(filename_, std::ios::binary);
         fs.seekg(info.data_offset, std::ios::beg);
@@ -160,4 +159,4 @@ class readtar
     }
 };
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

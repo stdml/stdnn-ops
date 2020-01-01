@@ -1,9 +1,10 @@
 #pragma once
-#include <ttl/shape>
-
 #include <ttl/nn/bits/traits/linear_sample.hpp>
 #include <ttl/nn/common.hpp>
+#include <ttl/shape>
 
+namespace ttl
+{
 namespace nn
 {
 namespace traits
@@ -181,3 +182,4 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
 };
 }  // namespace traits
 }  // namespace nn
+}  // namespace ttl

@@ -11,7 +11,7 @@ void test_apply_bias_nhwc(int n, int h, int w, int c, R a, R b, R value)
     ttl::fill(ref(x), a);
     ttl::fill(ref(y), b);
 
-    const auto add_bias = nn::ops::apply_bias<nn::ops::nhwc, Op>();
+    const auto add_bias = ttl::nn::ops::apply_bias<ttl::nn::ops::nhwc, Op>();
     const auto z = ttl::tensor<int, 4>(add_bias(x.shape(), y.shape()));
     ASSERT_EQ(z.shape(), x.shape());
     add_bias(ref(z), view(x), view(y));
@@ -33,7 +33,7 @@ void test_apply_bias_nchw(int n, int h, int w, int c, R a, R b, R value)
     ttl::fill(ref(x), a);
     ttl::fill(ref(y), b);
 
-    const auto add_bias = nn::ops::apply_bias<nn::ops::nchw, Op>();
+    const auto add_bias = ttl::nn::ops::apply_bias<ttl::nn::ops::nchw, Op>();
     const auto z = ttl::tensor<int, 4>(add_bias(x.shape(), y.shape()));
     ASSERT_EQ(z.shape(), x.shape());
     add_bias(ref(z), view(x), view(y));

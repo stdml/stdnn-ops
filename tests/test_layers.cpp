@@ -47,16 +47,20 @@ template <typename pool> void test_pool_layer()
 
 TEST(layers_test, test_1)
 {
-    test_dense_layer<nn::layers::dense<>>();
-    test_dense_layer<nn::layers::dense<nn::ops::pointwise<nn::ops::relu>>>();
+    test_dense_layer<ttl::nn::layers::dense<>>();
+    test_dense_layer<
+        ttl::nn::layers::dense<ttl::nn::ops::pointwise<ttl::nn::ops::relu>>>();
 
-    test_conv_layer<nn::layers::conv<>>();
-    test_conv_layer<nn::layers::conv<nn::ops::nhwc>>();
+    test_conv_layer<ttl::nn::layers::conv<>>();
+    test_conv_layer<ttl::nn::layers::conv<ttl::nn::ops::nhwc>>();
     // FIXME: support conv<nchw, rscd>
-    // test_conv_layer<nn::layers::conv<nn::ops::nchw>>();
-    test_conv_layer<nn::layers::conv<nn::ops::nchw, nn::ops::dcrs>>();
+    // test_conv_layer<nn::layers::conv<ttl::nn::ops::nchw>>();
+    test_conv_layer<
+        ttl::nn::layers::conv<ttl::nn::ops::nchw, ttl::nn::ops::dcrs>>();
 
-    test_pool_layer<nn::layers::pool<nn::ops::pool_max>>();
-    test_pool_layer<nn::layers::pool<nn::ops::pool_max, nn::ops::nhwc>>();
-    test_pool_layer<nn::layers::pool<nn::ops::pool_max, nn::ops::nchw>>();
+    test_pool_layer<ttl::nn::layers::pool<ttl::nn::ops::pool_max>>();
+    test_pool_layer<
+        ttl::nn::layers::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>>();
+    test_pool_layer<
+        ttl::nn::layers::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nchw>>();
 }

@@ -5,7 +5,7 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
 template <typename image_order>
@@ -117,4 +117,4 @@ template <typename image_order> class batch_norm_with_bias
     }
 };
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

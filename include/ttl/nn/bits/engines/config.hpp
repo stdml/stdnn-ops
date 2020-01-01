@@ -4,7 +4,7 @@
 #    include <ttl/nn/bits/engines/cblas_impl.hpp>
 #endif
 
-namespace nn::engines
+namespace ttl::nn::engines
 {
 struct plain;
 struct cblas;
@@ -27,4 +27,4 @@ template <> struct backend<cblas> {
 using default_engine = plain;
 
 #endif
-}  // namespace nn::engines
+}  // namespace ttl::nn::engines

@@ -8,7 +8,7 @@
 #include <ttl/range>
 #include <ttl/tensor>
 
-namespace nn::engines
+namespace ttl::nn::engines
 {
 using ttl::range;
 
@@ -100,4 +100,4 @@ template <typename T> struct plain_impl {
         }
     }
 };
-}  // namespace nn::engines
+}  // namespace ttl::nn::engines

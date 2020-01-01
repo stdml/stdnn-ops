@@ -3,7 +3,7 @@
 
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 namespace internal
 {
@@ -89,4 +89,4 @@ auto gradient_shape(const Op &infer, const shape<ry> &gy, const shape<ry> &y,
     contract_assert_eq(y, gy);
     return std::get<i>(std::make_tuple(xs...));
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

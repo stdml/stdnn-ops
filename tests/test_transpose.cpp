@@ -14,22 +14,22 @@ void test_transpose(int n, int h, int w, int c)
     for (int i = 0; i < d; ++i) { x.data()[i] = i; }
 
     {
-        nn::ops::to_channels_first()(ref(y), view(x));
-        nn::ops::to_channels_last()(ref(x1), view(y));
+        ttl::nn::ops::to_channels_first()(ref(y), view(x));
+        ttl::nn::ops::to_channels_last()(ref(x1), view(y));
         for (int i = 0; i < d; ++i) { ASSERT_EQ(x.data()[i], x1.data()[i]); }
 
-        nn::ops::to_channels_first()(ref(y1), view(x1));
+        ttl::nn::ops::to_channels_first()(ref(y1), view(x1));
         for (int i = 0; i < d; ++i) { ASSERT_EQ(y.data()[i], y1.data()[i]); }
     }
 
     {
-        nn::ops::to_channels_first()(ref(y), view(x),
-                                     [](int x) { return x + 1; });
-        nn::ops::to_channels_last()(ref(x1), view(y),
-                                    [](int x) { return x - 1; });
+        ttl::nn::ops::to_channels_first()(ref(y), view(x),
+                                          [](int x) { return x + 1; });
+        ttl::nn::ops::to_channels_last()(ref(x1), view(y),
+                                         [](int x) { return x - 1; });
         for (int i = 0; i < d; ++i) { ASSERT_EQ(x.data()[i], x1.data()[i]); }
 
-        nn::ops::to_channels_first()(ref(y1), view(x1));
+        ttl::nn::ops::to_channels_first()(ref(y1), view(x1));
         for (int i = 0; i < d; ++i) {
             ASSERT_EQ(y.data()[i] - 1, y1.data()[i]);
         }

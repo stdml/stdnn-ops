@@ -3,7 +3,7 @@
 
 #include <ttl/nn/bits/ops/shape_algo.hpp>
 
-namespace nn::ops::internal
+namespace ttl::nn::ops::internal
 {
 template <typename Op> class batched
 {
@@ -32,4 +32,4 @@ template <typename Op> batched<Op> make_batched(const Op &op)
 {
     return batched(op);
 }
-}  // namespace nn::ops::internal
+}  // namespace ttl::nn::ops::internal

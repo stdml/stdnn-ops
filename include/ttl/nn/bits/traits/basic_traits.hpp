@@ -1,5 +1,7 @@
 #pragma once
 
+namespace ttl
+{
 namespace nn
 {
 namespace traits
@@ -21,3 +23,4 @@ struct hwrsc;
 struct rshw;
 }  // namespace traits
 }  // namespace nn
+}  // namespace ttl

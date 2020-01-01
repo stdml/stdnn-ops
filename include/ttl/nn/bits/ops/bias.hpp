@@ -3,7 +3,7 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename image_order, typename Op> class apply_bias
 {
@@ -37,4 +37,4 @@ using add_bias = apply_bias<image_order, scalar_add>;
 template <typename image_order>
 using mul_bias = apply_bias<image_order, scalar_mul>;
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

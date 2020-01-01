@@ -1,7 +1,7 @@
 #pragma once
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
 class axpy
@@ -26,4 +26,4 @@ class axpy
             [a = a.data()[0]](const R &x, const R &y) { return a * x + y; });
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

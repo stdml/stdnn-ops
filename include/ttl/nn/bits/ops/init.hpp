@@ -4,10 +4,9 @@
 #include <random>
 
 #include <ttl/algorithm>
-
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 class zeros
 {
@@ -97,4 +96,4 @@ class truncated_normal
         (*this)(y, gen);
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

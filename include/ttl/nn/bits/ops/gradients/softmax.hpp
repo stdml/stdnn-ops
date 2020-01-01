@@ -4,7 +4,7 @@
 #include <ttl/nn/bits/ops/softmax.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops::grad
+namespace ttl::nn::ops::grad
 {
 template <int> class softmax;
 
@@ -15,7 +15,8 @@ template <> class softmax<0>
     shape<r> operator()(const shape<r> &gy, const shape<r> &y,
                         const shape<r> &x) const
     {
-        return nn::ops::gradient_shape<0>(nn::ops::softmax(), gy, y, x);
+        return ttl::nn::ops::gradient_shape<0>(ttl::nn::ops::softmax(), gy, y,
+                                               x);
     }
 
     template <typename R>
@@ -50,4 +51,4 @@ template <> class softmax<0>
         }
     }
 };
-}  // namespace nn::ops::grad
+}  // namespace ttl::nn::ops::grad

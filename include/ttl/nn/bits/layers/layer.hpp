@@ -3,7 +3,7 @@
 
 #include <ttl/nn/common.hpp>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
 template <typename T, typename... Ts> class layer
 {
@@ -36,4 +36,4 @@ layer<T, Ts...> make_layer(T *y, Ts *... args)
 struct builder {
 };
 
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers

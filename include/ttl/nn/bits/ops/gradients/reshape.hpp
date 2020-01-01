@@ -2,7 +2,7 @@
 #include <ttl/nn/bits/ops/reshape.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops::grad
+namespace ttl::nn::ops::grad
 {
 template <ttl::rank_t... rs> class copy_flatten
 {
@@ -15,8 +15,8 @@ template <ttl::rank_t... rs> class copy_flatten
                               const shape<out_rank> &y,
                               const shape<in_rank> &x) const
     {
-        return nn::ops::gradient_shape<0>(nn::ops::copy_flatten<rs...>(), gy, y,
-                                          x);
+        return ttl::nn::ops::gradient_shape<0>(
+            ttl::nn::ops::copy_flatten<rs...>(), gy, y, x);
     }
 
     template <typename R>
@@ -28,4 +28,4 @@ template <ttl::rank_t... rs> class copy_flatten
         std::copy(gy.data(), gy.data_end(), gx.data());
     }
 };
-}  // namespace nn::ops::grad
+}  // namespace ttl::nn::ops::grad

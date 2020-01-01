@@ -1,9 +1,8 @@
 #pragma once
 #include <ttl/algorithm>
-
 #include <ttl/nn/bits/ops/col2im1d.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename R>
 void col2im1d::operator()(const ttl::tensor_ref<R, 1> &y,
@@ -18,4 +17,4 @@ void col2im1d::operator()(const ttl::tensor_ref<R, 1> &y,
         }
     }
 }
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

@@ -1,5 +1,5 @@
 #pragma once
-namespace nn::ops
+namespace ttl::nn::ops
 {
 class noop
 {
@@ -15,4 +15,4 @@ class noop
         // noop
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

@@ -2,9 +2,8 @@
 #include <ttl/nn/layers>
 #include <ttl/nn/ops>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
-
 namespace internal
 {
 template <typename L, typename... Init> class with_init
@@ -37,9 +36,9 @@ internal::with_init<L, Init...> with_init(const L &layer, const Init &... init)
     return internal::with_init<L, Init...>(layer, init...);
 }
 
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers
 
-namespace nn::models
+namespace ttl::nn::models
 {
 template <typename F, typename G> class composed
 {
@@ -64,7 +63,7 @@ template <typename F, typename G> composed<F, G> compose(const F &f, const G &g)
 
 template <typename Op> class sequential;
 
-template <typename Op = nn::layers::identity>
+template <typename Op = ttl::nn::layers::identity>
 sequential<Op> make_sequential(const Op &op = Op())
 {
     return sequential<Op>(op);
@@ -84,4 +83,4 @@ template <typename Op> class sequential
         return make_sequential(compose(op_, l));
     }
 };
-}  // namespace nn::models
+}  // namespace ttl::nn::models

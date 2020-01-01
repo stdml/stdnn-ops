@@ -2,7 +2,7 @@
 #include <ttl/nn/bits/traits/filter.hpp>
 #include <ttl/nn/bits/traits/padding.hpp>
 
-namespace nn
+namespace ttl::nn
 {
 namespace traits
 {
@@ -48,4 +48,4 @@ class conv1d : public traits::conv1d_trait
                     const ttl::tensor_view<R, 1> &y) const;
 };
 }  // namespace ops
-}  // namespace nn
+}  // namespace ttl::nn

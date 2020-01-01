@@ -5,7 +5,7 @@
 
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 namespace summaries
 {
@@ -109,4 +109,4 @@ template <typename... S> class scalar_summaries
         std::copy(values.begin(), values.end(), y.data());
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

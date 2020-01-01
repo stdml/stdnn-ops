@@ -1,12 +1,11 @@
 #pragma once
 #include <algorithm>
 
-#include <ttl/tensor>
-
 #include <ttl/nn/bits/ops/shape_algo.hpp>
 #include <ttl/nn/common.hpp>
+#include <ttl/tensor>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
 struct relu {
@@ -15,7 +14,7 @@ struct relu {
 
 // TODO: leaky relu
 
-template <typename F> class pointwise : public nn::ops::endofunction
+template <typename F> class pointwise : public ttl::nn::ops::endofunction
 {
     const F f_;
 
@@ -32,4 +31,4 @@ template <typename F> class pointwise : public nn::ops::endofunction
     }
 };
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

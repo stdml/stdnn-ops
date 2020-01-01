@@ -5,7 +5,7 @@
 #include <ttl/nn/bits/ops/bn.hpp>
 #include <ttl/nn/bits/ops/noop.hpp>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
 
 template <typename image_order, typename Act = ops::noop, bool with_bias = true>
@@ -14,7 +14,7 @@ class batch_norm;
 template <typename image_order, typename Act>
 class batch_norm<image_order, Act, false>
 {
-    using bn_op = nn::ops::batch_norm<image_order>;
+    using bn_op = ttl::nn::ops::batch_norm<image_order>;
 
   public:
     template <typename R,                     //
@@ -41,7 +41,7 @@ class batch_norm<image_order, Act, false>
 template <typename image_order, typename Act>
 class batch_norm<image_order, Act, true>
 {
-    using bn_op = nn::ops::batch_norm_with_bias<image_order>;
+    using bn_op = ttl::nn::ops::batch_norm_with_bias<image_order>;
 
   public:
     template <typename R,                     //
@@ -71,4 +71,4 @@ class batch_norm<image_order, Act, true>
     }
 };
 
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers

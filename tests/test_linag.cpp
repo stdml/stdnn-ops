@@ -7,7 +7,7 @@
 
 void test_mm(int k, int m, int n)
 {
-    using mul = nn::ops::matmul;
+    using mul = ttl::nn::ops::matmul;
     const auto x = ttl::tensor<int, 2>(k, m);
     const auto y = ttl::tensor<int, 2>(m, n);
     ttl::fill(ref(x), 2);

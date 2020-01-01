@@ -1,6 +1,8 @@
 #pragma once
 #include <ttl/nn/bits/traits/linear_sample.hpp>
 
+namespace ttl
+{
 namespace nn
 {
 namespace traits
@@ -32,3 +34,4 @@ class im2col1d : public traits::im2col1d_trait
 };
 }  // namespace ops
 }  // namespace nn
+}  // namespace ttl

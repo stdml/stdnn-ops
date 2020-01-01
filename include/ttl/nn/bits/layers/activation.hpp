@@ -4,7 +4,7 @@
 #include <ttl/nn/bits/layers/layer.hpp>
 #include <ttl/nn/bits/ops/matmul.hpp>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
 template <typename Act> class activation
 {
@@ -16,4 +16,4 @@ template <typename Act> class activation
         return make_layer(y);
     }
 };
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers

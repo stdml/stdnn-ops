@@ -2,6 +2,8 @@
 #include <array>
 #include <stdexcept>
 
+namespace ttl
+{
 namespace nn
 {
 namespace traits
@@ -39,3 +41,4 @@ template <typename N> class linear_padding_trait
 };
 }  // namespace traits
 }  // namespace nn
+}  // namespace ttl

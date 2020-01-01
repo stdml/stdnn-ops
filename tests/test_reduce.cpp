@@ -22,13 +22,13 @@ TEST(reduce_test, test1)
     ttl::tensor<int, 1> y(m);
     ttl::tensor<int, 1> z(n);
 
-    nn::ops::internal::inner_contraction(ref(y), view(x));
+    ttl::nn::ops::internal::inner_contraction(ref(y), view(x));
     ASSERT_EQ(y.data()[0], 3);
     ASSERT_EQ(y.data()[1], 12);
     ASSERT_EQ(y.data()[2], 21);
     ASSERT_EQ(y.data()[3], 30);
 
-    nn::ops::internal::outter_contraction(ref(z), view(x));
+    ttl::nn::ops::internal::outter_contraction(ref(z), view(x));
     ASSERT_EQ(z.data()[0], 18);
     ASSERT_EQ(z.data()[1], 22);
     ASSERT_EQ(z.data()[2], 26);

@@ -4,7 +4,7 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename image_order> class im2col_trait;
 
@@ -141,4 +141,4 @@ template <> class im2col<hwc, hwrsc> : public im2col_trait<hw>
         }
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

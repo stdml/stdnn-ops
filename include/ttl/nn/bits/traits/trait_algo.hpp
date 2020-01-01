@@ -1,9 +1,8 @@
 #pragma once
+#include <ttl/nn/bits/traits/basic_traits.hpp>
 #include <ttl/shape>
 
-#include <ttl/nn/bits/traits/basic_traits.hpp>
-
-namespace nn::traits
+namespace ttl::nn::traits
 {
 template <typename T> ttl::rank_t rank_of;
 template <> constexpr ttl::rank_t rank_of<hw> = 2;
@@ -148,4 +147,4 @@ ttl::shape<4> conv_filter_shape(ttl::shape<4>::dimension_type c,
 {
     return internal::conv_filter_shape_impl<order>()(c, shp, d);
 }
-}  // namespace nn::traits
+}  // namespace ttl::nn::traits

@@ -7,7 +7,7 @@
 #include <ttl/nn/bits/traits/multi_linear_sample.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
 class conv_trait
 {
@@ -147,4 +147,4 @@ class conv<image_order, filter_order, true, Act> : public conv_trait
     }
 };
 
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers

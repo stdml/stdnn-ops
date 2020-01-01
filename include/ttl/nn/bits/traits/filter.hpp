@@ -3,6 +3,8 @@
 #include <string>
 #include <type_traits>
 
+namespace ttl
+{
 namespace nn
 {
 namespace traits
@@ -70,3 +72,4 @@ template <typename N> class linear_filter_trait
 };
 }  // namespace traits
 }  // namespace nn
+}  // namespace ttl

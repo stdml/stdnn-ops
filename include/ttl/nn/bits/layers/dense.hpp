@@ -4,14 +4,14 @@
 #include <ttl/nn/bits/ops/bias.hpp>
 #include <ttl/nn/bits/ops/matmul.hpp>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
 class dense_trait
 {
   protected:
     const size_t logits_;
 
-    using matmul = nn::ops::matmul;
+    using matmul = ttl::nn::ops::matmul;
 
   public:
     dense_trait(size_t logits) : logits_(logits) {}
@@ -46,4 +46,4 @@ template <typename Act = ops::noop> class dense : public dense_trait
         return make_layer(y, w, b);
     }
 };
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers

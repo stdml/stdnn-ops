@@ -6,7 +6,7 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename dim_t> class linear_conv_trait
 {
@@ -232,5 +232,4 @@ template <> class conv<nchw, dcrs> : public conv_trait<hw>
         }
     }
 };
-
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

@@ -8,7 +8,7 @@ TEST(pool_test, test_hw)
 
     for (auto i : range(16)) { x.data()[i] = i; }
 
-    using pool = nn::ops::pool<nn::ops::pool_max, nn::ops::hw>;
+    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hw>;
     pool()(ref(y), view(x));
 
     ASSERT_EQ(y.at(0, 0), 5);
@@ -32,7 +32,7 @@ TEST(pool_test, test_hwc)
         }
     }
 
-    using pool = nn::ops::pool<nn::ops::pool_max, nn::ops::hwc>;
+    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hwc>;
     pool()(ref(y), view(x));
 
     for (auto i : range(n)) {
@@ -51,7 +51,8 @@ TEST(pool_test, test_4d)
     const uint32_t w = 256;
 
     {
-        using max_pool_nhwc = nn::ops::pool<nn::ops::pool_max, nn::ops::nhwc>;
+        using max_pool_nhwc =
+            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>;
         const auto x = ttl::tensor<float, 4>(n, h, w, c);
         {
             const auto op = max_pool_nhwc();
@@ -75,7 +76,8 @@ TEST(pool_test, test_4d)
     }
 
     {
-        using max_pool_nchw = nn::ops::pool<nn::ops::pool_max, nn::ops::nchw>;
+        using max_pool_nchw =
+            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nchw>;
         const auto x = ttl::tensor<float, 4>(n, c, h, w);
         for (auto l : range(n)) {
             for (auto k : range(c)) {
@@ -128,7 +130,8 @@ TEST(pool_test, test_padding)
     const uint32_t c = 3;
 
     {
-        using pool = nn::ops::pool<nn::ops::pool_max, nn::ops::nhwc>;
+        using pool =
+            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>;
         const auto x = ttl::tensor<float, 4>(n, h, w, c);
         {
             const auto op = pool(pool::ksize(3, 3), pool::padding(2, 1));
@@ -148,11 +151,11 @@ TEST(pool_test, test_padding)
 
 TEST(pool_test, test_mean)
 {
-    using pool = nn::ops::pool<nn::ops::pool_mean, nn::ops::hw>;
+    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_mean, ttl::nn::ops::hw>;
     const pool op;
     const auto x = ttl::tensor<int, 2>(4, 4);
     std::iota(x.data(), x.data() + 16, 0);
-    using add = nn::ops::add;
+    using add = ttl::nn::ops::add;
     add()(ref(x), view(x), view(x));
 
     const auto y = ttl::tensor<int, 2>(op(x.shape()));

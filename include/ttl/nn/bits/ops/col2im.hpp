@@ -1,13 +1,12 @@
 #pragma once
 #include <ttl/algorithm>
-
 #include <ttl/nn/bits/ops/im2col.hpp>
 #include <ttl/nn/bits/ops/reshape.hpp>
 #include <ttl/nn/bits/traits/multi_linear_sample.hpp>
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
 template <typename image_order, typename col_order> class col2im;
@@ -53,4 +52,4 @@ template <> class col2im<hwc, hwrsc> : public im2col_trait<hw>
     }
 };
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

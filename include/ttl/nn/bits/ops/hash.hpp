@@ -1,7 +1,7 @@
 #pragma once
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename N = uint32_t> class crc
 {
@@ -53,4 +53,4 @@ template <typename N = uint32_t> class crc
                       0xffffffff;
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

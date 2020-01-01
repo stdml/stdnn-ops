@@ -4,7 +4,7 @@
 #include <ttl/nn/bits/ops/shape_algo.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops::grad
+namespace ttl::nn::ops::grad
 {
 
 template <int, typename E = nn::engines::default_engine> class matmul;
@@ -15,7 +15,8 @@ template <typename E> class matmul<0, E>
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,
                         const shape<2> &x, const shape<2> &y) const
     {
-        return nn::ops::gradient_shape<0>(nn::ops::matmul(), gz, z, x, y);
+        return ttl::nn::ops::gradient_shape<0>(ttl::nn::ops::matmul(), gz, z, x,
+                                               y);
     }
 
     template <typename R>
@@ -35,7 +36,8 @@ template <typename E> class matmul<1, E>
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,
                         const shape<2> &x, const shape<2> &y) const
     {
-        return nn::ops::gradient_shape<1>(nn::ops::matmul(), gz, z, x, y);
+        return ttl::nn::ops::gradient_shape<1>(ttl::nn::ops::matmul(), gz, z, x,
+                                               y);
     }
 
     template <typename R>
@@ -48,4 +50,4 @@ template <typename E> class matmul<1, E>
         nn::engines::linag<E>::mtm(x, gz, gy);
     }
 };
-}  // namespace nn::ops::grad
+}  // namespace ttl::nn::ops::grad

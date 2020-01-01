@@ -3,7 +3,7 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
 template <typename image_order> class pool_trait;
@@ -284,4 +284,4 @@ class pool<pool_algo, nchw> : public pool_trait<hw>
         }
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

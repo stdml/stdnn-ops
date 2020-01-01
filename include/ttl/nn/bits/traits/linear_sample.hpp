@@ -3,6 +3,8 @@
 #include <ttl/nn/bits/traits/padding.hpp>
 #include <ttl/nn/common.hpp>
 
+namespace ttl
+{
 namespace nn
 {
 namespace traits
@@ -111,3 +113,4 @@ template <typename dim_t> class linear_sample_trait
 };
 }  // namespace traits
 }  // namespace nn
+}  // namespace ttl

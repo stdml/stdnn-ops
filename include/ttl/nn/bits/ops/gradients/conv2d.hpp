@@ -3,15 +3,15 @@
 #include <ttl/nn/bits/ops/conv2d.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops::grad
+namespace ttl::nn::ops::grad
 {
 template <typename image_order, typename filter_order, int> class conv;
 
 template <>
-class conv<nn::ops::nhwc, nn::ops::rscd, 0>
-    : public nn::ops::conv_trait<nn::ops::hw>
+class conv<ttl::nn::ops::nhwc, ttl::nn::ops::rscd, 0>
+    : public ttl::nn::ops::conv_trait<ttl::nn::ops::hw>
 {
-    using F = nn::ops::conv<nn::ops::nhwc, nn::ops::rscd>;
+    using F = ttl::nn::ops::conv<ttl::nn::ops::nhwc, ttl::nn::ops::rscd>;
     const F f_;
 
   public:
@@ -20,7 +20,7 @@ class conv<nn::ops::nhwc, nn::ops::rscd, 0>
     shape<4> operator()(const shape<4> &gz, const shape<4> &z,
                         const shape<4> &x, const shape<4> &y) const
     {
-        return nn::ops::gradient_shape<0>(f_, gz, z, x, y);
+        return ttl::nn::ops::gradient_shape<0>(f_, gz, z, x, y);
     }
 
     template <typename R>
@@ -33,30 +33,32 @@ class conv<nn::ops::nhwc, nn::ops::rscd, 0>
         // check_shape(*this, gx, gz, z, x, y);
 
         const auto [r, s] =
-            nn::ops::filter_shape<nn::ops::rscd>(y.shape()).dims();
-        using upper_op = nn::ops::im2col<nn::ops::hwc, nn::ops::hwrsc>;
-        const auto upper = nn::ops::internal::make_batched(
+            ttl::nn::ops::filter_shape<ttl::nn::ops::rscd>(y.shape()).dims();
+        using upper_op =
+            ttl::nn::ops::im2col<ttl::nn::ops::hwc, ttl::nn::ops::hwrsc>;
+        const auto upper = ttl::nn::ops::internal::make_batched(
             upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
 
         ttl::tensor<R, 6> gx_upper(upper(x.shape()));  // FIXME: get from pool
 
         nn::engines::linag<nn::engines::default_engine>::mmt(
-            nn::ops::as_matrix<3, 1>(gz),  //
-            nn::ops::as_matrix<3, 1>(y),
-            nn::ops::as_matrix<3, 3>(ref(gx_upper)));
+            ttl::nn::ops::as_matrix<3, 1>(gz),  //
+            ttl::nn::ops::as_matrix<3, 1>(y),
+            ttl::nn::ops::as_matrix<3, 3>(ref(gx_upper)));
 
-        using lower_op = nn::ops::col2im<nn::ops::hwc, nn::ops::hwrsc>;
-        const auto lower = nn::ops::internal::make_batched(
+        using lower_op =
+            ttl::nn::ops::col2im<ttl::nn::ops::hwc, ttl::nn::ops::hwrsc>;
+        const auto lower = ttl::nn::ops::internal::make_batched(
             lower_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
         lower(gx, view(gx_upper));
     }
 };
 
 template <>
-class conv<nn::ops::nhwc, nn::ops::rscd, 1>
-    : public nn::ops::conv_trait<nn::ops::hw>
+class conv<ttl::nn::ops::nhwc, ttl::nn::ops::rscd, 1>
+    : public ttl::nn::ops::conv_trait<ttl::nn::ops::hw>
 {
-    using F = nn::ops::conv<nn::ops::nhwc, nn::ops::rscd>;
+    using F = ttl::nn::ops::conv<ttl::nn::ops::nhwc, ttl::nn::ops::rscd>;
     const F f_;
 
   public:
@@ -65,7 +67,7 @@ class conv<nn::ops::nhwc, nn::ops::rscd, 1>
     shape<4> operator()(const shape<4> &gz, const shape<4> &z,
                         const shape<4> &x, const shape<4> &y) const
     {
-        return nn::ops::gradient_shape<1>(f_, gz, z, x, y);
+        return ttl::nn::ops::gradient_shape<1>(f_, gz, z, x, y);
     }
 
     template <typename R>
@@ -78,18 +80,19 @@ class conv<nn::ops::nhwc, nn::ops::rscd, 1>
         check_shape(*this, gy, gz, z, x, y);
 
         const auto [r, s] =
-            nn::ops::filter_shape<nn::ops::rscd>(y.shape()).dims();
-        using upper_op = nn::ops::im2col<nn::ops::hwc, nn::ops::hwrsc>;
-        const auto upper = nn::ops::internal::make_batched(
+            ttl::nn::ops::filter_shape<ttl::nn::ops::rscd>(y.shape()).dims();
+        using upper_op =
+            ttl::nn::ops::im2col<ttl::nn::ops::hwc, ttl::nn::ops::hwrsc>;
+        const auto upper = ttl::nn::ops::internal::make_batched(
             upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
 
         ttl::tensor<R, 6> x_upper(upper(x.shape()));  // FIXME: get from pool
         upper(ref(x_upper), x);  // FIXME: x_upper may be cached
 
         nn::engines::linag<nn::engines::default_engine>::mtm(
-            nn::ops::as_matrix<3, 3>(view(x_upper)),
-            nn::ops::as_matrix<3, 1>(gz),  //
-            nn::ops::as_matrix<3, 1>(gy));
+            ttl::nn::ops::as_matrix<3, 3>(view(x_upper)),
+            ttl::nn::ops::as_matrix<3, 1>(gz),  //
+            ttl::nn::ops::as_matrix<3, 1>(gy));
     }
 };
-}  // namespace nn::ops::grad
+}  // namespace ttl::nn::ops::grad

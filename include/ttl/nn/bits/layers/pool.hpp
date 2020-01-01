@@ -4,7 +4,7 @@
 #include <ttl/nn/bits/ops/pool.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
 template <typename image_order> class pool_trait;
 
@@ -78,4 +78,4 @@ class pool : public pool_trait<ops::hw>
         return make_layer(y);
     }
 };
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers

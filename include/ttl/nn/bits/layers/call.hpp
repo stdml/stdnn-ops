@@ -1,7 +1,7 @@
 #pragma once
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename T, typename Op, typename... Ts>
 T *new_result(const Op &op, const Ts &... args)
@@ -19,4 +19,4 @@ T *new_parameter(const shape<T::rank> &shp, const Init &init)
     return w;
 }
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

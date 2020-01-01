@@ -5,7 +5,7 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
 // TODO: make it more generic
@@ -17,7 +17,8 @@ template <> class concat_channel4d_impl<nhwc, 3>
     shape<4> operator()(const shape<4> &x, const shape<4> &y,
                         const shape<4> &z) const
     {
-        return internal::concat_shape<channel_position<nn::ops::nhwc>>(x, y, z);
+        return internal::concat_shape<channel_position<ttl::nn::ops::nhwc>>(
+            x, y, z);
     }
 
     template <typename R>
@@ -61,7 +62,8 @@ template <> class concat_channel4d_impl<nchw, 2>
   public:
     shape<4> operator()(const shape<4> &x, const shape<4> &y) const
     {
-        return internal::concat_shape<channel_position<nn::ops::nchw>>(x, y);
+        return internal::concat_shape<channel_position<ttl::nn::ops::nchw>>(x,
+                                                                            y);
     }
 
     template <typename R>
@@ -110,4 +112,4 @@ template <typename image_order> class concat_channel4d
     }
 };
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

@@ -3,7 +3,7 @@
 
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 class identity
 {
@@ -66,4 +66,4 @@ using add = _binary_pointwise<scalar_add>;
 using sub = _binary_pointwise<scalar_sub>;
 using mul = _binary_pointwise<scalar_mul>;
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

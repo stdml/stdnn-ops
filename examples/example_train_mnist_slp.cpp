@@ -16,14 +16,14 @@ using ttl::range;
 class slp
 {
   public:
-    nn::shape<2> operator()(const nn::shape<2> &x, const nn::shape<2> &y,
-                            const nn::shape<1> &z) const
+    ttl::shape<2> operator()(const ttl::shape<2> &x, const ttl::shape<2> &y,
+                             const ttl::shape<1> &z) const
     {
         const auto [n, m] = x.dims();
         const auto [_m, k] = y.dims();
         contract_assert_eq(m, _m);
         contract_assert_eq(k, std::get<0>(z.dims()));
-        return nn::shape<2>(n, k);
+        return ttl::shape<2>(n, k);
     }
 
     template <typename R>
@@ -32,8 +32,8 @@ class slp
                     const ttl::tensor_view<R, 2> &w,
                     const ttl::tensor_view<R, 1> &b)
     {
-        nn::ops::matmul()(ys, xs, w);
-        nn::ops::add_bias<nn::ops::hw>()(ys, view(ys), b);
+        ttl::nn::ops::matmul()(ys, xs, w);
+        ttl::nn::ops::add_bias<ttl::nn::ops::hw>()(ys, view(ys), b);
     }
 
     template <typename R>
@@ -49,7 +49,8 @@ class slp
             for (auto i : range(n)) { tot += g_ys.at(i, l); }
             g_b.at(l) = tot;
         }
-        nn::engines::linag<nn::engines::default_engine>::mtm(xs, g_ys, g_w);
+        ttl::nn::engines::linag<ttl::nn::engines::default_engine>::mtm(xs, g_ys,
+                                                                       g_w);
     }
 };
 
@@ -58,22 +59,22 @@ void loss(const ttl::tensor_ref<R, 0> &l, const ttl::tensor_view<R, 2> &ys,
           const ttl::tensor_view<R, 2> &y_s)
 {
     ttl::tensor<R, 1> ls(ys.shape().dims()[0]);
-    nn::ops::xentropy()(ref(ls), y_s, ys);
-    nn::ops::mean()(ref(l), view(ls));
+    ttl::nn::ops::xentropy()(ref(ls), y_s, ys);
+    ttl::nn::ops::mean()(ref(l), view(ls));
 }
 
 template <typename R, typename R1>
 R accuracy(const ttl::tensor_view<R1, 2> &ys,
            const ttl::tensor_view<R1, 2> &y_s)
 {
-    const nn::ops::argmax argmax;
+    const ttl::nn::ops::argmax argmax;
     const ttl::tensor<uint32_t, 1> preditions(argmax(ys.shape()));
     const ttl::tensor<uint32_t, 1> labels(argmax(y_s.shape()));
     argmax(ref(preditions), ys);
     argmax(ref(labels), y_s);
     const ttl::tensor<float, 0> sim;
-    nn::ops::similarity()(ref(sim),  //
-                          view(preditions), view(labels));
+    ttl::nn::ops::similarity()(ref(sim),  //
+                               view(preditions), view(labels));
     return sim.data()[0];
 }
 
@@ -83,12 +84,12 @@ void load_data(const D &ds, int offset, int batch_size,
                const ttl::tensor_ref<R, 2> &y_s)
 {
     const auto f = [](uint8_t p) { return p / 255.0; };
-    nn::ops::pointwise<decltype(f)> normalize_pixel(f);
+    ttl::nn::ops::pointwise<decltype(f)> normalize_pixel(f);
     normalize_pixel(ttl::tensor_ref<R, 3>(xs.data(), batch_size, 28,
                                           28) /* FIXME: use reshape */,
                     view(ds.images.slice(offset, offset + batch_size)));
-    nn::ops::onehot(10)(y_s,
-                        view(ds.labels.slice(offset, offset + batch_size)));
+    ttl::nn::ops::onehot(10)(
+        y_s, view(ds.labels.slice(offset, offset + batch_size)));
 }
 
 template <typename D, typename R>
@@ -129,26 +130,26 @@ void train_slp_model(const D &ds,  //
             load_data(ds, offset * batch_size, batch_size, ref(xs), ref(y_s));
             {
                 slp()(ref(zs), view(xs), view(w), view(b));
-                nn::ops::softmax()(ref(ys), view(zs));
-                nn::ops::xentropy()(ref(ls), view(y_s), view(ys));
-                nn::ops::mean()(ref(l), view(ls));
+                ttl::nn::ops::softmax()(ref(ys), view(zs));
+                ttl::nn::ops::xentropy()(ref(ls), view(y_s), view(ys));
+                ttl::nn::ops::mean()(ref(l), view(ls));
             }
             printf("loss: %f\n", l.data()[0]);
             {
                 // PPRINT(g_ls);
-                nn::ops::grad::xentropy<1>()(ref(g_ys), view(g_ls), view(ls),
-                                             view(y_s), view(ys));
+                ttl::nn::ops::grad::xentropy<1>()(
+                    ref(g_ys), view(g_ls), view(ls), view(y_s), view(ys));
                 // PPRINT(g_ys);
-                nn::ops::grad::softmax<0>()(ref(g_zs), view(g_ys), view(ys),
-                                            view(zs));
+                ttl::nn::ops::grad::softmax<0>()(ref(g_zs), view(g_ys),
+                                                 view(ys), view(zs));
                 // PPRINT(g_zs);
                 slp().grad(ref(g_w), ref(g_b), view(g_zs), view(zs), view(xs),
                            view(w), view(b));
             }
             // PPRINT(g_w);
             // PPRINT(g_b);
-            nn::ops::sub()(w, view(w), view(g_w));
-            nn::ops::sub()(b, view(b), view(g_b));
+            ttl::nn::ops::sub()(w, view(w), view(g_w));
+            ttl::nn::ops::sub()(b, view(b), view(g_b));
         }
     }
 }
@@ -193,8 +194,8 @@ int main()
         train_slp_model(train, ref(w), ref(b));
         test_slp_model(test, view(w), view(b));
 
-        nn::ops::writefile("w.idx")(view(w));
-        nn::ops::writefile("b.idx")(view(b));
+        ttl::nn::ops::writefile("w.idx")(view(w));
+        ttl::nn::ops::writefile("b.idx")(view(b));
         test_slp_model(test, view(w), view(b));
     }
     int code = system("tar -cf params.idx.tar w.idx b.idx");
@@ -208,8 +209,8 @@ int main()
         fill(ref(b), static_cast<float>(0));
 
         const std::string filename("params.idx.tar");
-        nn::ops::readtar(filename, "w.idx")(ref(w));
-        nn::ops::readtar(filename, "b.idx")(ref(b));
+        ttl::nn::ops::readtar(filename, "w.idx")(ref(w));
+        ttl::nn::ops::readtar(filename, "b.idx")(ref(b));
 
         test_slp_model(test, view(w), view(b));
     }

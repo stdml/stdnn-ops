@@ -4,6 +4,7 @@
 
 #include <ttl/debug>
 #include <ttl/range>
+#include <ttl/shape>
 #include <ttl/tensor>
 
 namespace std
@@ -14,24 +15,20 @@ template <ttl::rank_t r> string to_string(const ttl::shape<r> &s)
 }
 }  // namespace std
 
-namespace nn
+namespace ttl
 {
-using ttl::range;
-using ttl::shape;
-
 using arity_t = uint8_t;
-
-}  // namespace nn
 
 namespace nn::experimental::ops
 {
 using ttl::range;
 }  // namespace nn::experimental::ops
+}  // namespace ttl
 
-template <ttl::internal::rank_t r>
-inline void contract_assert_eq_(const ttl::internal::basic_shape<r> &x,
-                                const ttl::internal::basic_shape<r> &y,
-                                const char *file, int line)
+template <ttl::rank_t r, typename Dim>
+void contract_assert_eq_(const ttl::internal::basic_shape<r, Dim> &x,
+                         const ttl::internal::basic_shape<r, Dim> &y,
+                         const char *file, int line)
 {
     if (x != y) {
         throw std::runtime_error(

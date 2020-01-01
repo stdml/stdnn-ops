@@ -2,7 +2,7 @@
 
 void example_conv1d()
 {
-    nn::ops::conv1d f;
+    ttl::nn::ops::conv1d f;
     ttl::tensor<float, 1> x(10);
     ttl::tensor<float, 1> y(3);
     ttl::tensor<float, 1> z(f(x.shape(), y.shape()));

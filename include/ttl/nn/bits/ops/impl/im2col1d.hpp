@@ -1,7 +1,7 @@
 #pragma once
 #include <ttl/nn/bits/ops/im2col1d.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename R>
 void im2col1d::operator()(const ttl::tensor_ref<R, 2> &y,
@@ -20,4 +20,4 @@ void im2col1d::operator()(const ttl::tensor_ref<R, 2> &y,
         }
     }
 }
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

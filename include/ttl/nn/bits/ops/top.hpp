@@ -2,15 +2,15 @@
 #include <algorithm>
 #include <vector>
 
+#include <ttl/nn/common.hpp>
+#include <ttl/shape>
 #include <ttl/tensor>
 
-#include <ttl/nn/common.hpp>
-
-namespace nn::ops
+namespace ttl::nn::ops
 {
 class top
 {
-    using dim_t = nn::shape<1>::dimension_type;
+    using dim_t = shape<1>::dimension_type;
 
     const dim_t k_;
 
@@ -38,4 +38,4 @@ class top
         }
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

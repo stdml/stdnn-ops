@@ -3,11 +3,10 @@
 
 #include <algorithm>
 
+#include <ttl/nn/common.hpp>
 #include <ttl/tensor>
 
-#include <ttl/nn/common.hpp>
-
-namespace nn::ops
+namespace ttl::nn::ops
 {
 namespace internal
 {
@@ -82,4 +81,4 @@ class softmax
         (softmax_impl<r, R>(eps))(y, x);
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

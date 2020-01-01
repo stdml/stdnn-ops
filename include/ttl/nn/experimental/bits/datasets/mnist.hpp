@@ -25,8 +25,8 @@ auto load_mnist_data(const std::string &data_dir, const std::string &name)
     ttl::tensor<uint8_t, 3> images(n, 28, 28);
     ttl::tensor<uint8_t, 1> labels(n);
     const std::string prefix = data_dir + "/" + name;
-    nn::ops::readfile(prefix + "-images-idx3-ubyte")(ref(images));
-    nn::ops::readfile(prefix + "-labels-idx1-ubyte")(ref(labels));
+    ttl::nn::ops::readfile(prefix + "-images-idx3-ubyte")(ref(images));
+    ttl::nn::ops::readfile(prefix + "-labels-idx1-ubyte")(ref(labels));
     return mnist_data_set{
         .images = std::move(images),
         .labels = std::move(labels),

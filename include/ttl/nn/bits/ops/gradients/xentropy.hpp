@@ -3,7 +3,7 @@
 #include <ttl/nn/bits/ops/xentropy.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops::grad
+namespace ttl::nn::ops::grad
 {
 template <int> class xentropy;
 
@@ -14,7 +14,8 @@ template <> class xentropy<1>
     shape<r> operator()(const shape<r - 1> &gz, const shape<r - 1> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        return nn::ops::gradient_shape<1>(nn::ops::xentropy(), gz, z, x, y);
+        return ttl::nn::ops::gradient_shape<1>(ttl::nn::ops::xentropy(), gz, z,
+                                               x, y);
     }
 
     template <typename R>
@@ -41,4 +42,4 @@ template <> class xentropy<1>
         }
     }
 };
-}  // namespace nn::ops::grad
+}  // namespace ttl::nn::ops::grad

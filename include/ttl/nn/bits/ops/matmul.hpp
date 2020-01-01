@@ -2,7 +2,7 @@
 #include <ttl/nn/bits/engines/linag.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename E> class matmul_
 {
@@ -26,4 +26,4 @@ template <typename E> class matmul_
 
 using matmul = matmul_<nn::engines::default_engine>;
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

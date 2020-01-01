@@ -1,7 +1,7 @@
 #pragma once
 #include <ttl/nn/bits/ops/conv1d.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <typename R>
 void conv1d::operator()(const ttl::tensor_ref<R, 1> &z,
@@ -22,4 +22,4 @@ void conv1d::operator()(const ttl::tensor_ref<R, 1> &z,
         z.data()[j] = xi;
     }
 }
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

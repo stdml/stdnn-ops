@@ -5,7 +5,7 @@
 #include <ttl/nn/bits/ops/shape_algo.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops::grad
+namespace ttl::nn::ops::grad
 {
 template <int> class add;
 
@@ -16,7 +16,8 @@ template <> class add<0>
     shape<r> operator()(const shape<r> &gz, const shape<r> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        return nn::ops::gradient_shape<0>(nn::ops::add(), gz, z, x, y);
+        return ttl::nn::ops::gradient_shape<0>(ttl::nn::ops::add(), gz, z, x,
+                                               y);
     }
 
     template <typename R, ttl::rank_t r>
@@ -37,7 +38,8 @@ template <> class add<1>
     shape<r> operator()(const shape<r> &gz, const shape<r> &z,
                         const shape<r> &x, const shape<r> &y) const
     {
-        return nn::ops::gradient_shape<1>(nn::ops::add(), gz, z, x, y);
+        return ttl::nn::ops::gradient_shape<1>(ttl::nn::ops::add(), gz, z, x,
+                                               y);
     }
 
     template <typename R, ttl::rank_t r>
@@ -51,4 +53,4 @@ template <> class add<1>
     }
 };
 
-}  // namespace nn::ops::grad
+}  // namespace ttl::nn::ops::grad

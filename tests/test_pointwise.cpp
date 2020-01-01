@@ -1,8 +1,7 @@
 #include <ttl/algorithm>
-#include <ttl/tensor>
-
 #include <ttl/nn/bits/ops/pointwise.hpp>
 #include <ttl/nn/testing>
+#include <ttl/tensor>
 
 TEST(pointwise_test, test_relu)
 {
@@ -11,7 +10,7 @@ TEST(pointwise_test, test_relu)
     const auto x = ttl::tensor<R, 1>(k);
     const auto y = ttl::tensor<R, 1>(x.shape());
 
-    using relu = nn::ops::pointwise<nn::ops::relu>;
+    using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
 
     for (int i = 0; i < k; ++i) { x.at(i) = i - 4.5; }
     relu()(ref(y), view(x));
@@ -33,7 +32,7 @@ TEST(pointwise_test, test_lambda)
     ttl::fill(ref(x), static_cast<uint8_t>(1));
 
     auto f = [](uint8_t p) { return static_cast<float>(p / 255.0); };
-    nn::ops::pointwise<decltype(f)> op(f);
+    ttl::nn::ops::pointwise<decltype(f)> op(f);
     op(ref(y), view(x));
     ASSERT_EQ(y.data()[0], static_cast<float>(1.0 / 255.0));
 }

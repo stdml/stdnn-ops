@@ -3,7 +3,7 @@
 #include <ttl/nn/bits/layers/layer.hpp>
 #include <ttl/nn/bits/ops/elementary.hpp>
 
-namespace nn::layers
+namespace ttl::nn::layers
 {
 class identity
 {
@@ -13,8 +13,8 @@ class identity
     template <typename R, ttl::rank_t r>
     auto operator()(const ttl::tensor_ref<R, r> &x) const
     {
-        auto y = nn::ops::new_result<ttl::tensor<R, r>>(op(), x);
+        auto y = ttl::nn::ops::new_result<ttl::tensor<R, r>>(op(), x);
         return nn::layers::make_layer(y);
     }
 };
-}  // namespace nn::layers
+}  // namespace ttl::nn::layers

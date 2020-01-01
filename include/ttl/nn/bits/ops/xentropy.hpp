@@ -7,7 +7,7 @@
 
 #include <ttl/nn/bits/ops/reshape.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 namespace internal
 {
@@ -52,4 +52,4 @@ class xentropy
     }
 };
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

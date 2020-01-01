@@ -5,7 +5,7 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 struct scalar_identity {
     template <typename R> R operator()(const R &x) const { return x; }
@@ -70,4 +70,4 @@ template <> class transpose<nhwc, nchw>
 using to_channels_first = transpose<nchw, nhwc>;
 using to_channels_last = transpose<nhwc, nchw>;
 
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

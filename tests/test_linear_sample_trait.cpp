@@ -3,7 +3,7 @@
 
 void test_linear_sample_ksr_nm(int ksize, int stride, int rate, int n, int m)
 {
-    nn::traits::linear_sample_trait sample(ksize, stride, rate);
+    ttl::nn::traits::linear_sample_trait sample(ksize, stride, rate);
 
     ASSERT_EQ(sample(n), m);
     ASSERT_EQ(sample(0, 0), 0);
@@ -56,25 +56,25 @@ TEST(linear_sample_test, test_1) { test_linear_sample_1(); }
 TEST(linear_sample_test, test_2)
 {
     {
-        using sample_t = nn::traits::multi_linear_sample_trait<2, size_t>;
+        using sample_t = ttl::nn::traits::multi_linear_sample_trait<2, size_t>;
 
         sample_t sample(sample_t::ksize(1, 1));
-        const auto y = sample(nn::shape<2>(10, 11));
-        ASSERT_EQ(y, nn::shape<2>(10, 11));
+        const auto y = sample(ttl::shape<2>(10, 11));
+        ASSERT_EQ(y, ttl::shape<2>(10, 11));
     }
     {
-        using sample_t = nn::traits::multi_linear_sample_trait<3, size_t>;
+        using sample_t = ttl::nn::traits::multi_linear_sample_trait<3, size_t>;
 
         sample_t sample(sample_t::ksize(1, 2, 3));
-        const auto y = sample(nn::shape<3>(9, 8, 7));
-        ASSERT_EQ(y, nn::shape<3>(9, 7, 5));
+        const auto y = sample(ttl::shape<3>(9, 8, 7));
+        ASSERT_EQ(y, ttl::shape<3>(9, 7, 5));
     }
 }
 
 template <typename dim_t>
 void test_valid_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
 {
-    using sample_t = nn::traits::linear_sample_trait<size_t>;
+    using sample_t = ttl::nn::traits::linear_sample_trait<size_t>;
     const auto padding = sample_t::valid_padding(3, s, 1, n);
     const auto [u, v] = padding.dims();
     ASSERT_EQ(u, pad_l);
@@ -84,7 +84,7 @@ void test_valid_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
 template <typename dim_t>
 void test_same_padding_ksize_3(dim_t n, dim_t s, dim_t pad_l, dim_t pad_r)
 {
-    using sample_t = nn::traits::linear_sample_trait<dim_t>;
+    using sample_t = ttl::nn::traits::linear_sample_trait<dim_t>;
     const auto padding = sample_t::same_padding(3, s, 1, n);
     const auto [u, v] = padding.dims();
     ASSERT_EQ(u, pad_l);

@@ -1,11 +1,12 @@
 #pragma once
 #include <cstdint>
+
 #include <fstream>
 #include <map>
 #include <stdexcept>
 #include <string>
 
-namespace nn::ops::internal
+namespace ttl::nn::ops::internal
 {
 struct tar_header {
     std::string filename;
@@ -100,4 +101,4 @@ inline tar_index make_tar_index(const std::string &filename)
 
     return tar_index(filename, index);
 }
-}  // namespace nn::ops::internal
+}  // namespace ttl::nn::ops::internal

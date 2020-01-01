@@ -1,9 +1,8 @@
 #pragma once
+#include <ttl/nn/bits/engines/config.hpp>
 #include <ttl/tensor>
 
-#include <ttl/nn/bits/engines/config.hpp>
-
-namespace nn::engines
+namespace ttl::nn::engines
 {
 template <typename E> struct linag {
     template <typename R> using m_ref_t = ttl::matrix_ref<R>;
@@ -57,4 +56,4 @@ template <typename E> struct linag {
         engine::vm(a, b, c);
     }
 };
-}  // namespace nn::engines
+}  // namespace ttl::nn::engines

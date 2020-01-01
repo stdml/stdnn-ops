@@ -10,7 +10,7 @@ TEST(add_test, test1)
     const uint32_t h = 100;
     const uint32_t w = 100;
 
-    using add = nn::ops::add;
+    using add = ttl::nn::ops::add;
     const auto x = ttl::tensor<int, 4>(n, h, w, c);
     const auto y = ttl::tensor<int, 4>(n, h, w, c);
     ttl::fill(ref(x), 1);
@@ -22,5 +22,6 @@ TEST(add_test, test1)
 
     op(ref(z), view(x), view(y));
 
-    ASSERT_EQ(nn::ops::summaries::sum()(view(z)), (int)(n * h * w * c * 3));
+    ASSERT_EQ(ttl::nn::ops::summaries::sum()(view(z)),
+              (int)(n * h * w * c * 3));
 }

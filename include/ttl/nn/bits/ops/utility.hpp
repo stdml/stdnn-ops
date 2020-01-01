@@ -5,14 +5,13 @@
 #include <type_traits>
 
 #include <ttl/algorithm>
-
 #include <ttl/nn/bits/ops/reshape.hpp>
 #include <ttl/nn/common.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 
-class cast : public nn::ops::endofunction
+class cast : public ttl::nn::ops::endofunction
 {
   public:
     using endofunction::operator();
@@ -25,7 +24,7 @@ class cast : public nn::ops::endofunction
     }
 };
 
-class argmax : public nn::ops::reduce_function
+class argmax : public ttl::nn::ops::reduce_function
 {
   public:
     using reduce_function::operator();
@@ -34,14 +33,14 @@ class argmax : public nn::ops::reduce_function
     void operator()(const ttl::tensor_ref<N, r> &y,
                     const ttl::tensor_view<R, r + 1> &x) const
     {
-        const auto x_flat = nn::ops::as_matrix<r, 1>(x);
+        const auto x_flat = ttl::nn::ops::as_matrix<r, 1>(x);
         for (auto i : range(y.shape().size())) {
             y.data()[i] = ttl::argmax(x_flat[i]);
         }
     }
 };
 
-class onehot : public nn::ops::vectorize_function
+class onehot : public ttl::nn::ops::vectorize_function
 {
   public:
     using vectorize_function::operator();
@@ -54,7 +53,7 @@ class onehot : public nn::ops::vectorize_function
     {
         constexpr R def = 0;
         std::fill(y.data(), y.data_end(), def);
-        const auto y_flat = nn::ops::as_matrix<r, 1>(y);
+        const auto y_flat = ttl::nn::ops::as_matrix<r, 1>(y);
         for (auto i : range(x.shape().size())) {
             const dim_t j = x.data()[i];
             if (0 <= j && j < k_) {
@@ -86,4 +85,4 @@ class similarity
                               static_cast<R>(x.shape().size());
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

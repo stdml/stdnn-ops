@@ -1,7 +1,7 @@
 #pragma once
 #include <ttl/nn/bits/ops/shape_algo.hpp>
 
-namespace nn::ops
+namespace ttl::nn::ops
 {
 template <ttl::rank_t p, ttl::rank_t q, typename R>
 ttl::tensor_ref<R, 2> as_matrix(const ttl::tensor_ref<R, p + q> &t)
@@ -36,4 +36,4 @@ template <ttl::rank_t... rs> class copy_flatten
         std::copy(x.data(), x.data_end(), y.data());
     }
 };
-}  // namespace nn::ops
+}  // namespace ttl::nn::ops

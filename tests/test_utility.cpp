@@ -5,7 +5,7 @@
 
 TEST(utility_test, test_similarity)
 {
-    nn::ops::similarity op;
+    ttl::nn::ops::similarity op;
     const int n = 100;
     ttl::tensor<int, 1> x(n);
     ttl::tensor<int, 1> y(n);
