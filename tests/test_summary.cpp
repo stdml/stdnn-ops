@@ -1,5 +1,5 @@
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 TEST(summary_test, test_1)
 {

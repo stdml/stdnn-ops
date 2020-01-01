@@ -1,0 +1,5 @@
+#pragma once
+#include <ttl/nn/common.hpp>
+
+#include <ttl/nn/bits/models/namescope.hpp>
+#include <ttl/nn/bits/models/sequential.hpp>

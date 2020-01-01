@@ -1,0 +1,3 @@
+#pragma once
+
+#include <ttl/nn/experimental/bits/datasets/mnist.hpp>

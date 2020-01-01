@@ -1,5 +1,5 @@
-#include <nn/testing>
-#include <nn/traits>
+#include <ttl/nn/testing>
+#include <ttl/nn/traits>
 
 TEST(traits_test, test_1)
 {

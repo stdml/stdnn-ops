@@ -1,8 +1,7 @@
 #include <ttl/algorithm>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 #include <ttl/tensor>
-
-#include <nn/ops>
-#include <nn/testing>
 
 TEST(softmax_test, test_1)
 {

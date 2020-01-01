@@ -1,7 +1,6 @@
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 #include <ttl/tensor>
-
-#include <nn/ops>
-#include <nn/testing>
 
 /*
 0  1  2  |  3

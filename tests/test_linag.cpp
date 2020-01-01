@@ -1,10 +1,9 @@
 #include <algorithm>
 
 #include <ttl/algorithm>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 #include <ttl/tensor>
-
-#include <nn/ops>
-#include <nn/testing>
 
 void test_mm(int k, int m, int n)
 {

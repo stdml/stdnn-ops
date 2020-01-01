@@ -1,8 +1,8 @@
 #include <ttl/algorithm>
 #include <ttl/tensor>
 
-#include <nn/bits/ops/pointwise.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/pointwise.hpp>
+#include <ttl/nn/testing>
 
 TEST(pointwise_test, test_relu)
 {

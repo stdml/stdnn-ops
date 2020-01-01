@@ -1,7 +1,7 @@
 #include <ttl/tensor>
 
-#include <nn/layers>
-#include <nn/testing>
+#include <ttl/nn/layers>
+#include <ttl/nn/testing>
 
 TEST(activation_test, test1)
 {

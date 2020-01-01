@@ -1,8 +1,7 @@
 #include <string>
 
+#include <ttl/nn/layers>
 #include <ttl/tensor>
-
-#include <nn/layers>
 
 #include "utils.hpp"
 

@@ -1,9 +1,9 @@
-#include <nn/bits/ops/gradients/add.hpp>
-#include <nn/bits/ops/gradients/matmul.hpp>
-#include <nn/bits/ops/gradients/softmax.hpp>
-#include <nn/bits/ops/gradients/xentropy.hpp>
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/gradients/add.hpp>
+#include <ttl/nn/bits/ops/gradients/matmul.hpp>
+#include <ttl/nn/bits/ops/gradients/softmax.hpp>
+#include <ttl/nn/bits/ops/gradients/xentropy.hpp>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 template <typename R, typename S>
 ttl::tensor<R, S::rank> make_tensor(const S &shape)

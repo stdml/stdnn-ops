@@ -1,5 +1,5 @@
-#include <nn/bits/ops/pool.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/pool.hpp>
+#include <ttl/nn/testing>
 
 TEST(pool_test, test_hw)
 {

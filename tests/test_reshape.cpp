@@ -1,8 +1,8 @@
 #include <ttl/tensor>
 
-#include <nn/bits/ops/gradients/reshape.hpp>
-#include <nn/bits/ops/reshape.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/gradients/reshape.hpp>
+#include <ttl/nn/bits/ops/reshape.hpp>
+#include <ttl/nn/testing>
 
 template <typename R, ttl::rank_t... rs> struct test_flatten {
     static constexpr ttl::rank_t in_rank =

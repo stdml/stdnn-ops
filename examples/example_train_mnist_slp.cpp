@@ -1,13 +1,12 @@
 #include <cstdlib>
 
 #include <ttl/algorithm>
+#include <ttl/nn/bits/ops/gradients/softmax.hpp>
+#include <ttl/nn/bits/ops/gradients/xentropy.hpp>
+#include <ttl/nn/experimental/datasets>
+#include <ttl/nn/layers>
+#include <ttl/nn/ops>
 #include <ttl/range>
-
-#include <nn/bits/ops/gradients/softmax.hpp>
-#include <nn/bits/ops/gradients/xentropy.hpp>
-#include <nn/experimental/datasets>
-#include <nn/layers>
-#include <nn/ops>
 
 #include "trace.hpp"
 #include "utils.hpp"

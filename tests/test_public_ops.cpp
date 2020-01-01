@@ -1,5 +1,5 @@
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 template <typename F> void test_op_exist() { static_assert(sizeof(F) > 0, ""); }
 

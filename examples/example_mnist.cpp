@@ -2,13 +2,12 @@
 
 #include <string>
 
-#include <nn/ops>
+#include <ttl/nn/ops>
+#include <ttl/tensor>
 
 #ifdef USE_OPENCV
 #    include <opencv2/opencv.hpp>
 #endif
-
-#include <ttl/tensor>
 
 #include "utils.hpp"
 

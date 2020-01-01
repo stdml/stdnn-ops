@@ -1,6 +1,6 @@
-#include <nn/bits/ops/gradients/add.hpp>
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/gradients/add.hpp>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 TEST(affine_grad_test, test_1)
 {

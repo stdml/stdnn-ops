@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include <nn/layers>
+#include <ttl/nn/layers>
 
 #ifdef USE_OPENCV
 #    include <opencv2/opencv.hpp>

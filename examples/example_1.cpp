@@ -1,6 +1,5 @@
+#include <ttl/nn/ops>
 #include <ttl/tensor>
-
-#include <nn/ops>
 
 struct examples {
     const uint32_t n = 10;

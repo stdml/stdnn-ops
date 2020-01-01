@@ -1,7 +1,7 @@
-#include <nn/layers>
-#include <nn/testing>
-
 #include "testing_traits.hpp"
+
+#include <ttl/nn/layers>
+#include <ttl/nn/testing>
 
 struct conv2d_layer_params_t {
     using dim_t = uint32_t;

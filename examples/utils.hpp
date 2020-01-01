@@ -2,9 +2,8 @@
 #include <string>
 
 #include <ttl/debug>
+#include <ttl/nn/ops>
 #include <ttl/tensor>
-
-#include <nn/ops>
 
 #include <experimental/iterator>
 

@@ -1,7 +1,7 @@
 #include <ttl/algorithm>
 
-#include <nn/bits/ops/col2im.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/col2im.hpp>
+#include <ttl/nn/testing>
 
 TEST(col2im_test, test1)
 {

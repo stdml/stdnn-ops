@@ -32,12 +32,9 @@ IncludeCategories:
   # user added experimental STL headers
   - Regex:           ^<experimental/(contract|ith|new_type)>
     Priority:        2
-  # third party headers
-  - Regex:           ^<(ttl/(algorithm|debug|range|shape|tensor|bits))
+  # ttl headers
+  - Regex:           ^<(ttl/(algorithm|debug|nn|range|shape|tensor|bits))
     Priority:        3
-  # public nn headers
-  - Regex:           ^<nn
-    Priority:        4
   # internal headers
   - Regex:           ^"
-    Priority:        5
+    Priority:        4

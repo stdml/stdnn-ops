@@ -1,7 +1,7 @@
-#include <nn/ops>
+#include <ttl/nn/ops>
 
 //
-#include <nn/bits/ops/impl/conv1d.hpp>
+#include <ttl/nn/bits/ops/impl/conv1d.hpp>
 
 namespace nn::ops
 {

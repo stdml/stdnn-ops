@@ -1,5 +1,5 @@
-#include <nn/bits/traits/multi_linear_sample.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/traits/multi_linear_sample.hpp>
+#include <ttl/nn/testing>
 
 void test_linear_sample_ksr_nm(int ksize, int stride, int rate, int n, int m)
 {

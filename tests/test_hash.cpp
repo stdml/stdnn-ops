@@ -1,5 +1,5 @@
-#include <nn/bits/ops/hash.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/hash.hpp>
+#include <ttl/nn/testing>
 
 TEST(hash_test, test_crc32)
 {

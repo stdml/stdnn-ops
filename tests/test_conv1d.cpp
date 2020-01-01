@@ -1,9 +1,8 @@
-#include <nn/bits/ops/impl/col2im1d.hpp>
-#include <nn/bits/ops/impl/conv1d.hpp>
-#include <nn/bits/ops/impl/im2col1d.hpp>
-#include <nn/testing>
-
 #include <ttl/experimental/show>
+#include <ttl/nn/bits/ops/impl/col2im1d.hpp>
+#include <ttl/nn/bits/ops/impl/conv1d.hpp>
+#include <ttl/nn/bits/ops/impl/im2col1d.hpp>
+#include <ttl/nn/testing>
 
 template <typename R>
 void test_col2im1d(const int n, const int ksize = 1, const int stride = 1,

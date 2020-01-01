@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <string>
 
-#include <nn/models>
+#include <ttl/nn/models>
 
 #ifdef USE_OPENCV
 #    include <opencv2/opencv.hpp>
