@@ -1,9 +1,9 @@
-#include <nn/bits/ops/gradients/add.hpp>
-#include <nn/bits/ops/gradients/matmul.hpp>
-#include <nn/bits/ops/gradients/softmax.hpp>
-#include <nn/bits/ops/gradients/xentropy.hpp>
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/gradients/add.hpp>
+#include <ttl/nn/bits/ops/gradients/matmul.hpp>
+#include <ttl/nn/bits/ops/gradients/softmax.hpp>
+#include <ttl/nn/bits/ops/gradients/xentropy.hpp>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 template <typename R, typename S>
 ttl::tensor<R, S::rank> make_tensor(const S &shape)
@@ -40,46 +40,46 @@ void test_binary_grad_shape(const F &f,                //
 
 TEST(grad_shape_test, test_softmax)
 {
-    using F = nn::ops::softmax;
-    using G0 = nn::ops::grad::softmax<0>;
+    using F = ttl::nn::ops::softmax;
+    using G0 = ttl::nn::ops::grad::softmax<0>;
     F f;
     G0 g0;
-    test_unary_grad_shape(f, g0, nn::shape<1>(10));
+    test_unary_grad_shape(f, g0, ttl::shape<1>(10));
 }
 
 TEST(grad_shape_test, test_add)
 {
-    using F = nn::ops::add;
-    using G0 = nn::ops::grad::add<0>;
-    using G1 = nn::ops::grad::add<1>;
+    using F = ttl::nn::ops::add;
+    using G0 = ttl::nn::ops::grad::add<0>;
+    using G1 = ttl::nn::ops::grad::add<1>;
     F f;
     G0 g0;
     G1 g1;
-    test_binary_grad_shape(f, g0, g1, nn::shape<1>(10), nn::shape<1>(10));
+    test_binary_grad_shape(f, g0, g1, ttl::shape<1>(10), ttl::shape<1>(10));
 }
 
 TEST(grad_shape_test, test_matmul)
 {
-    using F = nn::ops::matmul;
-    using G0 = nn::ops::grad::matmul<0>;
-    using G1 = nn::ops::grad::matmul<1>;
+    using F = ttl::nn::ops::matmul;
+    using G0 = ttl::nn::ops::grad::matmul<0>;
+    using G1 = ttl::nn::ops::grad::matmul<1>;
     F f;
     G0 g0;
     G1 g1;
     const int k = 10;
     const int m = 11;
     const int n = 12;
-    test_binary_grad_shape(f, g0, g1, nn::shape<2>(k, m), nn::shape<2>(m, n));
+    test_binary_grad_shape(f, g0, g1, ttl::shape<2>(k, m), ttl::shape<2>(m, n));
 }
 
 // TEST(grad_shape_test, test_xentropy)
 // {
-//     using F = nn::ops::xentropy;
-//     using G0 = nn::ops::grad::xentropy<0>;
-//     using G1 = nn::ops::grad::xentropy<1>;
+//     using F = ttl::nn::ops::xentropy;
+//     using G0 = ttl::nn::ops::grad::xentropy<0>;
+//     using G1 = ttl::nn::ops::grad::xentropy<1>;
 //     F f;
 //     G0 g0;
 //     G1 g1;
-//     test_binary_grad_shape(f, g0, g1, nn::shape<2>(10, 100),
-//                            nn::shape<2>(10, 100));
+//     test_binary_grad_shape(f, g0, g1, ttl::shape<2>(10, 100),
+//                            ttl::shape<2>(10, 100));
 // }

@@ -1,6 +1,6 @@
-#include <nn/bits/ops/gradients/bias.hpp>
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/gradients/bias.hpp>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 template <typename R, typename F, typename G0, typename G1, ttl::rank_t r0,
           ttl::rank_t r1>
@@ -28,9 +28,9 @@ TEST(linear_bias_test, test_1)
 {
     using R = int32_t;
 
-    using F = nn::ops::add_bias<nn::ops::hw>;
-    using G0 = nn::ops::grad::add_bias<nn::ops::hw, 0>;
-    using G1 = nn::ops::grad::add_bias<nn::ops::hw, 1>;
+    using F = ttl::nn::ops::add_bias<ttl::nn::ops::hw>;
+    using G0 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::hw, 0>;
+    using G1 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::hw, 1>;
     G0 g0;
     G1 g1;
     F f;
@@ -44,9 +44,9 @@ TEST(linear_bias_test, test_2)
 {
     using R = int32_t;
 
-    using F = nn::ops::add_bias<nn::ops::nhwc>;
-    using G0 = nn::ops::grad::add_bias<nn::ops::nhwc, 0>;
-    using G1 = nn::ops::grad::add_bias<nn::ops::nhwc, 1>;
+    using F = ttl::nn::ops::add_bias<ttl::nn::ops::nhwc>;
+    using G0 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::nhwc, 0>;
+    using G1 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::nhwc, 1>;
 
     G0 g0;
     G1 g1;

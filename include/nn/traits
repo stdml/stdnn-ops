@@ -1,8 +1,0 @@
-#pragma once
-#include <nn/bits/traits/basic_traits.hpp>
-#include <nn/bits/traits/trait_algo.hpp>
-
-namespace nn::ops
-{
-using namespace traits;
-}

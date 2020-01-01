@@ -6,7 +6,7 @@
 #include <string>
 #include <vector>
 
-#include <nn/layers>
+#include <ttl/nn/layers>
 
 #ifdef USE_OPENCV
 #    include <opencv2/opencv.hpp>
@@ -24,18 +24,18 @@ const int m = 5;
 template <typename R>
 auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
 {
-    using image_order = nn::ops::nhwc;
-    using filter_order = nn::ops::rscd;
-    using relu = nn::ops::pointwise<nn::ops::relu>;
-    using conv = nn::layers::conv<image_order, filter_order, true, relu>;
-    using pool = nn::layers::pool<nn::ops::pool_max, image_order>;
-    using dense_relu = nn::layers::dense<relu>;
-    using dense = nn::layers::dense<>;
-    using softmax = nn::layers::activation<nn::ops::softmax>;
-    using top = nn::ops::top;
+    using image_order = ttl::nn::ops::nhwc;
+    using filter_order = ttl::nn::ops::rscd;
+    using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
+    using conv = ttl::nn::layers::conv<image_order, filter_order, true, relu>;
+    using pool = ttl::nn::layers::pool<ttl::nn::ops::pool_max, image_order>;
+    using dense_relu = ttl::nn::layers::dense<relu>;
+    using dense = ttl::nn::layers::dense<>;
+    using softmax = ttl::nn::layers::activation<ttl::nn::ops::softmax>;
+    using top = ttl::nn::ops::top;
 
     const auto p = [prefix](auto name) {
-        return nn::ops::readtar(prefix, name);
+        return ttl::nn::ops::readtar(prefix, name);
     };
 
     auto l1_1 = conv(64, conv::ksize(3, 3),
@@ -79,7 +79,7 @@ auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
     auto l5_4 = pool(pool::ksize(2, 2))(ref(*l5_3));
     PPRINT(*l5_4);
 
-    auto l5_flat = nn::ops::as_matrix<1, 3>(ref(*l5_4));
+    auto l5_flat = ttl::nn::ops::as_matrix<1, 3>(ref(*l5_4));
     auto l6 = dense_relu(4096)(l5_flat, p("fc6_W"), p("fc6_b"));
     auto l7 = dense_relu(4096)(ref(*l6), p("fc7_W"), p("fc7_b"));
     auto l8 = dense(k)(ref(*l7), p("fc8_W"), p("fc8_b"));
@@ -87,7 +87,7 @@ auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
     PPRINT(*out);
 
     ttl::tensor<R, 1> y(m);
-    ttl::tensor<nn::shape<1>::dimension_type, 1> z(m);
+    ttl::tensor<ttl::shape<1>::dimension_type, 1> z(m);
     (top(m))(ref(y), ref(z), view(*out)[0]);
 
     return std::make_pair(std::move(y), std::move(z));
@@ -129,10 +129,10 @@ int main(int argc, char *argv[])
             }
         }
 #else
-        (nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
+        (ttl::nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
 #endif
         std::vector<float> mean({123.68, 116.779, 103.939});
-        nn::ops::apply_bias<nn::ops::nhwc, std::minus<float>>()(
+        ttl::nn::ops::apply_bias<ttl::nn::ops::nhwc, std::minus<float>>()(
             ref(x), view(x), ttl::tensor_view<float, 1>(mean.data(), 3));
     }
 

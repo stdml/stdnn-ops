@@ -1,0 +1,23 @@
+// # -*- mode: c++ -*-
+#pragma once
+#include <ttl/nn/ops.hpp>
+
+#ifndef STDNN_OPS_EXTERN_TEMPLATE
+#    include <ttl/nn/bits/ops/impl/conv1d.hpp>
+#else
+// TODO: extern template ...
+
+namespace ttl::nn::ops
+{
+extern template void conv1d::
+operator()(const ttl::tensor_ref<float, 1> &z,
+           const ttl::tensor_view<float, 1> &x,
+           const ttl::tensor_view<float, 1> &y) const;
+
+extern template void conv<nhwc>::
+operator()(const ttl::tensor_ref<float, 4> &z,
+           const ttl::tensor_view<float, 4> &x,
+           const ttl::tensor_view<float, 4> &y) const;
+}  // namespace ttl::nn::ops
+
+#endif

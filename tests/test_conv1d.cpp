@@ -1,7 +1,7 @@
-#include <nn/bits/ops/impl/col2im1d.hpp>
-#include <nn/bits/ops/impl/conv1d.hpp>
-#include <nn/bits/ops/impl/im2col1d.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/impl/col2im1d.hpp>
+#include <ttl/nn/bits/ops/impl/conv1d.hpp>
+#include <ttl/nn/bits/ops/impl/im2col1d.hpp>
+#include <ttl/nn/testing>
 
 #include <ttl/experimental/show>
 
@@ -9,9 +9,9 @@ template <typename R>
 void test_col2im1d(const int n, const int ksize = 1, const int stride = 1,
                    const int rate = 1)
 {
-    nn::traits::linear_padding_trait<int> padding(1);
-    nn::ops::im2col1d upper(ksize, stride, rate, padding);
-    nn::ops::col2im1d lower(ksize, stride, rate, padding);
+    ttl::nn::traits::linear_padding_trait<int> padding(1);
+    ttl::nn::ops::im2col1d upper(ksize, stride, rate, padding);
+    ttl::nn::ops::col2im1d lower(ksize, stride, rate, padding);
 
     ttl::tensor<R, 1> x(n);
     ttl::tensor<R, 1> x1(n);
@@ -50,9 +50,9 @@ template <typename R>
 void test_conv1d(const int n, const int ksize, const int stride = 1,
                  const int rate = 1)
 {
-    nn::traits::linear_padding_trait<int> padding(1);
-    nn::ops::conv1d f(stride, rate, padding);
-    nn::ops::im2col1d upper(ksize, stride, rate, padding);
+    ttl::nn::traits::linear_padding_trait<int> padding(1);
+    ttl::nn::ops::conv1d f(stride, rate, padding);
+    ttl::nn::ops::im2col1d upper(ksize, stride, rate, padding);
 
     ttl::tensor<R, 1> x(n);
     ttl::tensor<R, 1> y(ksize);
@@ -68,7 +68,7 @@ void test_conv1d(const int n, const int ksize, const int stride = 1,
     f(ref(z), view(x), view(y));
     upper(ref(x_upper), view(x));
 
-    using la = nn::engines::linag<nn::engines::plain>;
+    using la = ttl::nn::engines::linag<ttl::nn::engines::plain>;
     la::mv(view(x_upper), view(y), ref(z1));
 
     assert_bytes_eq(view(z), view(z1));

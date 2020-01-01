@@ -2,13 +2,12 @@
 
 #include <string>
 
-#include <nn/ops>
+#include <ttl/nn/ops>
+#include <ttl/tensor>
 
 #ifdef USE_OPENCV
 #    include <opencv2/opencv.hpp>
 #endif
-
-#include <ttl/tensor>
 
 #include "utils.hpp"
 
@@ -21,7 +20,7 @@ int main()
 
     std::string filename = prefix + "/" + "t10k-images-idx3-ubyte";
 
-    using reader = nn::ops::readfile;
+    using reader = ttl::nn::ops::readfile;
     ttl::tensor<uint8_t, 3> t(10 * 1000, 28, 28);
     (reader(filename))(ref(t));
 

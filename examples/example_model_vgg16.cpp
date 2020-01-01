@@ -5,7 +5,7 @@
 #include <algorithm>
 #include <string>
 
-#include <nn/models>
+#include <ttl/nn/models>
 
 #ifdef USE_OPENCV
 #    include <opencv2/opencv.hpp>
@@ -13,26 +13,24 @@
 
 #include "utils.hpp"
 
-using ttl::range;
-
 class vgg16_model
 {
     const size_t k = 1000;
 
-    using image_order = nn::ops::nhwc;
-    using filter_order = nn::ops::rscd;
+    using image_order = ttl::nn::ops::nhwc;
+    using filter_order = ttl::nn::ops::rscd;
 
-    using relu = nn::ops::pointwise<nn::ops::relu>;
-    using pool = nn::layers::pool<nn::ops::pool_max, image_order>;
-    using dense_relu = nn::layers::dense<relu>;
-    using dense = nn::layers::dense<>;
-    using softmax = nn::layers::activation<nn::ops::softmax>;
-    using top = nn::ops::top;
+    using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
+    using pool = ttl::nn::layers::pool<ttl::nn::ops::pool_max, image_order>;
+    using dense_relu = ttl::nn::layers::dense<relu>;
+    using dense = ttl::nn::layers::dense<>;
+    using softmax = ttl::nn::layers::activation<ttl::nn::ops::softmax>;
+    using top = ttl::nn::ops::top;
 
     auto conv(int d) const
     {
         using conv_layer =
-            nn::layers::conv<image_order, filter_order, true, relu>;
+            ttl::nn::layers::conv<image_order, filter_order, true, relu>;
         return conv_layer(d, conv_layer::ksize(3, 3),
                           conv_layer::padding_same());
     }
@@ -41,7 +39,7 @@ class vgg16_model
 
     const auto p(const std::string &name) const
     {
-        return nn::ops::readtar(prefix_, name);
+        return ttl::nn::ops::readtar(prefix_, name);
     }
 
   public:
@@ -53,10 +51,10 @@ class vgg16_model
     template <typename R>
     auto operator()(const ttl::tensor_ref<R, 4> &x, int m) const
     {
-        using nn::layers::with_init;
+        using ttl::nn::layers::with_init;
 
         auto conv_layers =
-            nn::models::make_sequential()
+            ttl::nn::models::make_sequential()
             << with_init(conv(64), p("conv1_1_W"), p("conv1_1_b"))
             << with_init(conv(64), p("conv1_2_W"), p("conv1_2_b"))
             << pool(pool::ksize(2, 2))
@@ -77,30 +75,25 @@ class vgg16_model
             << pool(pool::ksize(2, 2));
 
         auto dense_layers =
-            nn::models::make_sequential()
+            ttl::nn::models::make_sequential()
             << with_init(dense_relu(4096), p("fc6_W"), p("fc6_b"))
             << with_init(dense_relu(4096), p("fc7_W"), p("fc7_b"))
             << with_init(dense(k), p("fc8_W"), p("fc8_b")) << softmax();
 
         auto l5_4 = conv_layers(x);
         PPRINT(*l5_4);
-        auto l5_flat = nn::ops::as_matrix<1, 3>(ref(*l5_4));
+        auto l5_flat = ttl::nn::ops::as_matrix<1, 3>(ref(*l5_4));
         PPRINT(l5_flat);
         auto out = dense_layers(l5_flat);
         PPRINT(*out);
 
         ttl::tensor<R, 1> y(m);
-        ttl::tensor<nn::shape<1>::dimension_type, 1> z(m);
+        ttl::tensor<ttl::shape<1>::dimension_type, 1> z(m);
         (top(m))(ref(y), ref(z), view(*out)[0]);
 
         return std::make_pair(std::move(y), std::move(z));
     }
 };
-
-template <typename T> typename T::value_type *data_end(const T &t)
-{
-    return t.data() + t.shape().size();
-}
 
 std::vector<std::string> load_class_names(const std::string &filename)
 {
@@ -127,25 +120,26 @@ int main(int argc, char *argv[])
         cv::Mat resized_image(cv::Size(vgg16.w, vgg16.h), CV_8UC(3),
                               input.data());
         cv::resize(img, resized_image, resized_image.size(), 0, 0);
-        for (auto i : range(vgg16.h)) {
-            for (auto j : range(vgg16.w)) {
+        for (auto i : ttl::range(vgg16.h)) {
+            for (auto j : ttl::range(vgg16.w)) {
                 x.at(0, i, j, 0) = input.at(0, i, j, 2);
                 x.at(0, i, j, 1) = input.at(0, i, j, 1);
                 x.at(0, i, j, 2) = input.at(0, i, j, 0);
             }
         }
 #else
-        (nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
+        (ttl::nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
 #endif
         std::vector<float> mean({123.68, 116.779, 103.939});
-        nn::ops::apply_bias<nn::ops::nhwc, std::minus<float>>()(
-            ref(x), view(x), ttl::tensor_view<float, 1>(mean.data(), 3));
+        ttl::nn::ops::apply_bias<ttl::nn::ops::nhwc, std::minus<float>>()(
+            ref(x), view(x),
+            ttl::tensor_view<float, 1>(mean.data(), mean.size()));
     }
 
     int m = 5;
     const auto [y, z] = vgg16(ref(x), m);
 
-    for (auto i : range(m)) {
+    for (auto i : ttl::range(m)) {
         printf("%u: %f %s\n", z.at(i), y.at(i), names[z.at(i)].c_str());
     }
 

@@ -1,17 +1,16 @@
 #include <ttl/algorithm>
-
-#include <nn/bits/ops/col2im.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/col2im.hpp>
+#include <ttl/nn/testing>
 
 TEST(col2im_test, test1)
 {
-    using image_order = nn::ops::hwc;
-    using col_order = nn::ops::hwrsc;
+    using image_order = ttl::nn::ops::hwc;
+    using col_order = ttl::nn::ops::hwrsc;
 
-    using C = nn::ops::im2col_trait<nn::ops::hw>;
+    using C = ttl::nn::ops::im2col_trait<ttl::nn::ops::hw>;
 
-    using F = nn::ops::im2col<image_order, col_order>;
-    using G = nn::ops::col2im<image_order, col_order>;
+    using F = ttl::nn::ops::im2col<image_order, col_order>;
+    using G = ttl::nn::ops::col2im<image_order, col_order>;
 
     using R = int;
 
@@ -47,7 +46,7 @@ TEST(col2im_test, test1)
         const uint32_t l = 16;
         ASSERT_EQ(y.shape().size(), l);
         ASSERT_EQ(static_cast<uint32_t>(result.size()), l);
-        for (auto i : range(l)) { ASSERT_EQ(result[i], y.data()[i]); }
+        for (auto i : ttl::range(l)) { ASSERT_EQ(result[i], y.data()[i]); }
     }
 
     {
@@ -61,6 +60,6 @@ TEST(col2im_test, test1)
         const uint32_t l = 9;
         ASSERT_EQ(x.shape().size(), l);
         ASSERT_EQ(static_cast<uint32_t>(result.size()), l);
-        for (auto i : range(l)) { ASSERT_EQ(result[i], x.data()[i]); }
+        for (auto i : ttl::range(l)) { ASSERT_EQ(result[i], x.data()[i]); }
     }
 }

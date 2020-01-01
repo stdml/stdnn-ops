@@ -1,8 +1,7 @@
+#include <ttl/nn/bits/ops/gradients/reshape.hpp>
+#include <ttl/nn/bits/ops/reshape.hpp>
+#include <ttl/nn/testing>
 #include <ttl/tensor>
-
-#include <nn/bits/ops/gradients/reshape.hpp>
-#include <nn/bits/ops/reshape.hpp>
-#include <nn/testing>
 
 template <typename R, ttl::rank_t... rs> struct test_flatten {
     static constexpr ttl::rank_t in_rank =
@@ -11,8 +10,8 @@ template <typename R, ttl::rank_t... rs> struct test_flatten {
 
     void operator()(const ttl::shape<in_rank> &x_shape) const
     {
-        nn::ops::copy_flatten<rs...> f;
-        nn::ops::grad::copy_flatten<rs...> g;
+        ttl::nn::ops::copy_flatten<rs...> f;
+        ttl::nn::ops::grad::copy_flatten<rs...> g;
 
         ttl::tensor<R, in_rank> x(x_shape);
         ttl::tensor<R, out_rank> y(f(x_shape));

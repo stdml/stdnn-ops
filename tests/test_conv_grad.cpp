@@ -1,17 +1,16 @@
 
 #include <ttl/algorithm>
-
-#include <nn/bits/ops/gradients/conv2d.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/gradients/conv2d.hpp>
+#include <ttl/nn/testing>
 
 TEST(conv_grad_test, test1)
 {
-    using image_order = nn::ops::nhwc;
-    using filter_order = nn::ops::rscd;
+    using image_order = ttl::nn::ops::nhwc;
+    using filter_order = ttl::nn::ops::rscd;
 
-    using F = nn::ops::conv<image_order, filter_order>;
-    using G0 = nn::ops::grad::conv<image_order, filter_order, 0>;
-    using G1 = nn::ops::grad::conv<image_order, filter_order, 1>;
+    using F = ttl::nn::ops::conv<image_order, filter_order>;
+    using G0 = ttl::nn::ops::grad::conv<image_order, filter_order, 0>;
+    using G1 = ttl::nn::ops::grad::conv<image_order, filter_order, 1>;
 
     const F f;
     const G0 g0(f);

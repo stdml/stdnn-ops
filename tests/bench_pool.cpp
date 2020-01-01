@@ -1,4 +1,4 @@
-#include <nn/ops>
+#include <ttl/nn/ops>
 
 #include "benchmark.hpp"
 
@@ -7,7 +7,7 @@ template <int d1, int d2, int d3, int k, int p, int s, typename image_order,
 struct bench_pool {
     static void run(benchmark::State &state)
     {
-        using pool = nn::ops::pool<pool_algo, image_order>;
+        using pool = ttl::nn::ops::pool<pool_algo, image_order>;
         const auto op =
             pool(pool::ksize(k, k), pool::padding(p, p), pool::stride(s, s));
 
@@ -20,32 +20,32 @@ struct bench_pool {
 
 static void bench_max_pool_2x2_valid_chw_64_224_224(benchmark::State &state)
 {
-    bench_pool<64, 224, 224, 2, 0, 2, nn::ops::nchw, nn::ops::pool_max>::run(
-        state);
+    bench_pool<64, 224, 224, 2, 0, 2, ttl::nn::ops::nchw,
+               ttl::nn::ops::pool_max>::run(state);
 }
 BENCHMARK(bench_max_pool_2x2_valid_chw_64_224_224)
     ->Unit(benchmark::kMillisecond);
 
 static void bench_max_pool_2x2_valid_hwc_224_224_64(benchmark::State &state)
 {
-    bench_pool<224, 224, 64, 2, 0, 2, nn::ops::nhwc, nn::ops::pool_max>::run(
-        state);
+    bench_pool<224, 224, 64, 2, 0, 2, ttl::nn::ops::nhwc,
+               ttl::nn::ops::pool_max>::run(state);
 }
 BENCHMARK(bench_max_pool_2x2_valid_hwc_224_224_64)
     ->Unit(benchmark::kMillisecond);
 
 static void bench_max_pool_3x3_same_chw_19_256_384(benchmark::State &state)
 {
-    bench_pool<19, 256, 384, 3, 1, 1, nn::ops::nchw, nn::ops::pool_max>::run(
-        state);
+    bench_pool<19, 256, 384, 3, 1, 1, ttl::nn::ops::nchw,
+               ttl::nn::ops::pool_max>::run(state);
 }
 BENCHMARK(bench_max_pool_3x3_same_chw_19_256_384)
     ->Unit(benchmark::kMillisecond);
 
 static void bench_max_pool_3x3_same_hwc_256_384_19(benchmark::State &state)
 {
-    bench_pool<256, 384, 19, 3, 1, 1, nn::ops::nhwc, nn::ops::pool_max>::run(
-        state);
+    bench_pool<256, 384, 19, 3, 1, 1, ttl::nn::ops::nhwc,
+               ttl::nn::ops::pool_max>::run(state);
 }
 BENCHMARK(bench_max_pool_3x3_same_hwc_256_384_19)
     ->Unit(benchmark::kMillisecond);

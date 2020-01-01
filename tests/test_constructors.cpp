@@ -1,5 +1,5 @@
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 #include "testing_traits.hpp"
 
@@ -15,7 +15,7 @@ struct pool2d_params_t {
     dim_t pad_w_left;
     dim_t pad_w_right;
 
-    using trait_t = nn::ops::pool_trait<nn::ops::hw>;
+    using trait_t = ttl::nn::ops::pool_trait<ttl::nn::ops::hw>;
 };
 
 template <class pool2d> void test_pool2d_constructors(pool2d_params_t p)
@@ -30,7 +30,7 @@ template <class pool2d> void test_pool2d_constructors(pool2d_params_t p)
 template <class pool_method, class image_order>
 void test_pool2d(pool2d_params_t p)
 {
-    using pool2d = nn::ops::pool<pool_method, image_order>;
+    using pool2d = ttl::nn::ops::pool<pool_method, image_order>;
     static_assert(std::is_base_of<pool2d_params_t::trait_t, pool2d>::value);
     {
         pool2d op(
@@ -61,14 +61,14 @@ template <class pool_method> void _test_pool2d_all_bind_1()
         .pad_w_left = 0,
         .pad_w_right = 0,
     };
-    test_pool2d<pool_method, nn::ops::nhwc>(p);
-    test_pool2d<pool_method, nn::ops::nchw>(p);
+    test_pool2d<pool_method, ttl::nn::ops::nhwc>(p);
+    test_pool2d<pool_method, ttl::nn::ops::nchw>(p);
 }
 
 void test_pool2d_all()
 {
-    _test_pool2d_all_bind_1<nn::ops::pool_max>();
-    _test_pool2d_all_bind_1<nn::ops::pool_mean>();
+    _test_pool2d_all_bind_1<ttl::nn::ops::pool_max>();
+    _test_pool2d_all_bind_1<ttl::nn::ops::pool_mean>();
 }
 
 struct im2col_params_t {
@@ -85,13 +85,13 @@ struct im2col_params_t {
     dim_t pad_w_left;
     dim_t pad_w_right;
 
-    using trait_t = nn::ops::im2col_trait<nn::ops::hw>;
+    using trait_t = ttl::nn::ops::im2col_trait<ttl::nn::ops::hw>;
 };
 
 template <class image_order, class col_order>
 void test_im2col(im2col_params_t p)
 {
-    using im2col = nn::ops::im2col<image_order, col_order>;
+    using im2col = ttl::nn::ops::im2col<image_order, col_order>;
     static_assert(std::is_base_of<im2col_params_t::trait_t, im2col>::value);
     {
         im2col op(
@@ -121,9 +121,9 @@ void test_im2col_all()
         .pad_w_left = 0,
         .pad_w_right = 0,
     };
-    test_im2col<nn::ops::hw, nn::ops::rshw>(p);
-    test_im2col<nn::ops::hw, nn::ops::hwrs>(p);
-    test_im2col<nn::ops::hwc, nn::ops::hwrsc>(p);
+    test_im2col<ttl::nn::ops::hw, ttl::nn::ops::rshw>(p);
+    test_im2col<ttl::nn::ops::hw, ttl::nn::ops::hwrs>(p);
+    test_im2col<ttl::nn::ops::hwc, ttl::nn::ops::hwrsc>(p);
 }
 
 struct conv2d_params_t {
@@ -138,7 +138,7 @@ struct conv2d_params_t {
     dim_t pad_w_left;
     dim_t pad_w_right;
 
-    using trait_t = nn::ops::conv_trait<nn::ops::hw>;
+    using trait_t = ttl::nn::ops::conv_trait<ttl::nn::ops::hw>;
 };
 
 template <class conv2d> void test_conv2d_constructors(conv2d_params_t p)
@@ -153,7 +153,7 @@ template <class conv2d> void test_conv2d_constructors(conv2d_params_t p)
 template <class image_order, class filter_order>
 void test_conv2d(conv2d_params_t p)
 {
-    using conv2d = nn::ops::conv<image_order, filter_order>;
+    using conv2d = ttl::nn::ops::conv<image_order, filter_order>;
     static_assert(std::is_base_of<conv2d_params_t::trait_t, conv2d>::value);
     {
         conv2d op(
@@ -184,6 +184,6 @@ void test_conv2d_all()
         .pad_w_left = 0,
         .pad_w_right = 0,
     };
-    test_conv2d<nn::ops::nhwc, nn::ops::rscd>(p);
-    test_conv2d<nn::ops::nchw, nn::ops::dcrs>(p);
+    test_conv2d<ttl::nn::ops::nhwc, ttl::nn::ops::rscd>(p);
+    test_conv2d<ttl::nn::ops::nchw, ttl::nn::ops::dcrs>(p);
 }

@@ -1,8 +1,7 @@
 #include <ttl/algorithm>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 #include <ttl/tensor>
-
-#include <nn/ops>
-#include <nn/testing>
 
 TEST(softmax_test, test_1)
 {
@@ -10,7 +9,7 @@ TEST(softmax_test, test_1)
     x.data()[0] = 0;
     x.data()[1] = 1;
     const auto y = ttl::tensor<float, 1>(x.shape());
-    nn::ops::softmax()(ref(y), view(x));
+    ttl::nn::ops::softmax()(ref(y), view(x));
 
     const float e = std::exp(1);
 
@@ -21,7 +20,7 @@ TEST(softmax_test, test_1)
 template <typename R> struct test_softmax {
     void operator()()
     {
-        using softmax = nn::ops::softmax;
+        using softmax = ttl::nn::ops::softmax;
 
         for (int k = 1; k <= 100; ++k) {
             {

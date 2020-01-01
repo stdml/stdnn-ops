@@ -1,7 +1,6 @@
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 #include <ttl/tensor>
-
-#include <nn/ops>
-#include <nn/testing>
 
 TEST(conv_test, test1)
 {
@@ -18,13 +17,13 @@ TEST(conv_test, test1)
         const uint32_t s = 3;
         const auto y = ttl::tensor<float, 4>(r, s, c, d);
         {
-            const auto conv = nn::ops::conv<nn::ops::nhwc>();
+            const auto conv = ttl::nn::ops::conv<ttl::nn::ops::nhwc>();
             const auto z = ttl::tensor<float, 4>(conv(x.shape(), y.shape()));
             ASSERT_EQ(z.shape(), ttl::internal::basic_shape<4>(n, 126, 126, d));
             conv(ref(z), view(x), view(y));
         }
         {
-            using conv = nn::ops::conv<nn::ops::nhwc>;
+            using conv = ttl::nn::ops::conv<ttl::nn::ops::nhwc>;
             const auto op = conv(conv::padding(1, 1));
             const auto z = ttl::tensor<float, 4>(op(x.shape(), y.shape()));
             ASSERT_EQ(z.shape(), ttl::internal::basic_shape<4>(n, h, w, d));
@@ -33,7 +32,7 @@ TEST(conv_test, test1)
     }
     {
         const auto y = ttl::tensor<float, 4>(4, 4, c, d);
-        using conv = nn::ops::conv<nn::ops::nhwc>;
+        using conv = ttl::nn::ops::conv<ttl::nn::ops::nhwc>;
         const auto op = conv(conv::padding(2, 2), conv::stride(4, 4));
         const auto z = ttl::tensor<float, 4>(op(x.shape(), y.shape()));
         ASSERT_EQ(z.shape(), ttl::internal::basic_shape<4>(n, 33, 33, d));

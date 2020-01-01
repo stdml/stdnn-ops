@@ -1,9 +1,9 @@
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 template <typename F> void test_op_exist() { static_assert(sizeof(F) > 0, ""); }
 
-#define TEST_OP_EXIST(op) test_op_exist<nn::ops::op>();
+#define TEST_OP_EXIST(op) test_op_exist<ttl::nn::ops::op>();
 
 #define _ ,
 
@@ -44,19 +44,19 @@ TEST(test_public_ops, test_public_symbols)
 
     // nn
     // * conv
-    TEST_OP_EXIST(conv<nn::ops::nhwc _ nn::ops::rscd>);
-    TEST_OP_EXIST(conv<nn::ops::nchw _ nn::ops::dcrs>);
+    TEST_OP_EXIST(conv<ttl::nn::ops::nhwc _ ttl::nn::ops::rscd>);
+    TEST_OP_EXIST(conv<ttl::nn::ops::nchw _ ttl::nn::ops::dcrs>);
     TEST_OP_EXIST(conv1d);
     // * bias
-    TEST_OP_EXIST(add_bias<nn::ops::hw>);
-    TEST_OP_EXIST(add_bias<nn::ops::nhwc>);
-    TEST_OP_EXIST(add_bias<nn::ops::nchw>);
+    TEST_OP_EXIST(add_bias<ttl::nn::ops::hw>);
+    TEST_OP_EXIST(add_bias<ttl::nn::ops::nhwc>);
+    TEST_OP_EXIST(add_bias<ttl::nn::ops::nchw>);
     // * bn
-    TEST_OP_EXIST(batch_norm<nn::ops::nhwc>);
-    TEST_OP_EXIST(batch_norm<nn::ops::nchw>);
+    TEST_OP_EXIST(batch_norm<ttl::nn::ops::nhwc>);
+    TEST_OP_EXIST(batch_norm<ttl::nn::ops::nchw>);
     // * pooling
-    TEST_OP_EXIST(pool<nn::ops::pool_max _ nn::ops::nhwc>);
-    TEST_OP_EXIST(pool<nn::ops::pool_mean _ nn::ops::nchw>);
+    TEST_OP_EXIST(pool<ttl::nn::ops::pool_max _ ttl::nn::ops::nhwc>);
+    TEST_OP_EXIST(pool<ttl::nn::ops::pool_mean _ ttl::nn::ops::nchw>);
 
     // * activation
     TEST_OP_EXIST(relu);

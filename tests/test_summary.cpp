@@ -1,5 +1,5 @@
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
 TEST(summary_test, test_1)
 {
@@ -8,27 +8,27 @@ TEST(summary_test, test_1)
     for (int i = 0; i < n; ++i) { x.data()[i] = i; }
 
     {
-        nn::ops::scalar_summaries<nn::ops::summaries::min> op;
+        ttl::nn::ops::scalar_summaries<ttl::nn::ops::summaries::min> op;
         ttl::tensor<float, 1> y(op(x.shape()));
         op(ref(y), view(x));
         ASSERT_FLOAT_EQ(y.data()[0], (float)0);
     }
     {
-        nn::ops::scalar_summaries<nn::ops::summaries::max> op;
+        ttl::nn::ops::scalar_summaries<ttl::nn::ops::summaries::max> op;
         ttl::tensor<float, 1> y(op(x.shape()));
         op(ref(y), view(x));
         ASSERT_FLOAT_EQ(y.data()[0], (float)(n - 1));
     }
     {
-        nn::ops::scalar_summaries<nn::ops::summaries::sum> op;
+        ttl::nn::ops::scalar_summaries<ttl::nn::ops::summaries::sum> op;
         ttl::tensor<float, 1> y(op(x.shape()));
         op(ref(y), view(x));
         const int sum = n * (n - 1) / 2;
         ASSERT_FLOAT_EQ(y.data()[0], (float)(sum));
     }
     {
-        nn::ops::scalar_summaries<nn::ops::summaries::min,
-                                  nn::ops::summaries::max>
+        ttl::nn::ops::scalar_summaries<ttl::nn::ops::summaries::min,
+                                       ttl::nn::ops::summaries::max>
             op;
         ttl::tensor<float, 1> y(op(x.shape()));
         op(ref(y), view(x));
@@ -36,13 +36,13 @@ TEST(summary_test, test_1)
         ASSERT_FLOAT_EQ(y.data()[1], (float)(n - 1));
     }
     {
-        nn::ops::scalar_summaries<nn::ops::summaries::min,   //
-                                  nn::ops::summaries::max,   //
-                                  nn::ops::summaries::span,  //
-                                  nn::ops::summaries::mean,  //
-                                  nn::ops::summaries::var,   //
-                                  nn::ops::summaries::std,   //
-                                  nn::ops::summaries::adj_diff_sum>
+        ttl::nn::ops::scalar_summaries<ttl::nn::ops::summaries::min,   //
+                                       ttl::nn::ops::summaries::max,   //
+                                       ttl::nn::ops::summaries::span,  //
+                                       ttl::nn::ops::summaries::mean,  //
+                                       ttl::nn::ops::summaries::var,   //
+                                       ttl::nn::ops::summaries::std,   //
+                                       ttl::nn::ops::summaries::adj_diff_sum>
             op;
         ttl::tensor<float, 1> y(op(x.shape()));
         op(ref(y), view(x));

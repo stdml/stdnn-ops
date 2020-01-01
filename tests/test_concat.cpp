@@ -1,12 +1,12 @@
-#include <nn/ops>
-#include <nn/testing>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
 
-using nn::ops::internal::concat_shape;
+using ttl::nn::ops::internal::concat_shape;
 
 TEST(concat_test, test_1)
 {
     {
-        using s = nn::shape<2>;
+        using s = ttl::shape<2>;
         {
             auto u = s(3, 4);
             auto v = s(5, 4);

@@ -1,5 +1,5 @@
-#include <nn/layers>
-#include <nn/testing>
+#include <ttl/nn/layers>
+#include <ttl/nn/testing>
 
 #include "testing_traits.hpp"
 
@@ -23,7 +23,7 @@ struct conv2d_layer_params_t {
 template <class image_order, class filter_order>
 void test_conv2d_layer(conv2d_layer_params_t p)
 {
-    using conv2d = nn::layers::conv<image_order, filter_order>;
+    using conv2d = ttl::nn::layers::conv<image_order, filter_order>;
     {
         conv2d layer(p.depth, conv2d::ksize(3, 3));
     }
@@ -42,8 +42,8 @@ void test_conv2d_layer(conv2d_layer_params_t p)
 void test_conv2d_layer_all()
 {
     conv2d_layer_params_t p;
-    test_conv2d_layer<nn::ops::nhwc, nn::ops::rscd>(p);
-    test_conv2d_layer<nn::ops::nchw, nn::ops::dcrs>(p);
+    test_conv2d_layer<ttl::nn::ops::nhwc, ttl::nn::ops::rscd>(p);
+    test_conv2d_layer<ttl::nn::ops::nchw, ttl::nn::ops::dcrs>(p);
 }
 
 struct pool2d_layer_params_t {
@@ -62,7 +62,7 @@ struct pool2d_layer_params_t {
 template <typename pool_algo, typename image_order>
 void test_conv2d_layer(const pool2d_layer_params_t &p)
 {
-    using pool2d = nn::layers::pool<pool_algo, image_order>;
+    using pool2d = ttl::nn::layers::pool<pool_algo, image_order>;
     {
         pool2d l1;
         pool2d l2(pool2d::ksize(2, 2));
@@ -78,12 +78,12 @@ void test_conv2d_layer(const pool2d_layer_params_t &p)
 template <class pool_method> void _test_pool2d_all_bind_1()
 {
     pool2d_layer_params_t p;
-    test_conv2d_layer<pool_method, nn::ops::nhwc>(p);
-    test_conv2d_layer<pool_method, nn::ops::nchw>(p);
+    test_conv2d_layer<pool_method, ttl::nn::ops::nhwc>(p);
+    test_conv2d_layer<pool_method, ttl::nn::ops::nchw>(p);
 }
 
 void test_pool2d_layer_all()
 {
-    _test_pool2d_all_bind_1<nn::ops::pool_max>();
-    _test_pool2d_all_bind_1<nn::ops::pool_mean>();
+    _test_pool2d_all_bind_1<ttl::nn::ops::pool_max>();
+    _test_pool2d_all_bind_1<ttl::nn::ops::pool_mean>();
 }

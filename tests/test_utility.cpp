@@ -1,11 +1,11 @@
-#include <nn/bits/ops/utility.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/utility.hpp>
+#include <ttl/nn/testing>
 
 // TODO: test other utility ops
 
 TEST(utility_test, test_similarity)
 {
-    nn::ops::similarity op;
+    ttl::nn::ops::similarity op;
     const int n = 100;
     ttl::tensor<int, 1> x(n);
     ttl::tensor<int, 1> y(n);

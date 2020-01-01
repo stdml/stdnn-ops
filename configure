@@ -6,6 +6,8 @@ USE_BLAS=0
 USE_OPENCV=0
 USE_EXTERN=0
 
+BLAS_HOME=
+
 BUILD_LIB=0
 BUILD_EXAMPLES=0
 BUILD_TESTS=0
@@ -21,6 +23,9 @@ parse_args() {
         case $i in
         --prefix=*)
             PREFIX="${i#*=}"
+            ;;
+        --with-blas=*)
+            BLAS_HOME="${i#*=}"
             ;;
         --use-blas)
             USE_BLAS=1
@@ -85,21 +90,39 @@ pass_cmake_flag_from_env() {
     fi
 }
 
+CMAKE_PREFIX_PATH=
+
+add_cmake_prefix() {
+    echo "adding to CMAKE_PREFIX_PATH with $1"
+    CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$1"
+}
+
+add_cmake_prefixes() {
+    add_cmake_prefix $HOME/local
+    add_cmake_prefix $HOME/local/gtest
+    add_cmake_prefix $HOME/local/openblas
+}
+
 add_cmake_flags() {
     pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX PREFIX
 
     pass_cmake_flag_from_env STDTRACER_GIT_URL
     pass_cmake_flag_from_env STDTENSOR_GIT_URL
 
-    add_cmake_flag EXECUTABLE_OUTPUT_PATH $(pwd)/bin
-    # add_cmake_flag LIBRARY_OUTPUT_PATH $(pwd)/lib
+    add_cmake_flag EXECUTABLE_OUTPUT_PATH $PWD/bin
+    # add_cmake_flag LIBRARY_OUTPUT_PATH $PWD/lib
     add_cmake_flag CMAKE_BUILD_TYPE Release
+    add_cmake_flag CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
     add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS 1
     add_cmake_flag CMAKE_VERBOSE_MAKEFILE 1
 
     # add_cmake_flag USE_OPT 1
     add_cmake_flag USE_OPENCV ${USE_OPENCV}
     add_cmake_flag USE_OPENBLAS ${USE_BLAS}
+    if [ ! -z "${BLAS_HOME}" ]; then
+        add_cmake_flag BLAS_HOME ${BLAS_HOME}
+    fi
+
     add_cmake_flag BUILD_LIB ${BUILD_LIB}
     add_cmake_flag BUILD_EXAMPLES ${BUILD_EXAMPLES}
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
@@ -133,7 +156,12 @@ cleanup_cmake_cache() {
     fi
 }
 
-parse_args $@
-add_cmake_flags
-cleanup_cmake_cache
-cmake . $CMAKE_FLAGS
+main() {
+    parse_args $@
+    add_cmake_prefixes
+    add_cmake_flags
+    cleanup_cmake_cache
+    cmake . $CMAKE_FLAGS
+}
+
+main $@

@@ -1,7 +1,6 @@
 #include <ttl/algorithm>
-
-#include <nn/bits/ops/axpy.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/axpy.hpp>
+#include <ttl/nn/testing>
 
 TEST(axpy, test1)
 {
@@ -15,11 +14,11 @@ TEST(axpy, test1)
     ttl::fill(ref(x), 3);
     ttl::fill(ref(y), 4);
 
-    nn::ops::axpy op;
+    ttl::nn::ops::axpy op;
     ttl::tensor<R, 1> z(op(a.shape(), x.shape(), y.shape()));
     op(ref(z), view(a), view(x), view(y));
 
-    for (auto i : range(n)) { ASSERT_EQ(z.data()[i], 10); }
+    for (auto i : ttl::range(n)) { ASSERT_EQ(z.data()[i], 10); }
 }
 
 namespace ttl
@@ -44,7 +43,7 @@ TEST(axpy, test2)
     ttl::fill(ref(x), 3);
     ttl::fill(ref(y), 4);
 
-    nn::ops::axpy()(ref(z), view(ttl::scalar(2)), view(x), view(y));
+    ttl::nn::ops::axpy()(ref(z), view(ttl::scalar(2)), view(x), view(y));
 
-    for (auto i : range(n)) { ASSERT_EQ(z.data()[i], 10); }
+    for (auto i : ttl::range(n)) { ASSERT_EQ(z.data()[i], 10); }
 }

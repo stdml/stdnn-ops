@@ -1,15 +1,15 @@
-#include <nn/bits/ops/io.hpp>
-#include <nn/testing>
+#include <ttl/nn/bits/ops/io.hpp>
+#include <ttl/nn/testing>
 
 template <typename T> void test_io(const T &x)
 {
     const auto y = ttl::tensor<typename T::value_type, T::rank>(x.shape());
 
     const std::string filename = "x.idx";
-    (nn::ops::writefile(filename))(view(x));
-    (nn::ops::readfile(filename))(ref(y));
+    (ttl::nn::ops::writefile(filename))(view(x));
+    (ttl::nn::ops::readfile(filename))(ref(y));
 
-    for (auto i : range(x.shape().size())) {
+    for (auto i : ttl::range(x.shape().size())) {
         ASSERT_EQ(x.data()[i], y.data()[i]);
     }
 }
