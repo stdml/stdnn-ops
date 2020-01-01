@@ -27,13 +27,13 @@ IncludeCategories:
     Priority:        1
   # standard C++ headers
   # TODO: add as needed
-  - Regex:           ^<(algorithm|array|condition_variable|functional|iomanip|iostream|map|memory|mutex|numeric|random|sstream|stdexcept|string|thread|type_traits|vector)>$
+  - Regex:           ^<(algorithm|array|condition_variable|fstream|functional|iomanip|iostream|map|memory|mutex|numeric|random|sstream|stdexcept|string|thread|type_traits|vector)>$
     Priority:        2
   # user added experimental STL headers
   - Regex:           ^<experimental/(contract|ith|new_type)>
     Priority:        2
   # third party headers
-  - Regex:           ^<(ttl/algorithm|ttl/debug|ttl/range|ttl/shape|ttl/tensor)>
+  - Regex:           ^<(ttl/(algorithm|debug|range|shape|tensor|bits))
     Priority:        3
   # public nn headers
   - Regex:           ^<nn
