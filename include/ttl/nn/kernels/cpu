@@ -1,4 +1,5 @@
 // -*- mode: c++ -*-
 #pragma once
+#include <ttl/nn/bits/kernels/cpu/activation.hpp>
 #include <ttl/nn/bits/kernels/cpu/blas.hpp>
 #include <ttl/nn/bits/kernels/cpu/elementary.hpp>
