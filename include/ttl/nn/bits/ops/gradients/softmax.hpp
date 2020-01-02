@@ -1,14 +1,16 @@
 #pragma once
 #include <ttl/nn/bits/engines/linag.hpp>
+#include <ttl/nn/bits/ops/activation.hpp>
 #include <ttl/nn/bits/ops/shape_algo.hpp>
-#include <ttl/nn/bits/ops/softmax.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops::grad
 {
-template <int> class softmax;
+template <int>
+class softmax;
 
-template <> class softmax<0>
+template <>
+class softmax<0>
 {
   public:
     template <ttl::rank_t r>

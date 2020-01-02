@@ -1,4 +1,5 @@
 #pragma once
+#include <ttl/nn/bits/ops/activation.hpp>
 #include <ttl/nn/bits/ops/bias.hpp>
 #include <ttl/nn/bits/ops/blas.hpp>
 #include <ttl/nn/bits/ops/bn.hpp>
@@ -13,7 +14,6 @@
 #include <ttl/nn/bits/ops/pointwise.hpp>
 #include <ttl/nn/bits/ops/pool.hpp>
 #include <ttl/nn/bits/ops/reduce.hpp>
-#include <ttl/nn/bits/ops/softmax.hpp>
 #include <ttl/nn/bits/ops/summary.hpp>
 #include <ttl/nn/bits/ops/transpose.hpp>
 #include <ttl/nn/bits/ops/utility.hpp>
