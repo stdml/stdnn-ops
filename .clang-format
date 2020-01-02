@@ -5,6 +5,8 @@
 AllowShortBlocksOnASingleLine: true
 AllowShortIfStatementsOnASingleLine: true
 AllowShortLoopsOnASingleLine: true
+AlwaysBreakTemplateDeclarations: true
+
 BreakBeforeBraces: Linux
 ColumnLimit: 80
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
@@ -33,7 +35,7 @@ IncludeCategories:
   - Regex:           ^<experimental/(contract|ith|new_type)>
     Priority:        2
   # ttl headers
-  - Regex:           ^<(ttl/(algorithm|debug|nn|range|shape|tensor|bits))
+  - Regex:           ^<(ttl/(algorithm|debug|device|nn|range|shape|tensor|bits))
     Priority:        3
   # internal headers
   - Regex:           ^"
