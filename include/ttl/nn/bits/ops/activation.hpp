@@ -35,8 +35,8 @@ class softmax_impl<2, R, D>
   public:
     softmax_impl(R eps) : eps_(eps) {}
 
-    void operator()(const ttl::tensor_ref<R, 2, D> &y,
-                    const ttl::tensor_view<R, 2, D> &x) const
+    void operator()(const tensor_ref<R, 2, D> &y,
+                    const tensor_view<R, 2, D> &x) const
     {
         const auto op = kernels::softmax<R, D>(eps_);
         for (auto i : range<0>(x)) { op(y[i], x[i]); }
@@ -55,4 +55,15 @@ class softmax : public endofunction
         (softmax_impl<r, R, D>(eps))(y, x);
     }
 };
+
+struct relu_scalar {
+    template <typename R>
+    R operator()(R x)
+    {
+        return x > 0 ? x : 0.0;
+    }
+};
+
+using relu = relu_scalar;
+// TODO: leaky relu
 }  // namespace ttl::nn::ops

@@ -1,5 +1,5 @@
 #include <ttl/algorithm>
-#include <ttl/nn/bits/ops/pointwise.hpp>
+#include <ttl/nn/bits/ops/elementary.hpp>
 #include <ttl/nn/testing>
 #include <ttl/tensor>
 

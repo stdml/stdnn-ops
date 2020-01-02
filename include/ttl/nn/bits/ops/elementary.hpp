@@ -59,6 +59,24 @@ struct scalar_mul {
 };
 
 template <typename F>
+class pointwise : public endofunction
+{
+    const F f_;
+
+  public:
+    using endofunction::operator();
+
+    pointwise(const F &f = F()) : f_(f) {}
+
+    template <typename R, typename R1, rank_t r>
+    void operator()(const tensor_ref<R, r> &y,
+                    const tensor_view<R1, r> &x) const
+    {
+        std::transform(x.data(), x.data_end(), y.data(), f_);
+    }
+};
+
+template <typename F>
 class _binary_pointwise : public binary_endofunction
 {
   public:
