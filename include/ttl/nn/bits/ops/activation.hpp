@@ -1,8 +1,4 @@
 #pragma once
-#include <cmath>
-
-#include <algorithm>
-
 #include <ttl/nn/bits/kernels/activation.hpp>
 #include <ttl/nn/bits/ops/std_function.hpp>
 #include <ttl/nn/common.hpp>
@@ -64,6 +60,18 @@ struct relu_scalar {
     }
 };
 
-using relu = relu_scalar;
-// TODO: leaky relu
+// TODO: leaky_relu
+
+class relu : public endofunction
+{
+  public:
+    using endofunction::operator();
+
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &y,
+                    const tensor_view<R, r, D> &x) const
+    {
+        kernels::relu<R, D>()(flatten(y), flatten(x));
+    }
+};
 }  // namespace ttl::nn::ops

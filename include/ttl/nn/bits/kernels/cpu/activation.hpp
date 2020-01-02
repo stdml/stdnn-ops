@@ -30,4 +30,22 @@ class softmax<R, host_memory>
         }
     }
 };
+
+struct relu_scalar {
+    template <typename R>
+    R operator()(R x)
+    {
+        return x > 0 ? x : 0.0;
+    }
+};
+
+template <typename R>
+class relu<R, host_memory>
+{
+  public:
+    void operator()(const tensor_ref<R, 1> &y, const tensor_view<R, 1> &x) const
+    {
+        std::transform(x.data(), x.data_end(), y.data(), relu_scalar());
+    }
+};
 }  // namespace ttl::nn::kernels

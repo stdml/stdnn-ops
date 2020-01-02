@@ -1,7 +1,8 @@
 #include <ttl/nn/layers>
 #include <ttl/nn/testing>
 
-template <typename dense> void test_dense_layer()
+template <typename dense>
+void test_dense_layer()
 {
     static_assert(std::is_class<dense>::value, "");
 
@@ -10,7 +11,8 @@ template <typename dense> void test_dense_layer()
     l1(ref(x));
 }
 
-template <typename conv_layer> void test_conv_layer()
+template <typename conv_layer>
+void test_conv_layer()
 {
     static_assert(std::is_class<conv_layer>::value, "");
     // static_assert(std::is_constructible<L>::value, "");
@@ -35,7 +37,8 @@ template <typename conv_layer> void test_conv_layer()
     }
 }
 
-template <typename pool> void test_pool_layer()
+template <typename pool>
+void test_pool_layer()
 {
     static_assert(std::is_class<pool>::value, "");
     // static_assert(std::is_constructible<L>::value, "");
@@ -48,8 +51,7 @@ template <typename pool> void test_pool_layer()
 TEST(layers_test, test_1)
 {
     test_dense_layer<ttl::nn::layers::dense<>>();
-    test_dense_layer<
-        ttl::nn::layers::dense<ttl::nn::ops::pointwise<ttl::nn::ops::relu>>>();
+    test_dense_layer<ttl::nn::layers::dense<ttl::nn::ops::relu>>();
 
     test_conv_layer<ttl::nn::layers::conv<>>();
     test_conv_layer<ttl::nn::layers::conv<ttl::nn::ops::nhwc>>();
