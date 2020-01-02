@@ -1,5 +1,5 @@
 #include <ttl/algorithm>
-#include <ttl/nn/bits/ops/axpy.hpp>
+#include <ttl/nn/bits/ops/blas.hpp>
 #include <ttl/nn/testing>
 
 TEST(axpy, test1)
@@ -23,7 +23,8 @@ TEST(axpy, test1)
 
 namespace ttl
 {
-template <typename R> ttl::tensor<R, 0> scalar(const R &x)
+template <typename R>
+ttl::tensor<R, 0> scalar(const R &x)
 {
     ttl::tensor<R, 0> t;
     t.data()[0] = x;

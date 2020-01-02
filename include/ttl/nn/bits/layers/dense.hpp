@@ -2,7 +2,7 @@
 #include <ttl/nn/bits/layers/call.hpp>
 #include <ttl/nn/bits/layers/layer.hpp>
 #include <ttl/nn/bits/ops/bias.hpp>
-#include <ttl/nn/bits/ops/matmul.hpp>
+#include <ttl/nn/bits/ops/blas.hpp>
 
 namespace ttl::nn::layers
 {
@@ -24,7 +24,8 @@ class dense_trait
     shape<1> bias_shape(const shape<2> &x) const { return shape<1>(logits_); }
 };
 
-template <typename Act = ops::noop> class dense : public dense_trait
+template <typename Act = ops::noop>
+class dense : public dense_trait
 {
     using dense_trait::dense_trait;
 

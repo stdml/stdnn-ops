@@ -1,15 +1,16 @@
 #pragma once
 #include <ttl/nn/bits/engines/linag.hpp>
-#include <ttl/nn/bits/ops/matmul.hpp>
+#include <ttl/nn/bits/ops/blas.hpp>
 #include <ttl/nn/bits/ops/shape_algo.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops::grad
 {
+template <int, typename E = engines::default_engine>
+class matmul;
 
-template <int, typename E = nn::engines::default_engine> class matmul;
-
-template <typename E> class matmul<0, E>
+template <typename E>
+class matmul<0, E>
 {
   public:
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,
@@ -30,7 +31,8 @@ template <typename E> class matmul<0, E>
     }
 };
 
-template <typename E> class matmul<1, E>
+template <typename E>
+class matmul<1, E>
 {
   public:
     shape<2> operator()(const shape<2> &gz, const shape<2> &z,

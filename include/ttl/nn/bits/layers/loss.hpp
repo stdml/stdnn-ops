@@ -1,10 +1,11 @@
 #pragma once
 #include <ttl/nn/bits/layers/layer.hpp>
-#include <ttl/nn/bits/ops/matmul.hpp>
+#include <ttl/nn/bits/ops/blas.hpp>
 
 namespace ttl::nn::layers
 {
-template <typename Act> class activation
+template <typename Act>
+class activation
 {
   public:
     template <typename R, ttl::rank_t r>
