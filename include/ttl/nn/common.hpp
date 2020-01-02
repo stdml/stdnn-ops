@@ -22,9 +22,9 @@ namespace ttl
 using arity_t = uint8_t;
 }  // namespace ttl
 
-template <rank_t r, typename Dim>
-void contract_assert_eq_(const internal::basic_shape<r, Dim> &x,
-                         const internal::basic_shape<r, Dim> &y,
+template <ttl::rank_t r, typename Dim>
+void contract_assert_eq_(const ttl::internal::basic_shape<r, Dim> &x,
+                         const ttl::internal::basic_shape<r, Dim> &y,
                          const char *file, int line)
 {
     if (x != y) {

@@ -16,7 +16,6 @@
 #include <ttl/nn/bits/ops/reduce.hpp>
 #include <ttl/nn/bits/ops/softmax.hpp>
 #include <ttl/nn/bits/ops/summary.hpp>
-#include <ttl/nn/bits/ops/top.hpp>
 #include <ttl/nn/bits/ops/transpose.hpp>
 #include <ttl/nn/bits/ops/utility.hpp>
 #include <ttl/nn/bits/ops/xentropy.hpp>
