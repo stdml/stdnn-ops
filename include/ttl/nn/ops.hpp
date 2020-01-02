@@ -10,7 +10,6 @@
 #include <ttl/nn/bits/ops/im2col.hpp>
 #include <ttl/nn/bits/ops/init.hpp>
 #include <ttl/nn/bits/ops/io.hpp>
-#include <ttl/nn/bits/ops/noop.hpp>
 #include <ttl/nn/bits/ops/pointwise.hpp>
 #include <ttl/nn/bits/ops/pool.hpp>
 #include <ttl/nn/bits/ops/reduce.hpp>

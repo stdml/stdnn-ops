@@ -3,7 +3,7 @@
 #include <ttl/nn/bits/layers/layer.hpp>
 #include <ttl/nn/bits/ops/bias.hpp>
 #include <ttl/nn/bits/ops/conv2d.hpp>
-#include <ttl/nn/bits/ops/noop.hpp>
+#include <ttl/nn/bits/ops/elementary.hpp>
 #include <ttl/nn/bits/traits/multi_linear_sample.hpp>
 #include <ttl/nn/traits>
 

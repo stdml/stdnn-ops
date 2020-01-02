@@ -18,6 +18,22 @@ class identity : public endofunction
     }
 };
 
+class noop
+{
+  public:
+    template <typename T>
+    void operator()(const T &y) const
+    {
+        // noop
+    }
+
+    template <typename S, typename T>
+    void operator()(const T &y, const S &x) const
+    {
+        // noop
+    }
+};
+
 struct scalar_add {
     template <typename R>
     R operator()(const R &x, const R &y) const
