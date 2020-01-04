@@ -13,11 +13,11 @@ rebuild() {
     ./configure $(flags)
     # exit
 
-    # make -j 8
-    # make test
+    make -j 8
+    make test
 
-    make test-softmax
-    ./bin/test-softmax
+    # make test-softmax
+    # ./bin/test-softmax
 }
 
 rebuild

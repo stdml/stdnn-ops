@@ -1,13 +1,15 @@
 #pragma once
+#include <ttl/nn/bits/ops/loss.hpp>
 #include <ttl/nn/bits/ops/shape_algo.hpp>
-#include <ttl/nn/bits/ops/xentropy.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops::grad
 {
-template <int> class xentropy;
+template <int>
+class xentropy;
 
-template <> class xentropy<1>
+template <>
+class xentropy<1>
 {
   public:
     template <ttl::rank_t r>
