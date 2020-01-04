@@ -29,6 +29,11 @@ class softmax<R, host_memory>
             y.data()[i] = std::max(eps, static_cast<R>(1) / tot);
         }
     }
+
+    void operator()(const tensor_ref<R, 2> &y, const tensor_view<R, 2> &x) const
+    {
+        for (auto i : range<0>(x)) { operator()(y[i], x[i]); }
+    }
 };
 
 struct relu_scalar {

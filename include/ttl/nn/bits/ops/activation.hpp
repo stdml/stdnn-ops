@@ -5,50 +5,25 @@
 
 namespace ttl::nn::ops
 {
-template <rank_t r, typename R, typename D>
-class softmax_impl;
-
-template <typename R, typename D>
-class softmax_impl<1, R, D>
-{
-    const R eps_;
-
-  public:
-    softmax_impl(R eps) : eps_(eps) {}
-
-    void operator()(const tensor_ref<R, 1, D> &y,
-                    const tensor_view<R, 1, D> &x) const
-    {
-        (kernels::softmax<R, D>(eps_))(y, x);
-    }
-};
-
-template <typename R, typename D>
-class softmax_impl<2, R, D>
-{
-    const R eps_;
-
-  public:
-    softmax_impl(R eps) : eps_(eps) {}
-
-    void operator()(const tensor_ref<R, 2, D> &y,
-                    const tensor_view<R, 2, D> &x) const
-    {
-        const auto op = kernels::softmax<R, D>(eps_);
-        for (auto i : range<0>(x)) { op(y[i], x[i]); }
-    }
-};
-
 class softmax : public endofunction
 {
   public:
     using endofunction::operator();
 
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 1, D> &y, const tensor_view<R, 1, D> &x,
+                    R eps = static_cast<R>(1e-6)) const
+    {
+        (kernels::softmax<R, D>(eps))(y, x);
+    }
+
     template <typename R, rank_t r, typename D>
     void operator()(const tensor_ref<R, r, D> &y, const tensor_view<R, r, D> &x,
                     R eps = static_cast<R>(1e-6)) const
     {
-        (softmax_impl<r, R, D>(eps))(y, x);
+        const auto shape = ttl::internal::flatten_shape<r - 1, 1>()(x.shape());
+        (kernels::softmax<R, D>(eps))(tensor_ref<R, 2, D>(y.data(), shape),
+                                      tensor_view<R, r, D>(x.data(), shape));
     }
 };
 
