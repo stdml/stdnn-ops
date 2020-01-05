@@ -6,8 +6,14 @@ namespace nn
 {
 namespace kernels
 {
+template <typename D, typename F, typename R>
+class pointwise;
+
 template <typename D, typename R>
 class identity;
+
+template <typename D, typename F, typename R>
+class binary_pointwise;
 
 template <typename D, typename R>
 class add;

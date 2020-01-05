@@ -1,10 +1,11 @@
 #pragma once
 #include <cmath>
 
-#include <algorithm>
+#include <numeric>
 
 #include <ttl/device>
 #include <ttl/nn/bits/kernels/activation.hpp>
+#include <ttl/nn/bits/kernels/cpu/elementary.hpp>
 #include <ttl/range>
 #include <ttl/tensor>
 
@@ -36,7 +37,7 @@ class softmax<host_memory, R>
     }
 };
 
-struct relu_scalar {
+struct host_scalar_relu {
     template <typename R>
     R operator()(R x)
     {
@@ -45,12 +46,7 @@ struct relu_scalar {
 };
 
 template <typename R>
-class relu<host_memory, R>
+class relu<host_memory, R> : public host_pointwise<host_scalar_relu, R>
 {
-  public:
-    void operator()(const tensor_ref<R, 1> &y, const tensor_view<R, 1> &x) const
-    {
-        std::transform(x.data(), x.data_end(), y.data(), relu_scalar());
-    }
 };
 }  // namespace ttl::nn::kernels
