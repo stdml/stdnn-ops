@@ -26,7 +26,7 @@ class axpy
     }
 };
 
-template <typename E>
+template <typename E = engines::default_engine>
 class matmul_
 {
   public:
@@ -46,5 +46,5 @@ class matmul_
     }
 };
 
-using matmul = matmul_<nn::engines::default_engine>;
+using matmul = matmul_<>;
 }  // namespace ttl::nn::ops
