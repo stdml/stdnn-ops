@@ -6,22 +6,22 @@ namespace nn
 {
 namespace kernels
 {
-template <typename R, typename D, typename E>
+template <typename D, typename E, typename R>
 class axpy;
 
-template <typename R, typename D, typename E>
+template <typename D, typename E, typename R>
 class mv;
 
-template <typename R, typename D, typename E>
+template <typename D, typename E, typename R>
 class vm;
 
-template <typename R, typename D, typename E>
+template <typename D, typename E, typename R>
 class mm;
 
-template <typename R, typename D, typename E>
+template <typename D, typename E, typename R>
 class mtm;
 
-template <typename R, typename D, typename E>
+template <typename D, typename E, typename R>
 class mmt;
 }  // namespace kernels
 }  // namespace nn

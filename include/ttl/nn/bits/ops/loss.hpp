@@ -15,7 +15,7 @@ class xentropy : public binary_reduce_function
                     const tensor_view<R, r, D> &x,
                     const tensor_view<R, r, D> &y) const
     {
-        kernels::xentropy<R, D>()(flatten(z), as_matrix<r - 1, 1>(x),
+        kernels::xentropy<D, R>()(flatten(z), as_matrix<r - 1, 1>(x),
                                   as_matrix<r - 1, 1>(y));
     }
 };

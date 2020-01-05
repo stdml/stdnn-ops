@@ -9,7 +9,7 @@
 namespace ttl::nn::kernels
 {
 template <typename R>
-class axpy<R, host_memory, engines::plain>
+class axpy<host_memory, engines::plain, R>
 {
     using D = host_memory;
     static constexpr rank_t r = 1;
@@ -26,7 +26,7 @@ class axpy<R, host_memory, engines::plain>
 };
 
 template <typename R, typename E>
-class mm<R, host_memory, E>
+class mm<host_memory, E, R>
 {
     using D = host_memory;
 

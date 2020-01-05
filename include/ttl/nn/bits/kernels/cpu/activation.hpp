@@ -11,7 +11,7 @@
 namespace ttl::nn::kernels
 {
 template <typename R>
-class softmax<R, host_memory>
+class softmax<host_memory, R>
 {
     const R eps;
 
@@ -45,7 +45,7 @@ struct relu_scalar {
 };
 
 template <typename R>
-class relu<R, host_memory>
+class relu<host_memory, R>
 {
   public:
     void operator()(const tensor_ref<R, 1> &y, const tensor_view<R, 1> &x) const

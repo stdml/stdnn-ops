@@ -9,7 +9,7 @@
 namespace ttl::nn::kernels
 {
 template <typename R>
-class xentropy<R, host_memory>
+class xentropy<host_memory, R>
 {
   public:
     void operator()(const tensor_ref<R, 0> &z, const tensor_view<R, 1> &x,

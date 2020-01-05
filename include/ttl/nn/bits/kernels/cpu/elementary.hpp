@@ -8,7 +8,7 @@
 namespace ttl::nn::kernels
 {
 template <typename R>
-class identity<R, host_memory>
+class identity<host_memory, R>
 {
     using D = host_memory;
     static constexpr rank_t r = 1;
@@ -37,22 +37,22 @@ class _binary_pointwise
 };
 
 template <typename R>
-class add<R, host_memory> : public _binary_pointwise<R, std::plus<R>>
+class add<host_memory, R> : public _binary_pointwise<R, std::plus<R>>
 {
 };
 
 template <typename R>
-class sub<R, host_memory> : public _binary_pointwise<R, std::minus<R>>
+class sub<host_memory, R> : public _binary_pointwise<R, std::minus<R>>
 {
 };
 
 template <typename R>
-class mul<R, host_memory> : public _binary_pointwise<R, std::multiplies<R>>
+class mul<host_memory, R> : public _binary_pointwise<R, std::multiplies<R>>
 {
 };
 
 template <typename R>
-class div<R, host_memory> : public _binary_pointwise<R, std::divides<R>>
+class div<host_memory, R> : public _binary_pointwise<R, std::divides<R>>
 {
 };
 }  // namespace ttl::nn::kernels

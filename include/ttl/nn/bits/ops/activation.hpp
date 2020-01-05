@@ -15,7 +15,7 @@ class softmax : public endofunction
     void operator()(const tensor_ref<R, r, D> &y, const tensor_view<R, r, D> &x,
                     R eps = static_cast<R>(1e-6)) const
     {
-        (kernels::softmax<R, D>(eps))(as_matrix<r - 1, 1>(y),
+        (kernels::softmax<D, R>(eps))(as_matrix<r - 1, 1>(y),
                                       as_matrix<r - 1, 1>(x));
     }
 };
@@ -39,7 +39,7 @@ class relu : public endofunction
     void operator()(const tensor_ref<R, r, D> &y,
                     const tensor_view<R, r, D> &x) const
     {
-        kernels::relu<R, D>()(flatten(y), flatten(x));
+        kernels::relu<D, R>()(flatten(y), flatten(x));
     }
 };
 }  // namespace ttl::nn::ops

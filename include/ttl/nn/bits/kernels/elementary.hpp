@@ -6,19 +6,19 @@ namespace nn
 {
 namespace kernels
 {
-template <typename R, typename D>
+template <typename D, typename R>
 class identity;
 
-template <typename R, typename D>
+template <typename D, typename R>
 class add;
 
-template <typename R, typename D>
+template <typename D, typename R>
 class sub;
 
-template <typename R, typename D>
+template <typename D, typename R>
 class mul;
 
-template <typename R, typename D>
+template <typename D, typename R>
 class div;
 }  // namespace kernels
 }  // namespace nn

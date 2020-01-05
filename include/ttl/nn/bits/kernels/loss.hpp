@@ -6,7 +6,7 @@ namespace nn
 {
 namespace kernels
 {
-template <typename R, typename D>
+template <typename D, typename R>
 class xentropy;
 }  // namespace kernels
 }  // namespace nn

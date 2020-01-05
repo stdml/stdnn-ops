@@ -14,7 +14,7 @@ class identity : public endofunction
     void operator()(const tensor_ref<R, r, D> &y,
                     const tensor_view<R, r, D> &x) const
     {
-        kernels::identity<R, D>()(flatten(y), flatten(x));
+        kernels::identity<D, R>()(flatten(y), flatten(x));
     }
 };
 
@@ -99,7 +99,7 @@ class add : public binary_endofunction
     void operator()(const tensor_ref<R, r, D> &z, const tensor_view<R, r, D> &x,
                     const tensor_view<R, r, D> &y) const
     {
-        kernels::add<R, D>()(flatten(z), flatten(x), flatten(y));
+        kernels::add<D, R>()(flatten(z), flatten(x), flatten(y));
     }
 };
 
@@ -112,7 +112,7 @@ class sub : public binary_endofunction
     void operator()(const tensor_ref<R, r, D> &z, const tensor_view<R, r, D> &x,
                     const tensor_view<R, r, D> &y) const
     {
-        kernels::sub<R, D>()(flatten(z), flatten(x), flatten(y));
+        kernels::sub<D, R>()(flatten(z), flatten(x), flatten(y));
     }
 };
 
@@ -125,7 +125,7 @@ class mul : public binary_endofunction
     void operator()(const tensor_ref<R, r, D> &z, const tensor_view<R, r, D> &x,
                     const tensor_view<R, r, D> &y) const
     {
-        kernels::mul<R, D>()(flatten(z), flatten(x), flatten(y));
+        kernels::mul<D, R>()(flatten(z), flatten(x), flatten(y));
     }
 };
 }  // namespace ttl::nn::ops

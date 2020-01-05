@@ -6,10 +6,10 @@ namespace nn
 {
 namespace kernels
 {
-template <typename R, typename D>
+template <typename D, typename R>
 class relu;
 
-template <typename R, typename D>
+template <typename D, typename R>
 class softmax;
 }  // namespace kernels
 }  // namespace nn

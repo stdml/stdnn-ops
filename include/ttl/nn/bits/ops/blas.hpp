@@ -21,7 +21,7 @@ class axpy
                     const tensor_view<R, r, D> &x,
                     const tensor_view<R, r, D> &y) const
     {
-        kernels::axpy<R, D, engines::plain>()(flatten(z), a, flatten(x),
+        kernels::axpy<D, engines::plain, R>()(flatten(z), a, flatten(x),
                                               flatten(y));
     }
 };
@@ -42,7 +42,7 @@ class matmul_
     void operator()(const tensor_ref<R, 2, D> &z, const tensor_view<R, 2, D> &x,
                     const tensor_view<R, 2, D> &y) const
     {
-        kernels::mm<R, D, E>()(z, x, y);
+        kernels::mm<D, E, R>()(z, x, y);
     }
 };
 
