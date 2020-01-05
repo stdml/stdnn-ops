@@ -2,7 +2,7 @@
 #include <ttl/nn/bits/engines/linag.hpp>
 #include <ttl/nn/testing>
 
-using la = ttl::nn::engines::linag<ttl::nn::engines::plain>;
+using la = ttl::nn::engines::linag<ttl::nn::engines::builtin>;
 
 void test_mm(int k, int m, int n)
 {

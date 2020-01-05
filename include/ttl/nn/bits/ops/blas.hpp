@@ -21,8 +21,8 @@ class axpy
                     const tensor_view<R, r, D> &x,
                     const tensor_view<R, r, D> &y) const
     {
-        kernels::axpy<D, engines::plain, R>()(flatten(z), a, flatten(x),
-                                              flatten(y));
+        kernels::axpy<D, engines::builtin, R>()(flatten(z), a, flatten(x),
+                                                flatten(y));
     }
 };
 
