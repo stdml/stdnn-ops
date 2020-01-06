@@ -13,7 +13,8 @@ TEST(utility_test, test_argmax)
     }
     {
         ttl::tensor<float, 2> x(10, 100);
-        ttl::tensor<int, 1> y(100);
+        ttl::tensor<int, 1> y(f(x.shape()));
+        ASSERT_EQ(y.shape(), ttl::make_shape(10));
         f(ttl::ref(y), ttl::view(x));
     }
 }
