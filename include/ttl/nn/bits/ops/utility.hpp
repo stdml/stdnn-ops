@@ -1,11 +1,5 @@
 #pragma once
-#include <cstring>
-
-#include <algorithm>
-#include <type_traits>
-#include <vector>
-
-#include <ttl/algorithm>
+#include <ttl/nn/bits/kernels/utility.hpp>
 #include <ttl/nn/bits/ops/reshape.hpp>
 #include <ttl/nn/common.hpp>
 
@@ -16,10 +10,11 @@ class cast : public endofunction
   public:
     using endofunction::operator();
 
-    template <typename R, typename S, rank_t r>
-    void operator()(const tensor_ref<R, r> &y, const tensor_view<S, r> &x) const
+    template <typename R, typename S, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &y,
+                    const tensor_view<S, r, D> &x) const
     {
-        ttl::cast(x, y);
+        kernels::cast<D, R, S>()(flatten(y), flatten(x));
     }
 };
 
@@ -28,14 +23,11 @@ class argmax : public reduce_function
   public:
     using reduce_function::operator();
 
-    template <typename R, typename N, rank_t r>
-    void operator()(const tensor_ref<N, r> &y,
-                    const tensor_view<R, r + 1> &x) const
+    template <typename R, typename N, rank_t r, typename D>
+    void operator()(const tensor_ref<N, r, D> &y,
+                    const tensor_view<R, r + 1, D> &x) const
     {
-        const auto x_flat = as_matrix<r, 1>(x);
-        for (auto i : range(y.shape().size())) {
-            y.data()[i] = ttl::argmax(x_flat[i]);
-        }
+        kernels::argmax<D, N, R>()(flatten(y), as_matrix<r, 1>(x));
     }
 };
 
@@ -46,21 +38,11 @@ class onehot : public vectorize_function
 
     onehot(const dim_t k) : vectorize_function(k) {}
 
-    template <typename R, typename N, rank_t r>
-    void operator()(const tensor_ref<R, r + 1> &y,
-                    const tensor_view<N, r> &x) const
+    template <typename R, typename N, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r + 1, D> &y,
+                    const tensor_view<N, r, D> &x) const
     {
-        constexpr R def = 0;
-        std::fill(y.data(), y.data_end(), def);
-        const auto y_flat = ttl::nn::ops::as_matrix<r, 1>(y);
-        for (auto i : range(x.shape().size())) {
-            const dim_t j = x.data()[i];
-            if (0 <= j && j < k_) {
-                y_flat.at(i, j) = static_cast<R>(1);
-            } else {
-                // TODO: throw?
-            }
-        }
+        kernels::onehot<D, N, R>()(as_matrix<r, 1>(y), flatten(x));
     }
 };
 
@@ -74,13 +56,12 @@ class similarity
         return shape<0>();
     }
 
-    template <typename R, typename R1, rank_t r>
-    void operator()(const tensor_ref<R, 0> &z, const tensor_view<R1, r> &x,
-                    const tensor_view<R1, r> &y) const
+    template <typename R, typename R1, rank_t r, typename D>
+    void operator()(const tensor_ref<R, 0, D> &z,
+                    const tensor_view<R1, r, D> &x,
+                    const tensor_view<R1, r, D> &y) const
     {
-        static_assert(std::is_floating_point<R>::value);
-        z.data()[0] = 1 - static_cast<R>(ttl::hamming_distance(x, y)) /
-                              static_cast<R>(x.shape().size());
+        kernels::similarity<D, R, R1>()(z, flatten(x), flatten(y));
     }
 };
 
@@ -93,24 +74,16 @@ class top
   public:
     top(int k) : k_(k) {}
 
-    template <typename R>
-    void operator()(const tensor_ref<R, 1> &y, const tensor_ref<dim_t, 1> &z,
-                    const tensor_view<R, 1> &x) const
+    std::pair<shape<1>, shape<1>> operator()(const shape<1> &x) const
     {
-        const dim_t n = x.shape().size();
+        return std::make_pair(shape<1>(k_), shape<1>(k_));
+    }
 
-        using vt = std::vector<std::pair<R, dim_t>>;
-        vt v(n);
-        for (auto i : range(n)) {
-            v[i].first = x.at(i);
-            v[i].second = i;
-        }
-        std::sort(v.begin(), v.end(), std::greater<typename vt::value_type>());
-
-        for (auto i : range(std::min(n, k_))) {
-            y.at(i) = v[i].first;
-            z.at(i) = v[i].second;
-        }
+    template <typename R, typename N, typename D>
+    void operator()(const tensor_ref<R, 1, D> &y, const tensor_ref<N, 1, D> &z,
+                    const tensor_view<R, 1, D> &x) const
+    {
+        kernels::top<D, N, R>()(y, z, x);
     }
 };
 }  // namespace ttl::nn::ops
