@@ -1,15 +1,15 @@
 #pragma once
-#include <nn/layers>
-#include <nn/models>
-#include <nn/ops>
+#include <ttl/nn/layers>
+#include <ttl/nn/models>
+#include <ttl/nn/ops>
 
 // https://github.com/tensorlayer/openpose-plus/blob/master/openpose_plus/models/models_hao28_experimental.py
 template <typename R> struct openpose_plus_hao28_impl {
-    using image_order = nn::ops::nhwc;
-    using filter_order = nn::ops::rscd;
-    using relu = nn::ops::pointwise<nn::ops::relu>;
-    using pool = nn::layers::pool<nn::ops::pool_max, image_order>;
-    using concat = nn::ops::concat_channel4d<image_order>;
+    using image_order = ttl::nn::ops::nhwc;
+    using filter_order = ttl::nn::ops::rscd;
+    using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
+    using pool = ttl::nn::layers::pool<ttl::nn::ops::pool_max, image_order>;
+    using concat = ttl::nn::ops::concat_channel4d<image_order>;
 
     mutable nn::models::namescope ns;
     const std::string data_dir_;
@@ -17,16 +17,16 @@ template <typename R> struct openpose_plus_hao28_impl {
     auto f(const std::string &name) const
     {
         const auto full = data_dir_ + "/" + ns(name) + ".idx";
-        return nn::ops::readfile(full);
+        return ttl::nn::ops::readfile(full);
     };
 
     auto conv(int d, int k, int p, const std::string &name = "conv") const
     {
         return ns.with(name, [&] {
             using conv_layer =
-                nn::layers::conv<image_order, filter_order, false>;
-            const auto l = conv_layer(conv_layer::ksize(k, k), d,
-                                      conv_layer::padding(p, p));
+                ttl::nn::layers::conv<image_order, filter_order, false>;
+            const auto l = conv_layer(d, conv_layer::ksize(k, k),
+                                      conv_layer::padding_same());
             return with_init(l, f("kernel"));
         });
     }
@@ -35,9 +35,9 @@ template <typename R> struct openpose_plus_hao28_impl {
     {
         return ns.with(name, [&] {
             using conv_layer =
-                nn::layers::conv<image_order, filter_order, true>;
-            const auto l = conv_layer(conv_layer::ksize(k, k), d,
-                                      conv_layer::padding(p, p));
+                ttl::nn::layers::conv<image_order, filter_order, true>;
+            const auto l = conv_layer(d, conv_layer::ksize(k, k),
+                                      conv_layer::padding_same());
             return with_init(l, f("kernel"), f("bias"));
         });
     }
@@ -45,8 +45,8 @@ template <typename R> struct openpose_plus_hao28_impl {
     auto bn(const std::string &name = "bn") const
     {
         return ns.with(name, [&] {
-            using relu = nn::ops::pointwise<nn::ops::relu>;
-            using bn_layer = nn::layers::batch_norm<image_order, relu>;
+            using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
+            using bn_layer = ttl::nn::layers::batch_norm<image_order, relu>;
             return with_init(bn_layer(), f("moving_mean"), f("moving_variance"),
                              f("beta"), f("gamma"));
         });
@@ -81,7 +81,7 @@ template <typename R> struct openpose_plus_hao28_impl {
     auto cnn(const ttl::tensor_ref<R, 4> &x)
     {
         auto conv_layers =                                //
-            nn::models::make_sequential()                 //
+            ttl::nn::models::make_sequential()            //
             << conv(32, 3, 1, "conv1_1") << bn("bn1_1")   //
             << conv(64, 3, 1, "conv1_2") << bn("bn1_2")   //
             << pool()                                     //
@@ -105,7 +105,7 @@ template <typename R> struct openpose_plus_hao28_impl {
         return ns.with("stage1", [&] {
             auto common = [&] {
                 return                                     //
-                    nn::models::make_sequential()          //
+                    ttl::nn::models::make_sequential()     //
                     << conv(128, 3, 1, "c1") << bn("bn1")  //
                     << conv(128, 3, 1, "c2") << bn("bn2")  //
                     << conv(128, 3, 1, "c3") << bn("bn3")  //
@@ -131,11 +131,11 @@ template <typename R> struct openpose_plus_hao28_impl {
                 const ttl::tensor_ref<R, 4> &b2)
     {
         using T = ttl::tensor<R, 4>;
-        auto net =
-            std::unique_ptr<T>(nn::ops::new_result<T>(concat(), x, b1, b2));
+        auto net = std::unique_ptr<T>(
+            ttl::nn::ops::new_result<T>(concat(), x, b1, b2));
         auto common = [&] {
             return                                     //
-                nn::models::make_sequential()          //
+                ttl::nn::models::make_sequential()     //
                 << conv(128, 3, 1, "c1") << bn("bn1")  //
                 << conv(128, 3, 1, "c2") << bn("bn2")  //
                 << conv(128, 3, 1, "c3") << bn("bn3")  //

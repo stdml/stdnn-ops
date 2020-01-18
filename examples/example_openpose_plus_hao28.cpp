@@ -2,12 +2,12 @@
 
 // #define STDNN_OPS_HAVE_CBLAS
 
+#include "example_openpose_plus_hao28.hpp"
+
 #include <algorithm>
 #include <string>
 
-#include "example_openpose_plus_hao28.hpp"
-
-using std::experimental::range;
+#include <ttl/range>
 
 int main(int argc, char *argv[])
 {
@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     // }
 
     int repeats = 5;
-    for (auto i : std::experimental::range(repeats)) {
+    for (auto i : ttl::range(repeats)) {
         printf("inference %d\n", i);
         auto [l_conf, l_paf] = openpose(ref(x));
 
