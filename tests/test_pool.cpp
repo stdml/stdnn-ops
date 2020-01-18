@@ -1,16 +1,14 @@
-#include "testing.hpp"
-
-#include <nn/ops>
-#include <stdtensor>
+#include <ttl/nn/bits/ops/pool.hpp>
+#include <ttl/nn/testing>
 
 TEST(pool_test, test_hw)
 {
     const auto x = ttl::tensor<int, 2>(4, 4);
     const auto y = ttl::tensor<int, 2>(2, 2);
 
-    for (auto i : range(16)) { x.data()[i] = i; }
+    for (auto i : ttl::range(16)) { x.data()[i] = i; }
 
-    using pool = nn::ops::pool<nn::ops::pool_max, nn::ops::hw>;
+    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hw>;
     pool()(ref(y), view(x));
 
     ASSERT_EQ(y.at(0, 0), 5);
@@ -27,17 +25,17 @@ TEST(pool_test, test_hwc)
 
     {
         int cnt = 0;
-        for (auto k : range(n)) {
-            for (auto i : range(4)) {
-                for (auto j : range(4)) { x.at(i, j, k) = cnt++; }
+        for (auto k : ttl::range(n)) {
+            for (auto i : ttl::range(4)) {
+                for (auto j : ttl::range(4)) { x.at(i, j, k) = cnt++; }
             }
         }
     }
 
-    using pool = nn::ops::pool<nn::ops::pool_max, nn::ops::hwc>;
+    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hwc>;
     pool()(ref(y), view(x));
 
-    for (auto i : range(n)) {
+    for (auto i : ttl::range(n)) {
         ASSERT_EQ(y.at(0, 0, i), 5 + 16 * i);
         ASSERT_EQ(y.at(0, 1, i), 7 + 16 * i);
         ASSERT_EQ(y.at(1, 0, i), 13 + 16 * i);
@@ -53,7 +51,8 @@ TEST(pool_test, test_4d)
     const uint32_t w = 256;
 
     {
-        using max_pool_nhwc = nn::ops::pool<nn::ops::pool_max, nn::ops::nhwc>;
+        using max_pool_nhwc =
+            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>;
         const auto x = ttl::tensor<float, 4>(n, h, w, c);
         {
             const auto op = max_pool_nhwc();
@@ -77,12 +76,13 @@ TEST(pool_test, test_4d)
     }
 
     {
-        using max_pool_nchw = nn::ops::pool<nn::ops::pool_max, nn::ops::nchw>;
+        using max_pool_nchw =
+            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nchw>;
         const auto x = ttl::tensor<float, 4>(n, c, h, w);
-        for (auto l : range(n)) {
-            for (auto k : range(c)) {
-                for (auto i : range(h)) {
-                    for (auto j : range(w)) {
+        for (auto l : ttl::range(n)) {
+            for (auto k : ttl::range(c)) {
+                for (auto i : ttl::range(h)) {
+                    for (auto j : ttl::range(w)) {
                         x.at(l, k, i, j) =
                             (l * 10 + k) * 1000 * 1000 + i * 1000 + j;
                     }
@@ -94,10 +94,10 @@ TEST(pool_test, test_4d)
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
             ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, c, 64, 128));
             op(ref(y), view(x));
-            for (auto l : range(n)) {
-                for (auto k : range(c)) {
-                    for (auto i : range(64)) {
-                        for (auto j : range(128)) {
+            for (auto l : ttl::range(n)) {
+                for (auto k : ttl::range(c)) {
+                    for (auto i : ttl::range(64)) {
+                        for (auto j : ttl::range(128)) {
                             const float val = (l * 10 + k) * 1000 * 1000 +
                                               (i * 2 + 1) * 1000 + (j * 2 + 1);
                             ASSERT_EQ(y.at(l, k, i, j), val);
@@ -120,4 +120,48 @@ TEST(pool_test, test_4d)
             op(ref(y), view(x));
         }
     }
+}
+
+TEST(pool_test, test_padding)
+{
+    const uint32_t n = 7;
+    const uint32_t h = 128;
+    const uint32_t w = 256;
+    const uint32_t c = 3;
+
+    {
+        using pool =
+            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>;
+        const auto x = ttl::tensor<float, 4>(n, h, w, c);
+        {
+            const auto op = pool(pool::ksize(3, 3), pool::padding(2, 1));
+            const auto y = ttl::tensor<float, 4>(op(x.shape()));
+            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, 44, 86, c));
+            op(ref(y), view(x));
+        }
+        {
+            const auto op = pool(pool::ksize(3, 3), pool::padding(1, 1),
+                                 pool::stride(1, 1));
+            const auto y = ttl::tensor<float, 4>(op(x.shape()));
+            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, 128, 256, c));
+            op(ref(y), view(x));
+        }
+    }
+}
+
+TEST(pool_test, test_mean)
+{
+    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_mean, ttl::nn::ops::hw>;
+    const pool op;
+    const auto x = ttl::tensor<int, 2>(4, 4);
+    std::iota(x.data(), x.data() + 16, 0);
+    using add = ttl::nn::ops::add;
+    add()(ref(x), view(x), view(x));
+
+    const auto y = ttl::tensor<int, 2>(op(x.shape()));
+    op(ref(y), view(x));
+    ASSERT_EQ(y.data()[0], 5);
+    ASSERT_EQ(y.data()[1], 9);
+    ASSERT_EQ(y.data()[2], 21);
+    ASSERT_EQ(y.data()[3], 25);
 }

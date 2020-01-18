@@ -1,0 +1,61 @@
+\section{Linear Sample of Dimension One}
+
+\begin{defi}[valid convolution]
+A valid convolution is the linear map
+\begin{align*}
+    x[n] \circ y[k] \to z[m]
+\end{align*}
+where
+\begin{align*}
+    z[i] &= \sum_{j=0}^{k - 1} x[i + j] \cdot y[j] \quad (0 \leq i < m) \\
+    n &= m + k - 1
+\end{align*}
+\end{defi}
+
+\begin{defi}[strided valid convolution]
+A strided valid convolution is the linear map
+\begin{align*}
+    x[n] \circ y[k] \to z[m]
+\end{align*}
+where
+\begin{align*}
+    z[i] &= \sum_{j=0}^{k - 1} x[i \cdot s + j] \cdot y[j] \quad (0 \leq i < m) \\
+    n &= s (m - 1) + k
+\end{align*}
+\end{defi}
+
+\begin{defi}[linear sample]
+A linear sample is a map that maps a sequence of length $n$ to a sequence of
+length $m$.
+\end{defi}
+
+The sampling takes the following steps:
+\begin{itemize}
+\item The input sequence $x[n]$ is padded to $\hat x[\hat n]$ by
+prepending $p_l$ zero elements and appending $p_r$ zero elements, where
+\begin{align*}
+    \hat n = p_l + n + p_r
+\end{align*}
+In most case $p_r = p_l$ or $p_r = p_l + 1$.
+
+\item The kernel (filter) $y[k]$ is extended to $\hat y[\hat k]$
+by inserting $r - 1$ zero elements to adjacent elements, where
+\begin{align*}
+    \hat k = r * (k - 1) + 1
+\end{align*}
+
+\item The padded input $\hat x$ and the extended kernel $\hat y$ takes a
+valid convolution with stride $s$, resulting the output sequence $z[m]$,
+where
+\begin{align*}
+    m = {\hat n - \hat k \over s} + 1
+\end{align*}
+and $s \mid \hat n - \hat k$ should be granted.
+\end{itemize}
+
+
+$(p_l, p_r, k, s, r, n, m)$, $p_l, p_r \in \mathbb N$, $k, s, r, n, m \in \mathbb N^\ast$
+is called a valid configuration of linear sample if
+\begin{align*}
+    s (m - 1) = (n + p_l + p_r) - (r (k - 1) + 1)
+\end{align*}

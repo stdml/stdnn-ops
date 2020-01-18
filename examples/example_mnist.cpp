@@ -1,13 +1,15 @@
 #include <cstdlib>
+
 #include <string>
 
-#include <nn/ops>
+#include <ttl/nn/ops>
+#include <ttl/tensor>
 
 #ifdef USE_OPENCV
-#include <opencv2/opencv.hpp>
+#    include <opencv2/opencv.hpp>
 #endif
 
-#include <stdtensor>
+#include "utils.hpp"
 
 void example_mnist() {}
 
@@ -18,14 +20,16 @@ int main()
 
     std::string filename = prefix + "/" + "t10k-images-idx3-ubyte";
 
-    using reader = nn::ops::readfile;
+    using reader = ttl::nn::ops::readfile;
     ttl::tensor<uint8_t, 3> t(10 * 1000, 28, 28);
     (reader(filename))(ref(t));
 
     int i = 0;
-    system("mkdir -p images");
+    int code = system("mkdir -p images");
+    UNUSED(code);
     for (auto im : t) {
-        char name[20];
+        UNUSED(im);
+        char name[32];
         sprintf(name, "images/%d.png", ++i);
 #ifdef USE_OPENCV
         cv::Mat img(cv::Size(28, 28), CV_8UC(1), im.data());

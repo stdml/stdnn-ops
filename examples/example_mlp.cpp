@@ -1,7 +1,7 @@
 #include <string>
 
-#include <nn/ops>
-#include <stdtensor>
+#include <ttl/nn/ops>
+#include <ttl/tensor>
 
 #include "utils.hpp"
 
@@ -12,10 +12,11 @@ void example_mlp()
     int w = 28;
     int c = 3;
 
-    using conv_nhwc = nn::ops::conv<nn::ops::nhwc>;
+    using conv_nhwc = ttl::nn::ops::conv<ttl::nn::ops::nhwc>;
     const auto conv = conv_nhwc(conv_nhwc::padding(1, 1));
 
-    using max_pool_nhwc = nn::ops::pool<nn::ops::pool_max, nn::ops::nhwc>;
+    using max_pool_nhwc =
+        ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>;
     const auto pool = max_pool_nhwc();
 
     auto x = ttl::tensor<float, 4>(n, h, w, c);

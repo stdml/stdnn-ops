@@ -1,5 +1,5 @@
-#include <nn/ops>
-#include <stdtensor>
+#include <ttl/nn/ops>
+#include <ttl/tensor>
 
 struct examples {
     const uint32_t n = 10;
@@ -14,7 +14,7 @@ struct examples {
         const auto x = ttl::tensor<float, 4>(shape);
         const auto y = ttl::tensor<float, 4>(shape);
 
-        const auto op = nn::ops::add();
+        const auto op = ttl::nn::ops::add();
         const auto z = ttl::tensor<float, 4>(op(x.shape(), y.shape()));
 
         op(ref(z), view(x), view(y));  // FIXME: leaked from namespace
@@ -30,19 +30,19 @@ struct examples {
         const auto y = ttl::tensor<float, 4>(r, s, c, d);
 
         {
-            const auto conv = nn::ops::conv<nn::ops::nhwc>();
+            const auto conv = ttl::nn::ops::conv<ttl::nn::ops::nhwc>();
             const auto z = ttl::tensor<float, 4>(conv(x.shape(), y.shape()));
             conv(ref(z), view(x), view(y));
         }
         {
-            using conv = nn::ops::conv<nn::ops::nhwc>;
+            using conv = ttl::nn::ops::conv<ttl::nn::ops::nhwc>;
             const auto op = conv(conv::padding(1, 1));
             const auto z = ttl::tensor<float, 4>(op(x.shape(), y.shape()));
             op(ref(z), view(x), view(y));
         }
         {
             const auto y = ttl::tensor<float, 4>(4, 4, c, d);
-            using conv = nn::ops::conv<nn::ops::nhwc>;
+            using conv = ttl::nn::ops::conv<ttl::nn::ops::nhwc>;
             const auto op = conv(conv::padding(2, 2), conv::stride(4, 4));
             const auto z = ttl::tensor<float, 4>(op(x.shape(), y.shape()));
             op(ref(z), view(x), view(y));
@@ -52,7 +52,8 @@ struct examples {
     void example_pool()
     {
         const auto x = ttl::tensor<float, 4>(n, h, w, c);
-        using max_pool_nhwc = nn::ops::pool<nn::ops::pool_max, nn::ops::nhwc>;
+        using max_pool_nhwc =
+            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>;
         const auto op = max_pool_nhwc();
         const auto y = ttl::tensor<float, 4>(op(x.shape()));
         op(ref(y), view(x));
@@ -67,7 +68,7 @@ int main()
     e.example_pool();
 
     // should be done in cg
-    // using f = nn::ops::add;
+    // using f = ttl::nn::ops::add;
     // f(x, y)(z);
     // f.in(x, y).out(z);
     // f.out(x, y).in(z);

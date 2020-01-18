@@ -1,17 +1,17 @@
-#include "testing.hpp"
-
 #include <algorithm>
 
-#include <nn/ops>
-#include <stdtensor>
+#include <ttl/algorithm>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
+#include <ttl/tensor>
 
 void test_mm(int k, int m, int n)
 {
-    using mul = nn::ops::matmul;
+    using mul = ttl::nn::ops::matmul;
     const auto x = ttl::tensor<int, 2>(k, m);
     const auto y = ttl::tensor<int, 2>(m, n);
-    fill(x, 2);
-    fill(y, 3);
+    ttl::fill(ref(x), 2);
+    ttl::fill(ref(y), 3);
 
     const auto op = mul();
     const auto z = ttl::tensor<int, 2>(op(x.shape(), y.shape()));
@@ -37,21 +37,4 @@ TEST(matmul_test, test1)
     test_mm_all(3, 5, 7);
     test_mm_all(5, 7, 9);
     test_mm_all(10, 100, 1000);
-}
-
-void test_vv(int n)
-{
-    using R = int;
-    const auto x = ttl::tensor<R, 1>(n);
-    const auto y = ttl::tensor<R, 1>(n);
-    fill(x, 1);
-    fill(y, 2);
-    const auto z = ttl::tensor<R, 1>(n);
-    nn::engines::linag<R>::vv(x, y, z);
-    for (int i = 0; i < n; ++i) { ASSERT_EQ(z.at(i), 3); }
-}
-
-TEST(linag_test, test_vv)
-{
-    for (int i = 1; i <= 100; ++i) { test_vv(i); }
 }

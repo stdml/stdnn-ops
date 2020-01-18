@@ -1,9 +1,9 @@
 #include <cmath>
 
-#include "testing.hpp"
-
-#include <nn/ops>
-#include <stdtensor>
+#include <ttl/algorithm>
+#include <ttl/nn/ops>
+#include <ttl/nn/testing>
+#include <ttl/tensor>
 
 TEST(xentropy_test, test_1)
 {
@@ -14,10 +14,10 @@ TEST(xentropy_test, test_1)
         for (int k = 1; k <= 10; ++k) {
             const auto x = ttl::tensor<R, 1>(k);
             const auto y = ttl::tensor<R, 1>(x.shape());
-            fill(x, (R)1.0);
-            fill(y, e);
+            ttl::fill(ref(x), (R)1.0);
+            ttl::fill(ref(y), e);
 
-            const auto loss = nn::ops::xentropy<1>();
+            const auto loss = ttl::nn::ops::xentropy();
             const auto z = ttl::tensor<R, 0>(loss(x.shape(), y.shape()));
 
             loss(ref(z), view(x), view(y));
@@ -30,11 +30,12 @@ TEST(xentropy_test, test_1)
         for (int k = 1; k <= 10; ++k) {
             const auto x = ttl::tensor<R, 2>(n, k);
             const auto y = ttl::tensor<R, 2>(x.shape());
-            fill(x, (R)1.0);
-            fill(y, e);
+            ttl::fill(ref(x), (R)1.0);
+            ttl::fill(ref(y), e);
 
-            const auto loss = nn::ops::xentropy<2>();
+            const auto loss = ttl::nn::ops::xentropy();
             const auto z = ttl::tensor<R, 1>(loss(x.shape(), y.shape()));
+            ASSERT_EQ(z.shape(), ttl::shape<1>(2));
 
             loss(ref(z), view(x), view(y));
             for (int i = 0; i < n; ++i) { ASSERT_FLOAT_EQ(z.at(i), -k); }

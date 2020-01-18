@@ -1,15 +1,22 @@
-#!/bin/bash
+#!/bin/sh
 set -e
 
-CMAKE_FLAGS=
-
 # defaults
-# WITH_BLAS=1
+USE_BLAS=0
+USE_OPENCV=0
+USE_EXTERN=0
 
-add_cmake_flag() {
-    echo "usinig $1=$2"
-    CMAKE_FLAGS="$CMAKE_FLAGS -D$1=$2"
-}
+BLAS_HOME=
+
+BUILD_LIB=0
+BUILD_EXAMPLES=0
+BUILD_TESTS=0
+BUILD_BENCHMARKS=0
+
+BUILD_GTEST=0
+BUILD_GBENCH=0
+
+VERBOSE=0
 
 parse_args() {
     for i in "$@"; do
@@ -17,53 +24,144 @@ parse_args() {
         --prefix=*)
             PREFIX="${i#*=}"
             ;;
-        # --with-blas)
-        #     WITH_BLAS=1
-        #     ;;
-        # --without-blas)
-        #     WITH_BLAS=
-        #     ;;
+        --with-blas=*)
+            BLAS_HOME="${i#*=}"
+            ;;
+        --use-blas)
+            USE_BLAS=1
+            ;;
+        --use-opencv)
+            USE_OPENCV=1
+            ;;
+        --lib)
+            BUILD_LIB=1
+            ;;
+        --examples)
+            BUILD_EXAMPLES=1
+            ;;
+        --tests)
+            BUILD_TESTS=1
+            ;;
+        --no-tests)
+            BUILD_TESTS=0
+            ;;
+        --build-gtest)
+            BUILD_GTEST=1
+            ;;
+        --benchmarks)
+            BUILD_BENCHMARKS=1
+            ;;
+        --build-gbench)
+            BUILD_GBENCH=1
+            ;;
+        --no-benchmarks)
+            BUILD_BENCHMARKS=0
+            ;;
+        --extern)
+            USE_EXTERN=1
+            ;;
+        --verbose)
+            VERBOSE=1
+            ;;
         *)
-            echo "unknown argument $1"
-            exit
+            echo "unknown argument $i"
+            exit 1
             ;;
         esac
     done
 }
 
-add_cmake_flags() {
-    if [ ! -z ${PREFIX} ]; then
-        add_cmake_flag CMAKE_INSTALL_PREFIX ${PREFIX}
-    fi
+CMAKE_FLAGS=
 
-    if [ ! -z ${GTEST_GIT_URL} ]; then
-        add_cmake_flag GTEST_GIT_URL ${GTEST_GIT_URL}
-    fi
-
-    if [ ! -z ${STDTRACER_GIT_URL} ]; then
-        add_cmake_flag STDTRACER_GIT_URL ${STDTRACER_GIT_URL}
-    fi
-
-    if [ ! -z ${STDTENSOR_GIT_URL} ]; then
-        add_cmake_flag STDTENSOR_GIT_URL ${STDTENSOR_GIT_URL}
-    fi
-
-    add_cmake_flag EXECUTABLE_OUTPUT_PATH $(pwd)/bin
-    add_cmake_flag LIBRARY_OUTPUT_PATH $(pwd)/lib
-    add_cmake_flag CMAKE_BUILD_TYPE Release
-    add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS 1
-    add_cmake_flag CMAKE_VERBOSE_MAKEFILE 1
-    add_cmake_flag BUILD_PACKAGES 1
-
-    # add_cmake_flag USE_OPENCV 1
-    # add_cmake_flag USE_OPENBLAS 1
-    # add_cmake_flag BUILD_TESTS 0
-
-    # if [ ! -z ${WITH_BLAS} ]; then
-    #     add_cmake_flag USE_BLAS 1
-    # fi
+add_cmake_flag() {
+    echo "Using $1=$2"
+    CMAKE_FLAGS="$CMAKE_FLAGS -D$1=$2"
 }
 
-parse_args $@
-add_cmake_flags
-cmake . $CMAKE_FLAGS
+pass_cmake_flag_from_env() {
+    local name=$1
+    local env_key=$2
+    if [ -z ${env_key} ]; then
+        env_key=$name
+    fi
+    local val=$(eval echo \$$env_key)
+    if [ ! -z "$val" ]; then
+        add_cmake_flag $name $val
+    fi
+}
+
+CMAKE_PREFIX_PATH=
+
+add_cmake_prefix() {
+    echo "adding to CMAKE_PREFIX_PATH with $1"
+    CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$1"
+}
+
+add_cmake_prefixes() {
+    add_cmake_prefix $HOME/local
+    add_cmake_prefix $HOME/local/gtest
+    add_cmake_prefix $HOME/local/openblas
+}
+
+add_cmake_flags() {
+    pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX PREFIX
+
+    pass_cmake_flag_from_env STDTRACER_GIT_URL
+    pass_cmake_flag_from_env STDTENSOR_GIT_URL
+
+    add_cmake_flag EXECUTABLE_OUTPUT_PATH $PWD/bin
+    # add_cmake_flag LIBRARY_OUTPUT_PATH $PWD/lib
+    add_cmake_flag CMAKE_BUILD_TYPE Release
+    add_cmake_flag CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH}
+    add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS 1
+    add_cmake_flag CMAKE_VERBOSE_MAKEFILE 1
+
+    # add_cmake_flag USE_OPT 1
+    add_cmake_flag USE_OPENCV ${USE_OPENCV}
+    add_cmake_flag USE_OPENBLAS ${USE_BLAS}
+    if [ ! -z "${BLAS_HOME}" ]; then
+        add_cmake_flag BLAS_HOME ${BLAS_HOME}
+    fi
+
+    add_cmake_flag BUILD_LIB ${BUILD_LIB}
+    add_cmake_flag BUILD_EXAMPLES ${BUILD_EXAMPLES}
+    add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
+    add_cmake_flag BUILD_BENCHMARKS ${BUILD_BENCHMARKS}
+    add_cmake_flag BUILD_PACKAGES 1
+    add_cmake_flag USE_EXTERN ${USE_EXTERN}
+    add_cmake_flag BUILD_GTEST ${BUILD_GTEST}
+    add_cmake_flag BUILD_GBENCH ${BUILD_GBENCH}
+
+    if [ ${BUILD_TESTS} -eq 1 ] && [ ${BUILD_GTEST} -eq 1 ]; then
+        pass_cmake_flag_from_env GTEST_GIT_URL
+    fi
+    if [ ${BUILD_BENCHMARKS} -eq 1 ] && [ ${BUILD_GBENCH} -eq 1 ]; then
+        pass_cmake_flag_from_env GBENCH_GIT_URL
+    fi
+
+    # FIXME: depend on a tag for release version
+    add_cmake_flag STDTENSOR_GIT_TAG $(head -n 1 ./deps/stdtensor)
+
+    add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS ${VERBOSE}
+}
+
+cleanup_cmake_cache() {
+    if [ -f CMakeCache.txt ]; then
+        rm CMakeCache.txt
+    fi
+    if [ -d 3rdparty ]; then
+        for cmake_cache in $(find 3rdparty/ | grep CMakeCache.txt); do
+            rm $cmake_cache
+        done
+    fi
+}
+
+main() {
+    parse_args $@
+    add_cmake_prefixes
+    add_cmake_flags
+    cleanup_cmake_cache
+    cmake . $CMAKE_FLAGS
+}
+
+main $@
