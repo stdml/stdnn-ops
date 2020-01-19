@@ -19,7 +19,7 @@ TEST(init_test, test_01)
 TEST(init_test, test_uniform)
 {
     ttl::tensor<float, 2> x(2, 5);
-    ttl::nn::ops::uniform_distribution()(ref(x));
+    ttl::nn::ops::uniform_constant()(ttl::ref(x));
     for (auto i : ttl::range(x.shape().size())) {
         ASSERT_FLOAT_EQ(x.data()[i], 0.1);
     }

@@ -12,8 +12,8 @@ namespace ttl::nn::ops
 class zeros
 {
   public:
-    template <typename R, ttl::rank_t r, typename D>
-    void operator()(const ttl::tensor_ref<R, r, D> &x) const
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &x) const
     {
         kernels::zeros<D, R>()(flatten(x));
     }
@@ -22,8 +22,8 @@ class zeros
 class ones
 {
   public:
-    template <typename R, ttl::rank_t r, typename D>
-    void operator()(const ttl::tensor_ref<R, r, D> &x) const
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &x) const
     {
         kernels::ones<D, R>()(flatten(x));
     }
@@ -44,15 +44,13 @@ class constant
     }
 };
 
-class uniform_distribution
+class uniform_constant
 {
   public:
-    template <typename R, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &x) const
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &x) const
     {
-        static_assert(std::is_floating_point<R>::value);
-        const R value = static_cast<R>(1) / static_cast<R>(x.shape().size());
-        ttl::fill(x, value);
+        kernels::uniform_constant<D, R>()(flatten(x));
     }
 };
 
