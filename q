@@ -13,7 +13,7 @@ rebuild() {
     ./configure $(flags)
     # exit
 
-    make -j 8
+    make -j $(nproc)
     make test
 
     # make test-softmax

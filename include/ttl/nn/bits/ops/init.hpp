@@ -4,6 +4,7 @@
 #include <random>
 
 #include <ttl/algorithm>
+#include <ttl/nn/bits/kernels/init.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops
@@ -11,24 +12,25 @@ namespace ttl::nn::ops
 class zeros
 {
   public:
-    template <typename R, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &x) const
+    template <typename R, ttl::rank_t r, typename D>
+    void operator()(const ttl::tensor_ref<R, r, D> &x) const
     {
-        ttl::fill(x, static_cast<R>(0));
+        kernels::zeros<D, R>()(flatten(x));
     }
 };
 
 class ones
 {
   public:
-    template <typename R, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &x) const
+    template <typename R, ttl::rank_t r, typename D>
+    void operator()(const ttl::tensor_ref<R, r, D> &x) const
     {
-        ttl::fill(x, static_cast<R>(1));
+        kernels::ones<D, R>()(flatten(x));
     }
 };
 
-template <typename R> class constant
+template <typename R>
+class constant
 {
     const R value_;
 
