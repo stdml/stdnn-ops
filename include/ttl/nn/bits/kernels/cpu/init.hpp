@@ -1,5 +1,6 @@
 #pragma once
 #include <ttl/algorithm>
+#include <ttl/device>
 #include <ttl/nn/bits/kernels/init.hpp>
 
 namespace ttl::nn::kernels

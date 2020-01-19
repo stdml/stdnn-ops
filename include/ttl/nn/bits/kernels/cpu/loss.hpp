@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <numeric>
 
+#include <ttl/device>
 #include <ttl/nn/bits/kernels/loss.hpp>
 
 namespace ttl::nn::kernels
