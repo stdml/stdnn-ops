@@ -37,10 +37,10 @@ class constant
   public:
     constant(const R &value) : value_(value) {}
 
-    template <ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &x) const
+    template <rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &x) const
     {
-        ttl::fill(x, value_);
+        (kernels::constant<D, R>(value_))(flatten(x));
     }
 };
 

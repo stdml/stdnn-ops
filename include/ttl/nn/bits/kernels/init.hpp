@@ -14,6 +14,9 @@ class ones;
 
 template <typename D, typename R>
 class uniform_constant;
+
+template <typename D, typename R>
+class constant;
 }  // namespace kernels
 }  // namespace nn
 }  // namespace ttl

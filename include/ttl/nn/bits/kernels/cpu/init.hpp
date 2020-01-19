@@ -37,4 +37,15 @@ class uniform_constant<host_memory, R>
         fill(x, value);
     }
 };
+
+template <typename R>
+class constant<host_memory, R>
+{
+    const R value_;
+
+  public:
+    constant(const R &value) : value_(value) {}
+
+    void operator()(const tensor_ref<R, 1> &x) const { fill(x, value_); }
+};
 }  // namespace ttl::nn::kernels
