@@ -53,8 +53,8 @@ TEST(grad_shape_test, test_add)
     using G0 = ttl::nn::ops::grad::add<0>;
     using G1 = ttl::nn::ops::grad::add<1>;
     F f;
-    G0 g0;
-    G1 g1;
+    G0 g0(f);
+    G1 g1(f);
     test_binary_grad_shape(f, g0, g1, ttl::shape<1>(10), ttl::shape<1>(10));
 }
 

@@ -1,5 +1,6 @@
 #pragma once
 #include <ttl/bits/std_shape.hpp>
+#include <ttl/nn/common.hpp>
 
 namespace ttl
 {
@@ -77,6 +78,26 @@ class basic_vectorize_function
         return basic_shape<r + 1, Dim>(dims);
     }
 };
+
+template <typename F, arity_t i>
+class basic_gradient_function
+{
+  protected:
+    const F &f_;
+
+  public:
+    basic_gradient_function(const F &f) : f_(f) {}
+
+    template <typename Dim, arity_t ry, arity_t... rx>
+    auto operator()(const basic_shape<ry, Dim> &gy,
+                    const basic_shape<ry, Dim> &y,
+                    const basic_shape<rx, Dim> &... xs) const
+    {
+        contract_assert_eq(y, f_(xs...));
+        contract_assert_eq(y, gy);
+        return std::get<i>(std::make_tuple(xs...));
+    }
+};
 }  // namespace internal
 
 using endofunction = internal::basic_endofunction;
@@ -84,5 +105,7 @@ using binary_endofunction = internal::basic_binary_endofunction;
 using reduce_function = internal::basic_reduce_function;
 using binary_reduce_function = internal::basic_binary_reduce_function;
 using vectorize_function = internal::basic_vectorize_function;
+
+using internal::basic_gradient_function;
 }  // namespace nn::ops
 }  // namespace ttl
