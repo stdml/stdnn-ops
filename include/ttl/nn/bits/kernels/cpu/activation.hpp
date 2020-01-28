@@ -41,12 +41,26 @@ struct host_scalar_relu {
     template <typename R>
     R operator()(R x)
     {
-        return x > 0 ? x : 0.0;
+        return x > 0 ? x : static_cast<R>(0);
     }
 };
 
 template <typename R>
 class relu<host_memory, R> : public host_pointwise<host_scalar_relu, R>
+{
+};
+
+struct host_scaler_relu_grad {
+    template <typename R>
+    R operator()(R gy, R x)
+    {
+        return gy * (x > 0 ? static_cast<R>(1) : static_cast<R>(0));
+    }
+};
+
+template <typename R>
+class relu_grad<host_memory, R>
+    : public host_binary_pointwise<host_scaler_relu_grad, R>
 {
 };
 }  // namespace ttl::nn::kernels
