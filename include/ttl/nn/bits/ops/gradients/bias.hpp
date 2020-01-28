@@ -1,81 +1,81 @@
 #pragma once
 #include <ttl/algorithm>
+#include <ttl/nn/bits/kernels/cpu/elementary.hpp>
 #include <ttl/nn/bits/ops/bias.hpp>
 #include <ttl/nn/bits/ops/reduce.hpp>
-#include <ttl/nn/bits/ops/shape_algo.hpp>
+#include <ttl/nn/bits/ops/std_function.hpp>
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
 namespace ttl::nn::ops::grad
 {
+template <typename image_order, arity_t>
+class add_bias;
 
-template <typename image_order, int> class add_bias;
-
-template <typename image_order> class add_bias<image_order, 0>
+template <typename image_order>
+class add_bias<image_order, 0>
+    : public basic_gradient_function<ops::add_bias<image_order>, 0>
 {
-    static constexpr auto r = ttl::nn::ops::rank_of<image_order>;
-    static constexpr auto p = ttl::nn::ops::bias_position<image_order>;
+    static constexpr auto r = traits::rank_of<image_order>;
+    static constexpr auto p = traits::bias_position<image_order>;
+
+    using P = basic_gradient_function<ops::add_bias<image_order>, 0>;
+    using P::P;
 
   public:
-    shape<2> operator()(const shape<r> &gz, const shape<r> &z,
-                        const shape<r> &x, const shape<1> &y) const
-    {
-        return ttl::nn::ops::gradient_shape<0>(
-            ttl::nn::ops::add_bias<image_order>(), gz, z, x, y);
-    }
+    using P::operator();
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, r> &gx,
-                    const ttl::tensor_view<R, r> &gz,
-                    const ttl::tensor_view<R, r> &z,
-                    const ttl::tensor_view<R, r> &x,
-                    const ttl::tensor_view<R, 1> &y) const
+    template <typename R, typename D>
+    void
+    operator()(const tensor_ref<R, r, D> &gx, const tensor_view<R, r, D> &gz,
+               const tensor_view<R, r, D> &z, const tensor_view<R, r, D> &x,
+               const tensor_view<R, 1, D> &y) const
     {
-        ttl::nn::ops::identity()(gx, gz);
+        kernels::identity<D, R>()(flatten(gx), flatten(gz));
     }
 };
 
-template <> class add_bias<ttl::nn::ops::hw, 1>
+template <>
+class add_bias<traits::hw, 1>
+    : public basic_gradient_function<ops::add_bias<traits::hw>, 1>
 {
-  public:
-    shape<1> operator()(const shape<2> &gz, const shape<2> &z,
-                        const shape<2> &x, const shape<1> &y) const
-    {
-        return ttl::nn::ops::gradient_shape<1>(
-            ttl::nn::ops::add_bias<ttl::nn::ops::hw>(), gz, z, x, y);
-    }
+    using P = basic_gradient_function<ops::add_bias<traits::hw>, 1>;
+    using P::P;
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 1> &gy,
-                    const ttl::tensor_view<R, 2> &gz,
-                    const ttl::tensor_view<R, 2> &z,
-                    const ttl::tensor_view<R, 2> &x,
-                    const ttl::tensor_view<R, 1> &y) const
+  public:
+    using P::operator();
+
+    template <typename R, typename D>
+    void
+    operator()(const tensor_ref<R, 1, D> &gy, const tensor_view<R, 2, D> &gz,
+               const tensor_view<R, 2, D> &z, const tensor_view<R, 2, D> &x,
+               const tensor_view<R, 1, D> &y) const
     {
         ttl::nn::ops::internal::outter_contraction(gy, gz);
     }
 };
 
-template <> class add_bias<ttl::nn::ops::nhwc, 1>
+template <>
+class add_bias<traits::nhwc, 1>
+    : public basic_gradient_function<ops::add_bias<traits::nhwc>, 1>
 {
-  public:
-    shape<1> operator()(const shape<4> &gz, const shape<4> &z,
-                        const shape<4> &x, const shape<1> &y) const
-    {
-        return ttl::nn::ops::gradient_shape<1>(
-            ttl::nn::ops::add_bias<ttl::nn::ops::nhwc>(), gz, z, x, y);
-    }
+    using P = basic_gradient_function<ops::add_bias<traits::nhwc>, 1>;
+    using P::P;
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 1> &gy,
-                    const ttl::tensor_view<R, 4> &gz,
-                    const ttl::tensor_view<R, 4> &z,
-                    const ttl::tensor_view<R, 4> &x,
-                    const ttl::tensor_view<R, 1> &y) const
+  public:
+    using P::operator();
+
+    template <typename R, typename D>
+    void
+    operator()(const tensor_ref<R, 1, D> &gy, const tensor_view<R, 4, D> &gz,
+               const tensor_view<R, 4, D> &z, const tensor_view<R, 4, D> &x,
+               const tensor_view<R, 1, D> &y) const
     {
         ttl::nn::ops::internal::outter_contraction(
             gy, ttl::nn::ops::as_matrix<3, 1>(gz));
     }
 };
 
+// TODO: class add_bias<traits::nchw, 1>
+// FIXME: unify add_bias<image_order, 1>
 }  // namespace ttl::nn::ops::grad
