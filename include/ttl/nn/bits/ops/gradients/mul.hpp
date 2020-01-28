@@ -23,7 +23,7 @@ class mul<0> : public basic_gradient_function<ops::mul, 0>
                const tensor_view<R, r, D> &z, const tensor_view<R, r, D> &x,
                const tensor_view<R, r, D> &y) const
     {
-        kernels::mul<D, R>()(gx, gz, y);
+        kernels::mul<D, R>()(flatten(gx), flatten(gz), flatten(y));
     }
 };
 
@@ -41,7 +41,7 @@ class mul<1> : public basic_gradient_function<ops::mul, 1>
                const tensor_view<R, r, D> &z, const tensor_view<R, r, D> &x,
                const tensor_view<R, r, D> &y) const
     {
-        kernels::mul<D, R>()(gy, gz, x);
+        kernels::mul<D, R>()(flatten(gy), flatten(gz), flatten(x));
     }
 };
 }  // namespace ttl::nn::ops::grad
