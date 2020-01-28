@@ -19,11 +19,10 @@ class matmul<0, E> : public basic_gradient_function<ops::matmul_<E>, 0>
     using P::operator();
 
     template <typename R, typename D>
-    void operator()(const ttl::tensor_ref<R, 2, D> &gx,
-                    const ttl::tensor_view<R, 2, D> &gz,
-                    const ttl::tensor_view<R, 2, D> &z,
-                    const ttl::tensor_view<R, 2, D> &x,
-                    const ttl::tensor_view<R, 2, D> &y) const
+    void
+    operator()(const tensor_ref<R, 2, D> &gx, const tensor_view<R, 2, D> &gz,
+               const tensor_view<R, 2, D> &z, const tensor_view<R, 2, D> &x,
+               const tensor_view<R, 2, D> &y) const
     {
         kernels::mmt<D, E, R>()(gx, gz, y);
     }
@@ -39,11 +38,10 @@ class matmul<1, E> : public basic_gradient_function<ops::matmul_<E>, 1>
     using P::operator();
 
     template <typename R, typename D>
-    void operator()(const ttl::tensor_ref<R, 2, D> &gy,
-                    const ttl::tensor_view<R, 2, D> &gz,
-                    const ttl::tensor_view<R, 2, D> &z,
-                    const ttl::tensor_view<R, 2, D> &x,
-                    const ttl::tensor_view<R, 2, D> &y) const
+    void
+    operator()(const tensor_ref<R, 2, D> &gy, const tensor_view<R, 2, D> &gz,
+               const tensor_view<R, 2, D> &z, const tensor_view<R, 2, D> &x,
+               const tensor_view<R, 2, D> &y) const
     {
         kernels::mtm<D, E, R>()(gy, x, gz);
     }
