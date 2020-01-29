@@ -1,6 +1,5 @@
 #pragma once
 #include <ttl/nn/bits/kernels/cpu/im2col.hpp>
-#include <ttl/nn/bits/ops/reshape.hpp>
 #include <ttl/nn/bits/traits/conv_traits.hpp>
 #include <ttl/nn/common.hpp>
 
