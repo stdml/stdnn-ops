@@ -67,7 +67,7 @@ class conv_trait;
 template <>
 class conv_trait<hw>
 {
-    using dim_t = size_t;
+    using dim_t = uint32_t;
     using conv_trait_1d_t = linear_conv_trait<dim_t>;
 
   public:

@@ -8,10 +8,11 @@
 
 namespace ttl::nn::ops
 {
+template <typename image_order, typename col_order>
+class col2im;
 
-template <typename image_order, typename col_order> class col2im;
-
-template <> class col2im<hwc, hwrsc> : public im2col_trait<hw>
+template <>
+class col2im<hwc, hwrsc> : public im2col_trait<hw>
 {
     using im2col_trait::im2col_trait;
 
@@ -51,5 +52,4 @@ template <> class col2im<hwc, hwrsc> : public im2col_trait<hw>
         }
     }
 };
-
 }  // namespace ttl::nn::ops

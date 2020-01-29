@@ -6,9 +6,11 @@
 
 namespace ttl::nn::layers
 {
-template <typename image_order> class pool_trait;
+template <typename image_order>
+class pool_trait;
 
-template <> class pool_trait<ops::hw>
+template <>
+class pool_trait<ops::hw>
 {
     using op_trait_t = ops::pool_trait<ops::hw>;
 
@@ -18,7 +20,8 @@ template <> class pool_trait<ops::hw>
     using ksize_t = std::experimental::new_type<shape<2>, ksize_trait>;
     using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
 
-    using padding_policy = traits::linear_sample_trait<size_t>::padding_policy;
+    using padding_policy =
+        traits::linear_sample_trait<uint32_t>::padding_policy;
 
     const ksize_t ksize_;
     const padding_policy padding_;
@@ -30,12 +33,12 @@ template <> class pool_trait<ops::hw>
 
     static padding_policy padding_same()
     {
-        return traits::linear_sample_trait<size_t>::padding_same();
+        return traits::linear_sample_trait<uint32_t>::padding_same();
     }
 
     static padding_policy padding_valid()
     {
-        return traits::linear_sample_trait<size_t>::padding_valid();
+        return traits::linear_sample_trait<uint32_t>::padding_valid();
     }
 
     pool_trait() : pool_trait(ksize(2, 2)) {}
@@ -71,7 +74,8 @@ class pool : public pool_trait<ops::hw>
     using pool_op = ops::pool<pool_algo, image_order>;
 
   public:
-    template <typename R> auto operator()(const ttl::tensor_ref<R, 4> &x) const
+    template <typename R>
+    auto operator()(const ttl::tensor_ref<R, 4> &x) const
     {
         auto y = ops::new_result<ttl::tensor<R, 4>>(
             pool_op(op_trait(ops::image_shape<image_order>(x.shape()))), x);

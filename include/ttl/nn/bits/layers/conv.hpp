@@ -21,9 +21,10 @@ class conv_trait
     using stride_t = std::experimental::new_type<shape<2>, stride_trait>;
     using rate_t = std::experimental::new_type<shape<2>, rate_trait>;
 
-    using padding_policy = traits::linear_sample_trait<size_t>::padding_policy;
+    using padding_policy =
+        traits::linear_sample_trait<uint32_t>::padding_policy;
 
-    const size_t n_filters_;
+    const uint32_t n_filters_;
     const ksize_t ksize_;
     const padding_policy padding_;
     const stride_t stride_;
@@ -36,12 +37,12 @@ class conv_trait
 
     static padding_policy padding_same()
     {
-        return traits::linear_sample_trait<size_t>::padding_same();
+        return traits::linear_sample_trait<uint32_t>::padding_same();
     }
 
     static padding_policy padding_valid()
     {
-        return traits::linear_sample_trait<size_t>::padding_valid();
+        return traits::linear_sample_trait<uint32_t>::padding_valid();
     }
 
     conv_trait(size_t n_filters, const ksize_t &ksize)
@@ -146,5 +147,4 @@ class conv<image_order, filter_order, true, Act> : public conv_trait
         return make_layer(y, w, b);
     }
 };
-
 }  // namespace ttl::nn::layers

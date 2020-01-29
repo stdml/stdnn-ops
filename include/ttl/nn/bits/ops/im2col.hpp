@@ -6,16 +6,20 @@
 
 namespace ttl::nn::ops
 {
-template <typename image_order> class im2col_trait;
+template <typename image_order>
+class im2col_trait;
 
-template <> class im2col_trait<hw> : public multi_linear_sample_trait<2, size_t>
+template <>
+class im2col_trait<hw> : public multi_linear_sample_trait<2, uint32_t>
 {
     using multi_linear_sample_trait::multi_linear_sample_trait;
 };
 
-template <typename image_order, typename col_order> class im2col;
+template <typename image_order, typename col_order>
+class im2col;
 
-template <> class im2col<hw, hwrs> : public im2col_trait<hw>
+template <>
+class im2col<hw, hwrs> : public im2col_trait<hw>
 {
     using im2col_trait::im2col_trait;
 
@@ -55,7 +59,8 @@ template <> class im2col<hw, hwrs> : public im2col_trait<hw>
     }
 };
 
-template <> class im2col<hw, rshw> : public im2col_trait<hw>
+template <>
+class im2col<hw, rshw> : public im2col_trait<hw>
 {
     using im2col_trait::im2col_trait;
 
@@ -96,7 +101,8 @@ template <> class im2col<hw, rshw> : public im2col_trait<hw>
 };
 
 // TODO: use vectorize
-template <> class im2col<hwc, hwrsc> : public im2col_trait<hw>
+template <>
+class im2col<hwc, hwrsc> : public im2col_trait<hw>
 {
     using im2col_trait::im2col_trait;
 
