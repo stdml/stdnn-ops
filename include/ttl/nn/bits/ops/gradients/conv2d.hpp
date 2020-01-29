@@ -29,15 +29,16 @@ class conv<traits::nhwc, traits::rscd, 0>
         // check_shape(*this, gx, gz, z, x, y);
         const auto [r, s] = ops::filter_shape<traits::rscd>(y.shape()).dims();
         using upper_op = ops::im2col<traits::hwc, traits::hwrsc>;
-        const auto upper = ops::internal::make_batched(
-            upper_op(f_.h_trait().get_sample(r), f_.w_trait().get_sample(s)));
+        using internal::make_batched;
+        const auto upper = make_batched(upper_op(f_.h_trait().get_sample(r),  //
+                                                 f_.w_trait().get_sample(s)));
         tensor<R, 6, D> gx_upper(upper(gx.shape()));  // FIXME: get from pool
         kernels::mmt<D, engines::default_engine, R>()(
             ops::as_matrix<3, 3>(ref(gx_upper)), ops::as_matrix<3, 1>(gz),
             ops::as_matrix<3, 1>(y));
         using lower_op = ops::col2im<traits::hwc, traits::hwrsc>;
-        const auto lower = ops::internal::make_batched(
-            lower_op(f_.h_trait().get_sample(r), f_.w_trait().get_sample(s)));
+        const auto lower = make_batched(lower_op(f_.h_trait().get_sample(r),  //
+                                                 f_.w_trait().get_sample(s)));
         lower(gx, view(gx_upper));
     }
 };
@@ -61,8 +62,9 @@ class conv<traits::nhwc, traits::rscd, 1>
         // check_shape(*this, gy, gz, z, x, y);
         const auto [r, s] = ops::filter_shape<traits::rscd>(gy.shape()).dims();
         using upper_op = ops::im2col<traits::hwc, traits::hwrsc>;
-        const auto upper = ops::internal::make_batched(
-            upper_op(f_.h_trait().get_sample(r), f_.w_trait().get_sample(s)));
+        using internal::make_batched;
+        const auto upper = make_batched(upper_op(f_.h_trait().get_sample(r),  //
+                                                 f_.w_trait().get_sample(s)));
         tensor<R, 6, D> x_upper(upper(x.shape()));  // FIXME: get from pool
         upper(ref(x_upper), x);  // FIXME: x_upper may be cached
         kernels::mtm<D, engines::default_engine, R>()(
