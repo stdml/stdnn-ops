@@ -165,7 +165,7 @@ class multi_linear_sample_trait
         return invoke(x, std::make_index_sequence<r>());
     }
 
-    const auto &samples() const { return samples_; }
+    // const auto &samples() const { return samples_; }
 
   private:
     template <std::size_t... I>
