@@ -33,14 +33,12 @@ class conv2d<host_memory, traits::nhwc, traits::rscd, R>
         // [n, h, w, c] -> [n, h', w', r, s, c]
         const auto [r, s] =
             traits::filter_shape<traits::rscd>(y.shape()).dims();
-
         using upper_op = ops::im2col<traits::hwc, traits::hwrsc>;
-        const auto upper = ops::internal::make_batched(
-            upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
-
+        using ops::internal::make_batched;
+        const auto upper = make_batched(upper_op(h_trait_.get_sample(r),  //
+                                                 w_trait_.get_sample(s)));
         tensor<R, 6, D> x_upper(upper(x.shape()));
         upper(ref(x_upper), x);
-
         mm<D, engines::default_engine, R>()(ops::as_matrix<3, 1>(z),
                                             ops::as_matrix<3, 3>(view(x_upper)),
                                             ops::as_matrix<3, 1>(y));
@@ -61,10 +59,11 @@ class conv2d<host_memory, traits::nchw, traits::dcrs, R>
                     const tensor_view<R, 4, D> &y) const
     {
         using upper_op = ops::im2col<traits::hw, traits::rshw>;
-        const auto [r, s] = traits::filter_shape<ops::dcrs>(y.shape()).dims();
-        const auto upper = ops::internal::make_batched(
-            upper_op(h_trait_.get_sample(r), w_trait_.get_sample(s)));
-
+        using ops::internal::make_batched;
+        const auto [r, s] =
+            traits::filter_shape<traits::dcrs>(y.shape()).dims();
+        const auto upper = make_batched(upper_op(h_trait_.get_sample(r),  //
+                                                 w_trait_.get_sample(s)));
         tensor<R, 5, D> x_upper(upper(x.shape().template subshape<1>()));
         const auto n = traits::batch_size<traits::nchw>(z.shape());
         for (auto l : range(n)) {

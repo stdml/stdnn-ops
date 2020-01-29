@@ -11,7 +11,11 @@ namespace traits
 {
 namespace internal
 {
-template <size_t idx, typename T> static T constant(const T &x) { return x; }
+template <size_t idx, typename T>
+static T constant(const T &x)
+{
+    return x;
+}
 
 template <typename C, typename T, std::size_t... I>
 static auto replicate_construct(const T &x, std::index_sequence<I...>)
@@ -27,7 +31,8 @@ static std::array<T, sizeof...(I)> replicate(const T &x,
 }
 }  // namespace internal
 
-template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
+template <rank_t r, typename dim_t>
+class multi_linear_sample_trait
 {
   protected:
     using sample_t = linear_sample_trait<dim_t>;
@@ -70,13 +75,15 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
         return padding_1d_t(left, right);
     }
 
-    template <typename... D> static padding_t padding_simple(D... d)
+    template <typename... D>
+    static padding_t padding_simple(D... d)
     {
         static_assert(sizeof...(D) == r, "invalid number of arguments");
         return padding(padding_1d(static_cast<dim_t>(d))...);
     };
 
-    template <typename... D> static padding_t padding(D... d)
+    template <typename... D>
+    static padding_t padding(D... d)
     {
         static_assert(sizeof...(D) == r, "invalid number of arguments");
         return padding(padding_1d(static_cast<dim_t>(d))...);
@@ -91,19 +98,22 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
         return {p1, static_cast<padding_1d_t>(p)...};
     };
 
-    template <typename... D> static ksize_t ksize(D... d)
+    template <typename... D>
+    static ksize_t ksize(D... d)
     {
         static_assert(sizeof...(D) == r, "invalid number of arguments");
         return ksize_t(d...);
     };
 
-    template <typename... D> static stride_t stride(D... d)
+    template <typename... D>
+    static stride_t stride(D... d)
     {
         static_assert(sizeof...(D) == r, "invalid number of arguments");
         return stride_t(d...);
     };
 
-    template <typename... D> static rate_t rate(D... d)
+    template <typename... D>
+    static rate_t rate(D... d)
     {
         static_assert(sizeof...(D) == r, "invalid number of arguments");
         return rate_t(d...);
@@ -141,6 +151,7 @@ template <ttl::rank_t r, typename dim_t> class multi_linear_sample_trait
     template <typename... Sample>
     multi_linear_sample_trait(const Sample &... sample) : samples_({sample...})
     {
+        static_assert(sizeof...(Sample) == r);
     }
 
   public:
