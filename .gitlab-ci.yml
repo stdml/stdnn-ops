@@ -16,7 +16,8 @@ ubuntu:bionic:
   - ./configure --lib --examples --tests --benchmarks --build-gtest --build-gbench
   - make
   - make test
-  - ./bin/bench-1
+  - ./bin/bench-pool
+  - ./bin/bench-im2col
 
 alpine:3.9:
   stage: build
@@ -28,4 +29,5 @@ alpine:3.9:
   - ./configure --lib --examples --tests --benchmarks --build-gtest --build-gbench
   - make
   - make test
-  - ./bin/bench-1
+  - ./bin/bench-pool
+  - ./bin/bench-im2col
