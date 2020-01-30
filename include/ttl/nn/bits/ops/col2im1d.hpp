@@ -1,5 +1,6 @@
 #pragma once
 #include <ttl/nn/bits/traits/linear_sample.hpp>
+#include <ttl/nn/common.hpp>
 
 namespace ttl
 {
@@ -24,6 +25,8 @@ class col2im1d : public traits::col2im_trait
     ttl::shape<1> operator()(const ttl::shape<2> &x) const
     {
         const auto m = std::get<0>(x.dims());
+        contract_assert_eq(static_cast<uint32_t>(filter_.ksize()),
+                           std::get<1>(x.dims()));
         int n = (m - 1) * filter_.stride() + filter_.patch_size();
         return ttl::shape<1>(n - padding_(0));
     }

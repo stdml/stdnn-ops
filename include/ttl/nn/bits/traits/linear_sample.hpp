@@ -103,6 +103,8 @@ class linear_sample_trait
 
     dim_t get_rate() const { return filter_.rate(); }  // FIXME: deprecate?
 
+    filter_t get_filter() const { return filter_; }
+
     padding_t get_padding() const { return padding_; }
 
   public:
