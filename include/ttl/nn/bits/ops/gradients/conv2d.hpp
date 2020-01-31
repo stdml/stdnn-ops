@@ -26,6 +26,7 @@ class conv<traits::nhwc, traits::rscd, 0>
                     const tensor_view<R, 4, D> & /* x */,
                     const tensor_view<R, 4, D> &y) const
     {
+        using E = typename engines::default_blas<D>::type;
         // check_shape(*this, gx, gz, z, x, y);
         const auto [r, s] = ops::filter_shape<traits::rscd>(y.shape()).dims();
         using upper_op = ops::im2col<traits::hwc, traits::hwrsc>;
@@ -33,9 +34,9 @@ class conv<traits::nhwc, traits::rscd, 0>
         const auto upper = make_batched(upper_op(f_.h_trait().get_sample(r),  //
                                                  f_.w_trait().get_sample(s)));
         tensor<R, 6, D> gx_upper(upper(gx.shape()));  // FIXME: get from pool
-        kernels::mmt<D, engines::default_engine, R>()(
-            ops::as_matrix<3, 3>(ref(gx_upper)), ops::as_matrix<3, 1>(gz),
-            ops::as_matrix<3, 1>(y));
+        kernels::mmt<D, E, R>()(ops::as_matrix<3, 3>(ref(gx_upper)),
+                                ops::as_matrix<3, 1>(gz),
+                                ops::as_matrix<3, 1>(y));
         using lower_op = ops::col2im<traits::hwc, traits::hwrsc>;
         const auto lower = make_batched(lower_op(f_.h_trait().get_sample(r),  //
                                                  f_.w_trait().get_sample(s)));
@@ -59,6 +60,7 @@ class conv<traits::nhwc, traits::rscd, 1>
                     const tensor_view<R, 4, D> &x,
                     const tensor_view<R, 4, D> & /* y */) const
     {
+        using E = typename engines::default_blas<D>::type;
         // check_shape(*this, gy, gz, z, x, y);
         const auto [r, s] = ops::filter_shape<traits::rscd>(gy.shape()).dims();
         using upper_op = ops::im2col<traits::hwc, traits::hwrsc>;
@@ -67,9 +69,9 @@ class conv<traits::nhwc, traits::rscd, 1>
                                                  f_.w_trait().get_sample(s)));
         tensor<R, 6, D> x_upper(upper(x.shape()));  // FIXME: get from pool
         upper(ref(x_upper), x);  // FIXME: x_upper may be cached
-        kernels::mtm<D, engines::default_engine, R>()(
-            ops::as_matrix<3, 1>(gy), ops::as_matrix<3, 3>(view(x_upper)),
-            ops::as_matrix<3, 1>(gz));
+        kernels::mtm<D, E, R>()(ops::as_matrix<3, 1>(gy),
+                                ops::as_matrix<3, 3>(view(x_upper)),
+                                ops::as_matrix<3, 1>(gz));
     }
 };
 }  // namespace ttl::nn::ops::grad
