@@ -1,6 +1,7 @@
 #pragma once
 #include <ttl/algorithm>
 #include <ttl/nn/bits/kernels/cpu/elementary.hpp>
+#include <ttl/nn/bits/kernels/cpu/reduce.hpp>
 #include <ttl/nn/bits/ops/bias.hpp>
 #include <ttl/nn/bits/ops/reduce.hpp>
 #include <ttl/nn/bits/ops/std_function.hpp>
@@ -51,7 +52,7 @@ class add_bias<traits::hw, 1>
                const tensor_view<R, 2, D> &z, const tensor_view<R, 2, D> &x,
                const tensor_view<R, 1, D> &y) const
     {
-        ttl::nn::ops::internal::outter_contraction(gy, gz);
+        kernels::outter_contraction<D, R>()(gy, gz);
     }
 };
 
@@ -71,8 +72,7 @@ class add_bias<traits::nhwc, 1>
                const tensor_view<R, 4, D> &z, const tensor_view<R, 4, D> &x,
                const tensor_view<R, 1, D> &y) const
     {
-        ttl::nn::ops::internal::outter_contraction(
-            gy, ttl::nn::ops::as_matrix<3, 1>(gz));
+        kernels::outter_contraction<D, R>()(gy, ops::as_matrix<3, 1>(gz));
     }
 };
 
