@@ -39,7 +39,8 @@ class softmax<0>
                 }
             }
         }
-        using E = typename engines::default_blas<D>::type;
+        // using E = typename engines::default_blas<D>::type;
+        using E = engines::builtin;
         nn::engines::linag<E>::vm(gy, view(g), gx);
     }
 
