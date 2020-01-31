@@ -19,6 +19,7 @@ class conv2d<host_memory, traits::nhwc, traits::rscd, R>
     : public ops::conv_trait<traits::hw>
 {
     using D = host_memory;
+    using E = typename engines::default_blas<D>::type;
     using conv_trait::conv_trait;
 
   public:
@@ -39,9 +40,9 @@ class conv2d<host_memory, traits::nhwc, traits::rscd, R>
                                                  w_trait_.get_sample(s)));
         tensor<R, 6, D> x_upper(upper(x.shape()));
         upper(ref(x_upper), x);
-        mm<D, engines::default_engine, R>()(ops::as_matrix<3, 1>(z),
-                                            ops::as_matrix<3, 3>(view(x_upper)),
-                                            ops::as_matrix<3, 1>(y));
+        mm<D, E, R>()(ops::as_matrix<3, 1>(z),
+                      ops::as_matrix<3, 3>(view(x_upper)),
+                      ops::as_matrix<3, 1>(y));
     }
 };
 
@@ -50,6 +51,7 @@ class conv2d<host_memory, traits::nchw, traits::dcrs, R>
     : public ops::conv_trait<traits::hw>
 {
     using D = host_memory;
+    using E = typename engines::default_blas<D>::type;
     using conv_trait::conv_trait;
 
   public:
@@ -68,9 +70,8 @@ class conv2d<host_memory, traits::nchw, traits::dcrs, R>
         const auto n = traits::batch_size<traits::nchw>(z.shape());
         for (auto l : range(n)) {
             upper(ref(x_upper), x[l]);
-            mm<D, engines::default_engine, R>()(
-                ops::as_matrix<1, 2>(z[l]), ops::as_matrix<1, 3>(y),
-                ops::as_matrix<3, 2>(view(x_upper)));
+            mm<D, E, R>()(ops::as_matrix<1, 2>(z[l]), ops::as_matrix<1, 3>(y),
+                          ops::as_matrix<3, 2>(view(x_upper)));
         }
     }
 };

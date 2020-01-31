@@ -6,13 +6,13 @@
 
 namespace ttl::nn::ops::grad
 {
-template <arity_t, typename E = engines::default_engine>
+template <arity_t>
 class matmul;
 
-template <typename E>
-class matmul<0, E> : public basic_gradient_function<ops::matmul_<E>, 0>
+template <>
+class matmul<0> : public basic_gradient_function<ops::matmul, 0>
 {
-    using P = basic_gradient_function<ops::matmul_<E>, 0>;
+    using P = basic_gradient_function<ops::matmul, 0>;
     using P::P;
 
   public:
@@ -24,14 +24,15 @@ class matmul<0, E> : public basic_gradient_function<ops::matmul_<E>, 0>
                const tensor_view<R, 2, D> &z, const tensor_view<R, 2, D> &x,
                const tensor_view<R, 2, D> &y) const
     {
+        using E = typename engines::default_blas<D>::type;
         kernels::mmt<D, E, R>()(gx, gz, y);
     }
 };
 
-template <typename E>
-class matmul<1, E> : public basic_gradient_function<ops::matmul_<E>, 1>
+template <>
+class matmul<1> : public basic_gradient_function<ops::matmul, 1>
 {
-    using P = basic_gradient_function<ops::matmul_<E>, 1>;
+    using P = basic_gradient_function<ops::matmul, 1>;
     using P::P;
 
   public:
@@ -43,6 +44,7 @@ class matmul<1, E> : public basic_gradient_function<ops::matmul_<E>, 1>
                const tensor_view<R, 2, D> &z, const tensor_view<R, 2, D> &x,
                const tensor_view<R, 2, D> &y) const
     {
+        using E = typename engines::default_blas<D>::type;
         kernels::mtm<D, E, R>()(gy, x, gz);
     }
 };

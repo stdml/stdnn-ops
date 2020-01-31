@@ -26,8 +26,7 @@ class axpy
     }
 };
 
-template <typename E = engines::default_engine>
-class matmul_
+class matmul
 {
   public:
     shape<2> operator()(const shape<2> &x, const shape<2> &y) const
@@ -42,9 +41,8 @@ class matmul_
     void operator()(const tensor_ref<R, 2, D> &z, const tensor_view<R, 2, D> &x,
                     const tensor_view<R, 2, D> &y) const
     {
+        using E = typename engines::default_blas<D>::type;
         kernels::mm<D, E, R>()(z, x, y);
     }
 };
-
-using matmul = matmul_<>;
 }  // namespace ttl::nn::ops
