@@ -12,4 +12,4 @@ latest() {
     echo "$commit $tag" | tee $name
 }
 
-latest stdtensor dev-0.6.0 lgarithm/stdtensor
+latest stdtensor v0.6.0 lgarithm/stdtensor
