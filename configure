@@ -71,31 +71,7 @@ parse_args() {
     done
 }
 
-CMAKE_FLAGS=
-
-add_cmake_flag() {
-    echo "Using $1=$2"
-    CMAKE_FLAGS="$CMAKE_FLAGS -D$1=$2"
-}
-
-pass_cmake_flag_from_env() {
-    local name=$1
-    local env_key=$2
-    if [ -z ${env_key} ]; then
-        env_key=$name
-    fi
-    local val=$(eval echo \$$env_key)
-    if [ ! -z "$val" ]; then
-        add_cmake_flag $name $val
-    fi
-}
-
-CMAKE_PREFIX_PATH=
-
-add_cmake_prefix() {
-    echo "adding to CMAKE_PREFIX_PATH with $1"
-    CMAKE_PREFIX_PATH="$CMAKE_PREFIX_PATH;$1"
-}
+. ./auto/cmake
 
 add_cmake_prefixes() {
     add_cmake_prefix $HOME/local
@@ -140,28 +116,14 @@ add_cmake_flags() {
     fi
 
     # FIXME: depend on a tag for release version
-    add_cmake_flag STDTENSOR_GIT_TAG $(head -n 1 ./deps/stdtensor)
+    add_cmake_flag STDTENSOR_GIT_TAG $(get_dep stdtensor)
 
     add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS ${VERBOSE}
 }
 
-cleanup_cmake_cache() {
-    if [ -f CMakeCache.txt ]; then
-        rm CMakeCache.txt
-    fi
-    if [ -d 3rdparty ]; then
-        for cmake_cache in $(find 3rdparty/ | grep CMakeCache.txt); do
-            rm $cmake_cache
-        done
-    fi
-}
-
 main() {
     parse_args $@
-    add_cmake_prefixes
-    add_cmake_flags
-    cleanup_cmake_cache
-    cmake . $CMAKE_FLAGS
+    config_cmake
 }
 
 main $@

@@ -6,14 +6,14 @@
 
 namespace ttl::nn::ops::grad
 {
-template <int>
+template <arity_t>
 class softmax;
 
 template <>
 class softmax<0>
 {
   public:
-    template <ttl::rank_t r>
+    template <rank_t r>
     shape<r> operator()(const shape<r> &gy, const shape<r> &y,
                         const shape<r> &x) const
     {
@@ -21,14 +21,14 @@ class softmax<0>
                                                x);
     }
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 1> &gx,
-                    const ttl::tensor_view<R, 1> &gy,
-                    const ttl::tensor_view<R, 1> &y,
-                    const ttl::tensor_view<R, 1> &x) const
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 1, D> &gx,
+                    const tensor_view<R, 1, D> &gy,
+                    const tensor_view<R, 1, D> &y,
+                    const tensor_view<R, 1, D> &x) const
     {
-        const auto n = x.shape().size();
-        const ttl::tensor<R, 2> g(n, n);
+        const auto n = x.size();
+        const tensor<R, 2, D> g(n, n);
         for (auto i : range(n)) {
             for (auto j : range(n)) {
                 if (i == j) {
@@ -39,18 +39,18 @@ class softmax<0>
                 }
             }
         }
-        nn::engines::linag<nn::engines::default_engine>::vm(gy, view(g), gx);
+        // using E = typename engines::default_blas<D>::type;
+        using E = engines::builtin;
+        nn::engines::linag<E>::vm(gy, view(g), gx);
     }
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 2> &gx,
-                    const ttl::tensor_view<R, 2> &gy,
-                    const ttl::tensor_view<R, 2> &y,
-                    const ttl::tensor_view<R, 2> &x) const
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 2, D> &gx,
+                    const tensor_view<R, 2, D> &gy,
+                    const tensor_view<R, 2, D> &y,
+                    const tensor_view<R, 2, D> &x) const
     {
-        for (auto i : range(x.shape().dims()[0])) {
-            operator()(gx[i], gy[i], y[i], x[i]);
-        }
+        for (auto i : range<0>(x)) { operator()(gx[i], gy[i], y[i], x[i]); }
     }
 };
 }  // namespace ttl::nn::ops::grad

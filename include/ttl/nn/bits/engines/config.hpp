@@ -1,4 +1,5 @@
 #pragma once
+#include <ttl/device>
 #include <ttl/nn/bits/engines/builtin.hpp>
 #include <ttl/nn/bits/engines/plain_impl.hpp>
 #ifdef STDNN_OPS_HAVE_CBLAS
@@ -7,6 +8,9 @@
 
 namespace ttl::nn::engines
 {
+template <typename D>
+struct default_blas;
+
 struct cblas;
 
 template <typename engine>
@@ -32,4 +36,9 @@ struct backend<cblas> {
 using default_engine = builtin;
 
 #endif
+
+template <>
+struct default_blas<host_memory> {
+    using type = default_engine;
+};
 }  // namespace ttl::nn::engines

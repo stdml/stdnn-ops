@@ -31,9 +31,9 @@ TEST(linear_bias_test, test_1)
     using F = ttl::nn::ops::add_bias<ttl::nn::ops::hw>;
     using G0 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::hw, 0>;
     using G1 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::hw, 1>;
-    G0 g0;
-    G1 g1;
     F f;
+    G0 g0(f);
+    G1 g1(f);
 
     const int n = 10;
     const int l = 32;
@@ -48,9 +48,9 @@ TEST(linear_bias_test, test_2)
     using G0 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::nhwc, 0>;
     using G1 = ttl::nn::ops::grad::add_bias<ttl::nn::ops::nhwc, 1>;
 
-    G0 g0;
-    G1 g1;
     F f;
+    G0 g0(f);
+    G1 g1(f);
 
     const int n = 10;
     const int h = 28;

@@ -9,9 +9,9 @@ TEST(affine_grad_test, test_1)
     using F = ttl::nn::ops::add;
     using G0 = ttl::nn::ops::grad::add<0>;
     using G1 = ttl::nn::ops::grad::add<1>;
-    G0 g0;
-    G1 g1;
     F f;
+    G0 g0(f);
+    G1 g1(f);
 
     int n = 10;
 

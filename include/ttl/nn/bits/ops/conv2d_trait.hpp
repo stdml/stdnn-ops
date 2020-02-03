@@ -67,7 +67,7 @@ class conv_trait;
 template <>
 class conv_trait<hw>
 {
-    using dim_t = size_t;
+    using dim_t = uint32_t;
     using conv_trait_1d_t = linear_conv_trait<dim_t>;
 
   public:
@@ -161,5 +161,9 @@ class conv_trait<hw>
 
         return batched_image_shape<image_order>(n, shape<2>(h_, w_), d);
     }
+
+    const conv_trait_1d_t &h_trait() const { return h_trait_; }
+
+    const conv_trait_1d_t &w_trait() const { return w_trait_; }
 };
 }  // namespace ttl::nn::ops

@@ -1,7 +1,6 @@
 #pragma once
 #include <ttl/algorithm>
 #include <ttl/nn/bits/ops/reshape.hpp>
-#include <ttl/nn/bits/ops/shape_algo.hpp>
 #include <ttl/nn/bits/ops/summary.hpp>
 #include <ttl/nn/common.hpp>
 
@@ -23,26 +22,4 @@ class mean : public ttl::nn::ops::reduce_function
         }
     }
 };
-
-namespace internal
-{
-
-template <typename R>  // Y[i] = \sum X[i, j]
-void inner_contraction(const ttl::tensor_ref<R, 1> &y,
-                       const ttl::tensor_view<R, 2> &x)
-{
-    std::transform(x.begin(), x.end(), y.begin(),
-                   // ttl::sum // FIXME: use ttl::sum directly
-                   [](const ttl::tensor_view<R, 1> &v) { return ttl::sum(v); });
-}
-
-template <typename R>  // Y[j] = \sum X[i, j]
-void outter_contraction(const ttl::tensor_ref<R, 1> &y,
-                        const ttl::tensor_view<R, 2> &x)
-{
-    ttl::fill(y, static_cast<R>(0));
-    for (const auto xi : x) { ttl::nn::ops::add()(y, view(y), xi); }
-}
-
-}  // namespace internal
 }  // namespace ttl::nn::ops

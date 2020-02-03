@@ -37,4 +37,30 @@ class mm<host_memory, E, R>
         engines::linag<E>::mm(x, y, z);
     }
 };
+
+template <typename R, typename E>
+class mtm<host_memory, E, R>
+{
+    using D = host_memory;
+
+  public:
+    void operator()(const tensor_ref<R, 2, D> &z, const tensor_view<R, 2, D> &x,
+                    const tensor_view<R, 2, D> &y) const
+    {
+        engines::linag<E>::mtm(x, y, z);
+    }
+};
+
+template <typename R, typename E>
+class mmt<host_memory, E, R>
+{
+    using D = host_memory;
+
+  public:
+    void operator()(const tensor_ref<R, 2, D> &z, const tensor_view<R, 2, D> &x,
+                    const tensor_view<R, 2, D> &y) const
+    {
+        engines::linag<E>::mmt(x, y, z);
+    }
+};
 }  // namespace ttl::nn::kernels

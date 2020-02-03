@@ -7,13 +7,10 @@ namespace nn
 namespace kernels
 {
 template <typename D, typename R>
-class relu;
+class inner_contraction;
 
 template <typename D, typename R>
-class relu_grad;
-
-template <typename D, typename R>
-class softmax;
+class outter_contraction;
 }  // namespace kernels
 }  // namespace nn
 }  // namespace ttl
