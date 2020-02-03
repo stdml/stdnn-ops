@@ -5,16 +5,17 @@
 
 namespace ttl::nn::ops
 {
+template <typename image_order>
+class pool_trait;
 
-template <typename image_order> class pool_trait;
-
-template <> class pool_trait<hw>
+template <>
+class pool_trait<hw>
 {
   protected:
     struct ksize_trait;
     struct stride_trait;
 
-    using dim_t = size_t;
+    using dim_t = uint32_t;
     using sample1d_t_ = linear_sample_trait<dim_t>;
 
     using padding_1d_t = typename sample1d_t_::padding_t;
@@ -106,7 +107,8 @@ struct pool_mean;
 
 namespace internal
 {
-template <typename R> class max_accumulator
+template <typename R>
+class max_accumulator
 {
     R val;
 
@@ -121,7 +123,8 @@ template <typename R> class max_accumulator
     operator R() const { return val; }
 };
 
-template <typename R> class mean_accumulator
+template <typename R>
+class mean_accumulator
 {
     R sum;
     uint32_t n;
@@ -138,19 +141,24 @@ template <typename R> class mean_accumulator
     operator R() const { return sum / n; }
 };
 
-template <typename pool_algo, typename R> struct accumulator;
+template <typename pool_algo, typename R>
+struct accumulator;
 
-template <typename R> struct accumulator<pool_max, R> {
+template <typename R>
+struct accumulator<pool_max, R> {
     using type = max_accumulator<R>;
 };
-template <typename R> struct accumulator<pool_mean, R> {
+template <typename R>
+struct accumulator<pool_mean, R> {
     using type = mean_accumulator<R>;
 };
 }  // namespace internal
 
-template <typename pool_algo, typename image_order> class pool;
+template <typename pool_algo, typename image_order>
+class pool;
 
-template <typename pool_algo> class pool<pool_algo, hw> : public pool_trait<hw>
+template <typename pool_algo>
+class pool<pool_algo, hw> : public pool_trait<hw>
 {
     using pool_trait::pool_trait;
 
@@ -191,7 +199,8 @@ template <typename pool_algo> class pool<pool_algo, hw> : public pool_trait<hw>
     }
 };
 
-template <typename pool_algo> class pool<pool_algo, hwc> : public pool_trait<hw>
+template <typename pool_algo>
+class pool<pool_algo, hwc> : public pool_trait<hw>
 {
     using pool_trait::pool_trait;
 

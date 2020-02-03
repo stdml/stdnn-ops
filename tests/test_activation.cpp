@@ -4,8 +4,7 @@
 
 TEST(activation_test, test1)
 {
-    using relu_op = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
-    using relu_layer = ttl::nn::layers::activation<relu_op>;
+    using relu_layer = ttl::nn::layers::activation<ttl::nn::ops::relu>;
 
     const int k = 10;
     const auto x = ttl::tensor<float, 1>(k);

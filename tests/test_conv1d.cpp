@@ -68,7 +68,7 @@ void test_conv1d(const int n, const int ksize, const int stride = 1,
     f(ref(z), view(x), view(y));
     upper(ref(x_upper), view(x));
 
-    using la = ttl::nn::engines::linag<ttl::nn::engines::plain>;
+    using la = ttl::nn::engines::linag<ttl::nn::engines::builtin>;
     la::mv(view(x_upper), view(y), ref(z1));
 
     assert_bytes_eq(view(z), view(z1));

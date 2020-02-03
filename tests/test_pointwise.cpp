@@ -1,5 +1,5 @@
 #include <ttl/algorithm>
-#include <ttl/nn/bits/ops/pointwise.hpp>
+#include <ttl/nn/bits/ops/elementary.hpp>
 #include <ttl/nn/testing>
 #include <ttl/tensor>
 
@@ -10,10 +10,8 @@ TEST(pointwise_test, test_relu)
     const auto x = ttl::tensor<R, 1>(k);
     const auto y = ttl::tensor<R, 1>(x.shape());
 
-    using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
-
     for (int i = 0; i < k; ++i) { x.at(i) = i - 4.5; }
-    relu()(ref(y), view(x));
+    ttl::nn::ops::relu()(ref(y), view(x));
     for (int i = 0; i < k; ++i) {
         if (i < 5) {
             ASSERT_FLOAT_EQ(y.at(i), 0);

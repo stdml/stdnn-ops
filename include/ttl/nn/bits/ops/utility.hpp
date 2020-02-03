@@ -1,88 +1,89 @@
 #pragma once
-#include <cstring>
-
-#include <algorithm>
-#include <type_traits>
-
-#include <ttl/algorithm>
+#include <ttl/nn/bits/kernels/utility.hpp>
 #include <ttl/nn/bits/ops/reshape.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops
 {
-
-class cast : public ttl::nn::ops::endofunction
+class cast : public endofunction
 {
   public:
     using endofunction::operator();
 
-    template <typename R, typename S, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &y,
-                    const ttl::tensor_view<S, r> &x) const
+    template <typename R, typename S, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &y,
+                    const tensor_view<S, r, D> &x) const
     {
-        ttl::cast(x, y);
+        kernels::cast<D, R, S>()(flatten(y), flatten(x));
     }
 };
 
-class argmax : public ttl::nn::ops::reduce_function
+class argmax : public reduce_function
 {
   public:
     using reduce_function::operator();
 
-    template <typename R, typename N, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<N, r> &y,
-                    const ttl::tensor_view<R, r + 1> &x) const
+    template <typename R, typename N, rank_t r, typename D>
+    void operator()(const tensor_ref<N, r, D> &y,
+                    const tensor_view<R, r + 1, D> &x) const
     {
-        const auto x_flat = ttl::nn::ops::as_matrix<r, 1>(x);
-        for (auto i : range(y.shape().size())) {
-            y.data()[i] = ttl::argmax(x_flat[i]);
-        }
+        kernels::argmax<D, N, R>()(flatten(y), as_matrix<r, 1>(x));
     }
 };
 
-class onehot : public ttl::nn::ops::vectorize_function
+class onehot : public vectorize_function
 {
   public:
     using vectorize_function::operator();
 
     onehot(const dim_t k) : vectorize_function(k) {}
 
-    template <typename R, typename N, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r + 1> &y,
-                    const ttl::tensor_view<N, r> &x) const
+    template <typename R, typename N, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r + 1, D> &y,
+                    const tensor_view<N, r, D> &x) const
     {
-        constexpr R def = 0;
-        std::fill(y.data(), y.data_end(), def);
-        const auto y_flat = ttl::nn::ops::as_matrix<r, 1>(y);
-        for (auto i : range(x.shape().size())) {
-            const dim_t j = x.data()[i];
-            if (0 <= j && j < k_) {
-                y_flat.at(i, j) = static_cast<R>(1);
-            } else {
-                // TODO: throw?
-            }
-        }
+        kernels::onehot<D, N, R>()(as_matrix<r, 1>(y), flatten(x));
     }
 };
 
 class similarity
 {
   public:
-    template <ttl::rank_t r>
+    template <rank_t r>
     shape<0> operator()(const shape<r> &x, const shape<r> &y) const
     {
         contract_assert_eq(x, y);
         return shape<0>();
     }
 
-    template <typename R, typename R1, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, 0> &z,
-                    const ttl::tensor_view<R1, r> &x,
-                    const ttl::tensor_view<R1, r> &y) const
+    template <typename R, typename R1, rank_t r, typename D>
+    void operator()(const tensor_ref<R, 0, D> &z,
+                    const tensor_view<R1, r, D> &x,
+                    const tensor_view<R1, r, D> &y) const
     {
-        static_assert(std::is_floating_point<R>::value);
-        z.data()[0] = 1 - static_cast<R>(ttl::hamming_distance(x, y)) /
-                              static_cast<R>(x.shape().size());
+        kernels::similarity<D, R, R1>()(z, flatten(x), flatten(y));
+    }
+};
+
+class top
+{
+    using dim_t = shape<1>::dimension_type;
+
+    const dim_t k_;
+
+  public:
+    top(int k) : k_(k) {}
+
+    std::pair<shape<1>, shape<1>> operator()(const shape<1> &x) const
+    {
+        return std::make_pair(shape<1>(k_), shape<1>(k_));
+    }
+
+    template <typename R, typename N, typename D>
+    void operator()(const tensor_ref<R, 1, D> &y, const tensor_ref<N, 1, D> &z,
+                    const tensor_view<R, 1, D> &x) const
+    {
+        kernels::top<D, N, R>()(y, z, x);
     }
 };
 }  // namespace ttl::nn::ops

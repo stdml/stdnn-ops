@@ -3,13 +3,15 @@
 #include <experimental/new_type>
 
 #include <ttl/debug>
+#include <ttl/device>
 #include <ttl/range>
 #include <ttl/shape>
 #include <ttl/tensor>
 
 namespace std
 {
-template <ttl::rank_t r> string to_string(const ttl::shape<r> &s)
+template <ttl::rank_t r>
+string to_string(const ttl::shape<r> &s)
 {
     return ttl::to_string(s);
 }

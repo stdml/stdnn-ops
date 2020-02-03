@@ -3,25 +3,26 @@
 
 namespace ttl::nn::ops
 {
-template <ttl::rank_t p, ttl::rank_t q, typename R>
-ttl::tensor_ref<R, 2> as_matrix(const ttl::tensor_ref<R, p + q> &t)
+template <ttl::rank_t p, rank_t q, typename R, typename D>
+tensor_ref<R, 2, D> as_matrix(const tensor_ref<R, p + q, D> &t)
 {
-    return ttl::tensor_ref<R, 2>(
+    return tensor_ref<R, 2, D>(t.data(),
+                               ttl::internal::flatten_shape<p, q>()(t.shape()));
+}
+
+template <rank_t p, rank_t q, typename R, typename D>
+tensor_view<R, 2, D> as_matrix(const tensor_view<R, p + q, D> &t)
+{
+    return tensor_view<R, 2, D>(
         t.data(), ttl::internal::flatten_shape<p, q>()(t.shape()));
 }
 
-template <ttl::rank_t p, ttl::rank_t q, typename R>
-ttl::tensor_view<R, 2> as_matrix(const ttl::tensor_view<R, p + q> &t)
+template <rank_t... rs>
+class copy_flatten
 {
-    return ttl::tensor_view<R, 2>(
-        t.data(), ttl::internal::flatten_shape<p, q>()(t.shape()));
-}
-
-template <ttl::rank_t... rs> class copy_flatten
-{
-    static constexpr ttl::rank_t in_rank =
-        ttl::internal::int_seq_sum<ttl::rank_t, rs...>::value;
-    static constexpr ttl::rank_t out_rank = sizeof...(rs);
+    static constexpr rank_t in_rank =
+        ttl::internal::int_seq_sum<rank_t, rs...>::value;
+    static constexpr rank_t out_rank = sizeof...(rs);
 
   public:
     ttl::shape<out_rank> operator()(const ttl::shape<in_rank> &x) const
@@ -30,8 +31,8 @@ template <ttl::rank_t... rs> class copy_flatten
     }
 
     template <typename R>
-    void operator()(const ttl::tensor_ref<R, out_rank> &y,
-                    const ttl::tensor_view<R, in_rank> &x) const
+    void operator()(const tensor_ref<R, out_rank> &y,
+                    const tensor_view<R, in_rank> &x) const
     {
         std::copy(x.data(), x.data_end(), y.data());
     }

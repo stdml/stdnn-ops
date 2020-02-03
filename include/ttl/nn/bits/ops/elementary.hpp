@@ -1,69 +1,131 @@
 #pragma once
-#include <algorithm>
-
+#include <ttl/nn/bits/kernels/elementary.hpp>
+#include <ttl/nn/bits/ops/std_function.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops
 {
-class identity
+class identity : public endofunction
 {
   public:
-    template <ttl::rank_t r> shape<r> operator()(const shape<r> &x) const
+    using endofunction::operator();
+
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &y,
+                    const tensor_view<R, r, D> &x) const
     {
-        return x;
+        kernels::identity<D, R>()(flatten(y), flatten(x));
+    }
+};
+
+class noop
+{
+  public:
+    template <typename T>
+    void operator()(const T &y) const
+    {
+        // noop
     }
 
-    template <typename R, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &y,
-                    const ttl::tensor_view<R, r> &x) const
+    template <typename S, typename T>
+    void operator()(const T &y, const S &x) const
     {
-        std::copy(x.data(), x.data() + x.shape().size(), y.data());
+        // noop
     }
 };
 
 struct scalar_add {
-    template <typename R> R operator()(const R &x, const R &y) const
+    template <typename R>
+    R operator()(const R &x, const R &y) const
     {
         return x + y;
     }
 };
 
 struct scalar_sub {
-    template <typename R> R operator()(const R &x, const R &y) const
+    template <typename R>
+    R operator()(const R &x, const R &y) const
     {
         return x - y;
     }
 };
 
 struct scalar_mul {
-    template <typename R> R operator()(const R &x, const R &y) const
+    template <typename R>
+    R operator()(const R &x, const R &y) const
     {
         return x * y;
     }
 };
 
-template <typename F> class _binary_pointwise
+template <typename F>
+class pointwise : public endofunction
 {
-  public:
-    template <ttl::rank_t r>
-    shape<r> operator()(const shape<r> &x, const shape<r> &y) const
-    {
-        contract_assert_eq(x, y);
-        return x;
-    }
+    const F f_;
 
-    template <typename R, ttl::rank_t r>
-    void operator()(const ttl::tensor_ref<R, r> &z,
-                    const ttl::tensor_view<R, r> &x,
-                    const ttl::tensor_view<R, r> &y) const
+  public:
+    using endofunction::operator();
+
+    pointwise(const F &f = F()) : f_(f) {}
+
+    template <typename R, typename R1, rank_t r>
+    void operator()(const tensor_ref<R, r> &y,
+                    const tensor_view<R1, r> &x) const
     {
-        std::transform(x.data(), x.data() + x.shape().size(), y.data(),
-                       z.data(), F());
+        std::transform(x.data(), x.data_end(), y.data(), f_);
     }
 };
 
-using add = _binary_pointwise<scalar_add>;
-using sub = _binary_pointwise<scalar_sub>;
-using mul = _binary_pointwise<scalar_mul>;
+template <typename F>
+class _binary_pointwise : public binary_endofunction
+{
+  public:
+    using binary_endofunction::operator();
 
+    template <typename R, rank_t r>
+    void operator()(const tensor_ref<R, r> &z, const tensor_view<R, r> &x,
+                    const tensor_view<R, r> &y) const
+    {
+        std::transform(x.data(), x.data_end(), y.data(), z.data(), F());
+    }
+};
+
+class add : public binary_endofunction
+{
+  public:
+    using binary_endofunction::operator();
+
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &z, const tensor_view<R, r, D> &x,
+                    const tensor_view<R, r, D> &y) const
+    {
+        kernels::add<D, R>()(flatten(z), flatten(x), flatten(y));
+    }
+};
+
+class sub : public binary_endofunction
+{
+  public:
+    using binary_endofunction::operator();
+
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &z, const tensor_view<R, r, D> &x,
+                    const tensor_view<R, r, D> &y) const
+    {
+        kernels::sub<D, R>()(flatten(z), flatten(x), flatten(y));
+    }
+};
+
+class mul : public binary_endofunction
+{
+  public:
+    using binary_endofunction::operator();
+
+    template <typename R, rank_t r, typename D>
+    void operator()(const tensor_ref<R, r, D> &z, const tensor_view<R, r, D> &x,
+                    const tensor_view<R, r, D> &y) const
+    {
+        kernels::mul<D, R>()(flatten(z), flatten(x), flatten(y));
+    }
+};
 }  // namespace ttl::nn::ops

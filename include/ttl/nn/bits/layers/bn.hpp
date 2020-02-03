@@ -3,11 +3,10 @@
 #include <ttl/nn/bits/layers/layer.hpp>
 #include <ttl/nn/bits/ops/bias.hpp>
 #include <ttl/nn/bits/ops/bn.hpp>
-#include <ttl/nn/bits/ops/noop.hpp>
+#include <ttl/nn/bits/ops/elementary.hpp>
 
 namespace ttl::nn::layers
 {
-
 template <typename image_order, typename Act = ops::noop, bool with_bias = true>
 class batch_norm;
 
@@ -70,5 +69,4 @@ class batch_norm<image_order, Act, true>
         return make_layer(y, rolling_mean, rolling_var, beta, gamma);
     }
 };
-
 }  // namespace ttl::nn::layers

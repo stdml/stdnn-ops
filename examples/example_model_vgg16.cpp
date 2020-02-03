@@ -20,7 +20,7 @@ class vgg16_model
     using image_order = ttl::nn::ops::nhwc;
     using filter_order = ttl::nn::ops::rscd;
 
-    using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
+    using relu = ttl::nn::ops::relu;
     using pool = ttl::nn::layers::pool<ttl::nn::ops::pool_max, image_order>;
     using dense_relu = ttl::nn::layers::dense<relu>;
     using dense = ttl::nn::layers::dense<>;

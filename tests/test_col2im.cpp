@@ -25,10 +25,7 @@ TEST(col2im_test, test1)
 
     ttl::shape<3> x_shape(h, w, c);
     ttl::shape<5> y_shape(f(x_shape));
-
-    // TODO: support reverse shape infer
-    // ttl::shape<3> x_shape_(g(y_shape));
-    // ASSERT_EQ(x_shape_, x_shape);
+    ASSERT_EQ(g(y_shape), x_shape);
 
     ttl::tensor<R, 3> x(x_shape);  // i32(3,3,1)
     ttl::tensor<R, 5> y(y_shape);

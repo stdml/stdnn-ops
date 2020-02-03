@@ -1,7 +1,11 @@
 #include <ttl/nn/ops>
 #include <ttl/nn/testing>
 
-template <typename F> void test_op_exist() { static_assert(sizeof(F) > 0, ""); }
+template <typename F>
+void test_op_exist()
+{
+    static_assert(sizeof(F) > 0, "");
+}
 
 #define TEST_OP_EXIST(op) test_op_exist<ttl::nn::ops::op>();
 
@@ -18,7 +22,7 @@ TEST(test_public_ops, test_public_symbols)
 
     // init
     TEST_OP_EXIST(ones);
-    TEST_OP_EXIST(uniform_distribution);
+    TEST_OP_EXIST(uniform_constant);
     TEST_OP_EXIST(zeros);
     TEST_OP_EXIST(truncated_normal);
     // TEST_OP_EXIST(constant);

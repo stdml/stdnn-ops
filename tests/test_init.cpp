@@ -2,10 +2,24 @@
 #include <ttl/nn/bits/ops/init.hpp>
 #include <ttl/nn/testing>
 
+TEST(init_test, test_01)
+{
+    ttl::tensor<int, 2> x(2, 5);
+    ttl::tensor<int, 2> y(2, 5);
+    ttl::nn::ops::zeros()(ttl::ref(x));
+    ttl::nn::ops::ones()(ttl::ref(y));
+    for (auto i : ttl::range(x.shape().size())) {
+        ASSERT_FLOAT_EQ(x.data()[i], 0);
+    }
+    for (auto i : ttl::range(y.shape().size())) {
+        ASSERT_FLOAT_EQ(y.data()[i], 1);
+    }
+}
+
 TEST(init_test, test_uniform)
 {
     ttl::tensor<float, 2> x(2, 5);
-    ttl::nn::ops::uniform_distribution()(ref(x));
+    ttl::nn::ops::uniform_constant()(ttl::ref(x));
     for (auto i : ttl::range(x.shape().size())) {
         ASSERT_FLOAT_EQ(x.data()[i], 0.1);
     }

@@ -26,7 +26,7 @@ auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
 {
     using image_order = ttl::nn::ops::nhwc;
     using filter_order = ttl::nn::ops::rscd;
-    using relu = ttl::nn::ops::pointwise<ttl::nn::ops::relu>;
+    using relu = ttl::nn::ops::relu;
     using conv = ttl::nn::layers::conv<image_order, filter_order, true, relu>;
     using pool = ttl::nn::layers::pool<ttl::nn::ops::pool_max, image_order>;
     using dense_relu = ttl::nn::layers::dense<relu>;
@@ -91,11 +91,6 @@ auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
     (top(m))(ref(y), ref(z), view(*out)[0]);
 
     return std::make_pair(std::move(y), std::move(z));
-}
-
-template <typename T> typename T::value_type *data_end(const T &t)
-{
-    return t.data() + t.shape().size();
 }
 
 std::vector<std::string> load_class_names(const std::string &filename)

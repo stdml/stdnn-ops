@@ -1,5 +1,7 @@
 // # -*- mode: c++ -*-
 #pragma once
+#include <ttl/nn/kernels/cpu>  // FIXME: should be included by user
+//
 #include <ttl/nn/ops.hpp>
 
 #ifndef STDNN_OPS_EXTERN_TEMPLATE

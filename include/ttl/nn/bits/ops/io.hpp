@@ -113,6 +113,9 @@ class readfile
     void operator()(const ttl::tensor_ref<R, r> &y) const
     {
         std::ifstream fs(filename_, std::ios::binary);
+        if (!fs.is_open()) {
+            throw std::runtime_error("can't open " + filename_);
+        }
         serializer::read(y, fs);
     }
 };
@@ -130,6 +133,9 @@ class writefile
     void operator()(const ttl::tensor_view<R, r> &x) const
     {
         std::ofstream fs(filename_, std::ios::binary);
+        if (!fs.is_open()) {
+            throw std::runtime_error("can't open " + filename_);
+        }
         serializer::write(x, fs);
     }
 };
@@ -154,9 +160,11 @@ class readtar
         const auto idx = ttl::nn::ops::internal::make_tar_index(filename_);
         const auto info = idx(name_);
         std::ifstream fs(filename_, std::ios::binary);
+        if (!fs.is_open()) {
+            throw std::runtime_error("can't open " + filename_);
+        }
         fs.seekg(info.data_offset, std::ios::beg);
         serializer::read(y, fs);
     }
 };
-
 }  // namespace ttl::nn::ops

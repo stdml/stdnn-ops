@@ -9,7 +9,8 @@ namespace nn
 {
 namespace traits
 {
-template <typename dim_t> class linear_sample_trait
+template <typename dim_t>
+class linear_sample_trait
 {
   public:
     using filter_t = linear_filter_trait<dim_t>;
@@ -99,6 +100,10 @@ template <typename dim_t> class linear_sample_trait
     dim_t get_ksize() const { return filter_.ksize(); }  // FIXME: deprecate
 
     dim_t get_stride() const { return filter_.stride(); }  // FIXME: deprecate
+
+    dim_t get_rate() const { return filter_.rate(); }  // FIXME: deprecate?
+
+    filter_t get_filter() const { return filter_; }
 
     padding_t get_padding() const { return padding_; }
 
