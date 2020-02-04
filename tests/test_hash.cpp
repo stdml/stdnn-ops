@@ -24,8 +24,7 @@ TEST(hash_test, test_crc64)
     const std::string s("Hello world");
     const ttl::tensor_view<char, 1> x(s.c_str(), s.size());
     {
-        const ttl::nn::ops::crc<uint64_t> crc64ecma(
-            ttl::nn::kernels::crc<ttl::host_memory, uint64_t>::ECMA);
+        const ttl::nn::ops::crc<uint64_t> crc64ecma;
         ttl::tensor<uint64_t, 0> y;
         crc64ecma(ref(y), x);
         ASSERT_EQ(y.data()[0], static_cast<uint64_t>(0xf4a5f2b9d47756bf));
