@@ -43,8 +43,8 @@ TEST(init_test, test_truncated_normal)
     ttl::tensor<uint32_t, 0> h;
     ttl::tensor<uint32_t, 0> k;
 
-    const ttl::nn::ops::crc<> crc32;
-    crc32(ref(h), view(x));
-    crc32(ref(k), view(y));
+    const ttl::nn::ops::crc32_ieee crc;
+    crc(ref(h), view(x));
+    crc(ref(k), view(y));
     ASSERT_EQ(h.data()[0], k.data()[0]);
 }

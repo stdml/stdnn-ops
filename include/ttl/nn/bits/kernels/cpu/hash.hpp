@@ -28,10 +28,7 @@ class crc<host_memory, N>
     }
 
   public:
-    static constexpr uint32_t IEEE = static_cast<uint32_t>(0xedb88320);
-    static constexpr uint64_t ECMA = static_cast<uint64_t>(0xC96C5795D7870F42);
-
-    crc(const N poly)
+    explicit crc(const N poly)
     {
         for (uint32_t i = 0; i < 256; i++) {
             N crc = i;
