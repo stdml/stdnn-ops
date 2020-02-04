@@ -7,7 +7,7 @@ namespace ttl::nn
 template <typename R, typename F, typename T0, typename... Ts>
 auto invoke(const F &f, const T0 &x0, const Ts &... xs)
 {
-    using D = host_memory;  // FIXME: infer D
+    using D = typename T0::device_type;
     const auto shape = f(x0.shape(), xs.shape()...);
     tensor<R, decltype(shape)::rank, D> y(shape);
     f(ref(y), x0, xs...);
