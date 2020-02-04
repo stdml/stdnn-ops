@@ -1,4 +1,5 @@
 #pragma once
+#include <ttl/nn/bits/kernels/cpu/utility.hpp>
 #include <ttl/nn/bits/kernels/utility.hpp>
 #include <ttl/nn/bits/ops/reshape.hpp>
 #include <ttl/nn/common.hpp>

@@ -8,7 +8,10 @@
 #include <vector>
 
 #include <ttl/algorithm>
+#include <ttl/device>
 #include <ttl/nn/bits/kernels/utility.hpp>
+#include <ttl/range>
+#include <ttl/tensor>
 
 namespace ttl::nn::kernels
 {

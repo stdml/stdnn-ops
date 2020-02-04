@@ -1,0 +1,23 @@
+// -*- mode: c++ -*-
+#pragma once
+#include <ttl/tensor>
+
+namespace ttl::nn
+{
+template <typename R, typename F, typename T0, typename... Ts>
+auto invoke(const F &f, const T0 &x0, const Ts &... xs)
+{
+    using D = host_memory;  // FIXME: infer D
+    const auto shape = f(x0.shape(), xs.shape()...);
+    tensor<R, decltype(shape)::rank, D> y(shape);
+    f(ref(y), x0, xs...);
+    return y;
+}
+
+template <typename F, typename T0, typename... Ts>
+auto invoke(const F &f, const T0 &x0, const Ts &... xs)
+{
+    using R = typename T0::value_type;
+    return invoke<R>(f, x0, xs...);
+}
+}  // namespace ttl::nn
