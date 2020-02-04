@@ -18,5 +18,6 @@ TEST(functional_test, test_invoke)
         ttl::tensor<int, 1> y(100);
         auto z =
             ttl::nn::invoke(ttl::nn::ops::add(), ttl::view(x), ttl::view(y));
+        ASSERT_EQ(z.shape(), ttl::make_shape(100));
     }
 }
