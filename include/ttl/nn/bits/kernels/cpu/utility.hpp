@@ -32,9 +32,7 @@ class argmax<host_memory, N, R>
   public:
     void operator()(const tensor_ref<N, 1> &y, const tensor_view<R, 2> &x) const
     {
-        for (auto i : range(y.shape().size())) {
-            y.data()[i] = ttl::argmax(x[i]);
-        }
+        for (auto i : range<0>(y)) { y.data()[i] = ttl::argmax(x[i]); }
     }
 };
 
@@ -44,9 +42,9 @@ class onehot<host_memory, N, R>
   public:
     void operator()(const tensor_ref<R, 2> &y, const tensor_view<N, 1> &x) const
     {
-        const auto k = std::get<1>(y.shape().dims());
+        const N k = std::get<1>(y.dims());  // FIXME: check limit
         ttl::fill(y, static_cast<R>(0));
-        for (auto i : range(x.shape().size())) {
+        for (auto i : range<0>(x)) {
             if (const N j = x.data()[i]; 0 <= j && j < k) {
                 y.at(i, j) = static_cast<R>(1);
             } else {
@@ -63,8 +61,8 @@ class top<host_memory, N, R>
     void operator()(const tensor_ref<R, 1> &y, const tensor_ref<N, 1> &z,
                     const tensor_view<R, 1> &x) const
     {
-        const N n = x.shape().size();
-        const N k = y.shape().size();
+        const N n = x.size();
+        const N k = y.size();
         using P = std::pair<R, N>;
         std::vector<P> v(n);
         for (auto i : range(n)) {
