@@ -30,8 +30,7 @@ void example_mlp()
     auto l3 = pool(ttl::view(*l2));
     show_signature(*l3, *l2);
 
-    auto [d0, d1, d2, d3] = (*l3).shape().dims();
-    ttl::tensor_view<float, 2> l3_flat((*l3).data(), d0, d1 * d2 * d3);
+    auto l3_flat = ttl::nn::ops::as_matrix<1, 3>(ttl::view(*l3));
     show_signature(l3_flat, *l3);
 
     auto l4 = dense(1000)(l3_flat);
