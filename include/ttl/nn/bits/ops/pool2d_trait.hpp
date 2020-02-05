@@ -1,5 +1,4 @@
 #pragma once
-#include <ttl/nn/bits/kernels/cpu/pool.hpp>
 #include <ttl/nn/bits/traits/multi_linear_sample.hpp>
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>

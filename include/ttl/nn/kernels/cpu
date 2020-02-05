@@ -9,4 +9,5 @@
 #include <ttl/nn/bits/kernels/cpu/io.hpp>
 #include <ttl/nn/bits/kernels/cpu/loss.hpp>
 #include <ttl/nn/bits/kernels/cpu/normalization.hpp>
+#include <ttl/nn/bits/kernels/cpu/pool.hpp>
 #include <ttl/nn/bits/kernels/cpu/utility.hpp>
