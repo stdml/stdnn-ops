@@ -8,13 +8,8 @@
 
 #include <ttl/nn/layers>
 
-#ifdef USE_OPENCV
-#    include <opencv2/opencv.hpp>
-#endif
-
 #include "utils.hpp"
-
-using ttl::range;
+#include "vgg16_common.hpp"
 
 const size_t h = 224;
 const size_t w = 224;
@@ -93,50 +88,18 @@ auto example_vgg16(const ttl::tensor_ref<R, 4> &x, const std::string &prefix)
     return std::make_pair(std::move(y), std::move(z));
 }
 
-std::vector<std::string> load_class_names(const std::string &filename)
-{
-    std::vector<std::string> names;
-    std::string line;
-    std::ifstream in(filename);
-    while (std::getline(in, line)) { names.push_back(line); }
-    return names;
-}
-
 int main(int argc, char *argv[])
 {
     const std::string home(std::getenv("HOME"));
     const std::string prefix = home + "/var/models/vgg16";
     const auto names = load_class_names(prefix + "/vgg16-class-names.txt");
     auto x = ttl::tensor<float, 4>(1, h, w, 3);
-    {
-#ifdef USE_OPENCV
-        system("[ ! -f laska.png ] && curl -vLOJ "
-               "https://www.cs.toronto.edu/~frossard/vgg16/laska.png");
-        auto img = cv::imread("laska.png");
-        auto input = ttl::tensor<uint8_t, 4>(x.shape());
-        cv::Mat resized_image(cv::Size(w, h), CV_8UC(3), input.data());
-        cv::resize(img, resized_image, resized_image.size(), 0, 0);
-        for (auto i : range(h)) {
-            for (auto j : range(w)) {
-                x.at(0, i, j, 0) = input.at(0, i, j, 2);
-                x.at(0, i, j, 1) = input.at(0, i, j, 1);
-                x.at(0, i, j, 2) = input.at(0, i, j, 0);
-            }
-        }
-#else
-        (ttl::nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
-#endif
-        std::vector<float> mean({123.68, 116.779, 103.939});
-        ttl::nn::ops::apply_bias<ttl::nn::ops::nhwc, std::minus<float>>()(
-            ref(x), view(x), ttl::tensor_view<float, 1>(mean.data(), 3));
-    }
-
+    read_example_image(ttl::ref(x));
     const auto [y, z] =
         example_vgg16(ref(x), prefix + "/vgg16_weights.idx.tar");
 
-    for (auto i : range(m)) {
+    for (auto i : ttl::range(m)) {
         printf("%u: %f %s\n", z.at(i), y.at(i), names[z.at(i)].c_str());
     }
-
     return 0;
 }

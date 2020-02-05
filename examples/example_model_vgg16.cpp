@@ -7,11 +7,8 @@
 
 #include <ttl/nn/models>
 
-#ifdef USE_OPENCV
-#    include <opencv2/opencv.hpp>
-#endif
-
 #include "utils.hpp"
+#include "vgg16_common.hpp"
 
 class vgg16_model
 {
@@ -95,15 +92,6 @@ class vgg16_model
     }
 };
 
-std::vector<std::string> load_class_names(const std::string &filename)
-{
-    std::vector<std::string> names;
-    std::string line;
-    std::ifstream in(filename);
-    while (std::getline(in, line)) { names.push_back(line); }
-    return names;
-}
-
 int main(int argc, char *argv[])
 {
     const std::string home(std::getenv("HOME"));
@@ -111,37 +99,11 @@ int main(int argc, char *argv[])
     const auto names = load_class_names(prefix + "/vgg16-class-names.txt");
     vgg16_model vgg16(prefix + "/vgg16_weights.idx.tar");
     auto x = ttl::tensor<float, 4>(1, vgg16.h, vgg16.w, 3);
-    {
-#ifdef USE_OPENCV
-        system("[ ! -f laska.png ] && curl -vLOJ "
-               "https://www.cs.toronto.edu/~frossard/vgg16/laska.png");
-        auto img = cv::imread("laska.png");
-        auto input = ttl::tensor<uint8_t, 4>(x.shape());
-        cv::Mat resized_image(cv::Size(vgg16.w, vgg16.h), CV_8UC(3),
-                              input.data());
-        cv::resize(img, resized_image, resized_image.size(), 0, 0);
-        for (auto i : ttl::range(vgg16.h)) {
-            for (auto j : ttl::range(vgg16.w)) {
-                x.at(0, i, j, 0) = input.at(0, i, j, 2);
-                x.at(0, i, j, 1) = input.at(0, i, j, 1);
-                x.at(0, i, j, 2) = input.at(0, i, j, 0);
-            }
-        }
-#else
-        (ttl::nn::ops::readfile(prefix + "/laska.idx"))(ref(x)[0]);
-#endif
-        std::vector<float> mean({123.68, 116.779, 103.939});
-        ttl::nn::ops::apply_bias<ttl::nn::ops::nhwc, std::minus<float>>()(
-            ref(x), view(x),
-            ttl::tensor_view<float, 1>(mean.data(), mean.size()));
-    }
-
+    read_example_image(ttl::ref(x));
     int m = 5;
     const auto [y, z] = vgg16(ref(x), m);
-
     for (auto i : ttl::range(m)) {
         printf("%u: %f %s\n", z.at(i), y.at(i), names[z.at(i)].c_str());
     }
-
     return 0;
 }
