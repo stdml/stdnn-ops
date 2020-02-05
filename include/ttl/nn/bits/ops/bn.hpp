@@ -1,92 +1,36 @@
 #pragma once
-#include <cmath>
-
+#include <ttl/nn/bits/kernels/cpu/normalization.hpp>
 #include <ttl/nn/bits/ops/bias.hpp>
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
 namespace ttl::nn::ops
 {
+template <typename image_order>
+class batch_norm
+{
+  public:
+    shape<4> operator()(const shape<4> &x, const shape<1> &r_mean,
+                        const shape<1> &r_var) const
+    {
+        const auto c = traits::channel_size<image_order>(x);
+        contract_assert(c == std::get<0>(r_mean.dims()));
+        contract_assert(c == std::get<0>(r_var.dims()));
+        return x;
+    }
+
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 4, D> &y, const tensor_view<R, 4, D> &x,
+                    const tensor_view<R, 1, D> &rolling_mean,
+                    const tensor_view<R, 1, D> &rolling_var) const
+    {
+        kernels::batch_norm<D, image_order, R>()(y, x, rolling_mean,
+                                                 rolling_var);
+    }
+};
 
 template <typename image_order>
-shape<4> batch_norm_infer(const shape<4> &x, const shape<1> &r_mean,
-                          const shape<1> &r_var)
-{
-    const auto c = ops::channel_size<image_order>(x);
-    contract_assert(c == std::get<0>(r_mean.dims()));
-    contract_assert(c == std::get<0>(r_var.dims()));
-    return x;
-}
-
-template <typename image_order> class batch_norm;
-
-template <> class batch_norm<nhwc>
-{
-  public:
-    shape<4> operator()(const shape<4> &x, const shape<1> &r_mean,
-                        const shape<1> &r_var) const
-    {
-        return batch_norm_infer<nhwc>(x, r_mean, r_var);
-    }
-
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 4> &y,
-                    const ttl::tensor_view<R, 4> &x,
-                    const ttl::tensor_view<R, 1> &rolling_mean,
-                    const ttl::tensor_view<R, 1> &rolling_var) const
-    {
-        constexpr R eps = .000001f;
-
-        const auto [n, h, w, c] = x.shape().dims();
-
-        for (const auto l : range(n)) {
-            for (const auto i : range(h)) {
-                for (const auto j : range(w)) {
-                    for (const auto k : range(c)) {
-                        y.at(l, i, j, k) =
-                            (x.at(l, i, j, k) - rolling_mean.at(k)) /
-                            (std::sqrt(rolling_var.at(k)) + eps);
-                    }
-                }
-            }
-        }
-    }
-};
-
-template <> class batch_norm<nchw>
-{
-  public:
-    shape<4> operator()(const shape<4> &x, const shape<1> &r_mean,
-                        const shape<1> &r_var) const
-    {
-        return batch_norm_infer<nchw>(x, r_mean, r_var);
-    }
-
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 4> &y,
-                    const ttl::tensor_view<R, 4> &x,
-                    const ttl::tensor_view<R, 1> &rolling_mean,
-                    const ttl::tensor_view<R, 1> &rolling_var) const
-    {
-        constexpr R eps = .000001f;
-
-        const auto [n, c, h, w] = x.shape().dims();
-
-        for (const auto l : range(n)) {
-            for (const auto k : range(c)) {
-                for (const auto i : range(h)) {
-                    for (const auto j : range(w)) {
-                        y.at(l, k, i, j) =
-                            (x.at(l, k, i, j) - rolling_mean.at(k)) /
-                            (std::sqrt(rolling_var.at(k)) + eps);
-                    }
-                }
-            }
-        }
-    }
-};
-
-template <typename image_order> class batch_norm_with_bias
+class batch_norm_with_bias
 {
     using bn_op = batch_norm<image_order>;
 
@@ -103,18 +47,16 @@ template <typename image_order> class batch_norm_with_bias
         return x;
     }
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 4> &y,
-                    const ttl::tensor_view<R, 4> &x,
-                    const ttl::tensor_view<R, 1> &rolling_mean,
-                    const ttl::tensor_view<R, 1> &rolling_var,
-                    const ttl::tensor_view<R, 1> &beta,
-                    const ttl::tensor_view<R, 1> &gamma) const
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 4, D> &y, const tensor_view<R, 4, D> &x,
+                    const tensor_view<R, 1, D> &rolling_mean,
+                    const tensor_view<R, 1, D> &rolling_var,
+                    const tensor_view<R, 1, D> &beta,
+                    const tensor_view<R, 1, D> &gamma) const
     {
         bn_op()(y, x, rolling_mean, rolling_var);
         mul_bias<image_order>()(y, view(y), gamma);
         add_bias<image_order>()(y, view(y), beta);
     }
 };
-
 }  // namespace ttl::nn::ops

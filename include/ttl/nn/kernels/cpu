@@ -6,5 +6,7 @@
 #include <ttl/nn/bits/kernels/cpu/conv2d.hpp>
 #include <ttl/nn/bits/kernels/cpu/elementary.hpp>
 #include <ttl/nn/bits/kernels/cpu/init.hpp>
+#include <ttl/nn/bits/kernels/cpu/io.hpp>
 #include <ttl/nn/bits/kernels/cpu/loss.hpp>
+#include <ttl/nn/bits/kernels/cpu/normalization.hpp>
 #include <ttl/nn/bits/kernels/cpu/utility.hpp>
