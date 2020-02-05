@@ -8,7 +8,7 @@ void test_dense_layer()
 
     auto x = ttl::tensor<float, 2>(2, 8);
     dense l1(10);
-    l1(ref(x));
+    l1(ttl::view(x));
 }
 
 template <typename conv_layer>
@@ -20,16 +20,16 @@ void test_conv_layer()
     {
         auto x = ttl::tensor<float, 4>(2, 32, 32, 32);
         conv_layer l1(32, conv_layer::ksize(3, 3));
-        l1(ref(x));
+        l1(ttl::view(x));
         conv_layer l2(32, conv_layer::ksize(3, 3), conv_layer::padding_same());
-        l2(ref(x));
+        l2(ttl::view(x));
     }
 
     {
         auto x = ttl::tensor<float, 4>(2, 224, 224, 224);
         conv_layer l1(1, conv_layer::ksize(7, 7), conv_layer::padding_same(),
                       conv_layer::stride(2, 2));
-        auto l = l1(ref(x));
+        auto l = l1(ttl::view(x));
         const auto shp = (*l).shape();
         ASSERT_EQ(
             shp.size(),
@@ -45,7 +45,7 @@ void test_pool_layer()
 
     auto x = ttl::tensor<float, 4>(2, 32, 32, 32);
     pool l1(pool::ksize(2, 2));
-    l1(ref(x));
+    l1(ttl::view(x));
 }
 
 TEST(layers_test, test_1)

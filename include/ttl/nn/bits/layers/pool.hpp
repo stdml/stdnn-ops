@@ -75,7 +75,7 @@ class pool : public pool_trait<traits::hw>
 
   public:
     template <typename R, typename D>
-    auto operator()(const tensor_ref<R, 4, D> &x) const
+    auto operator()(const tensor_view<R, 4, D> &x) const
     {
         auto y = ops::new_result<tensor<R, 4, D>>(
             pool_op(op_trait(ops::image_shape<image_order>(x.shape()))), x);

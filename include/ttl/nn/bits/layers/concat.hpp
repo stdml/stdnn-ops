@@ -10,7 +10,7 @@ class concat_channel4d
 
   public:
     template <typename R, typename D, typename... T>
-    auto operator()(const tensor_ref<R, 4, D> &x0, const T &... xs) const
+    auto operator()(const tensor_view<R, 4, D> &x0, const T &... xs) const
     {
         auto y = ops::new_result<tensor<R, 4, D>>(op(), x0, xs...);
         return make_layer(y);

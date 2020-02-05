@@ -46,7 +46,7 @@ class vgg16_model
     vgg16_model(const std::string &prefix) : prefix_(prefix) {}
 
     template <typename R>
-    auto operator()(const ttl::tensor_ref<R, 4> &x, int m) const
+    auto operator()(const ttl::tensor_view<R, 4> &x, int m) const
     {
         using ttl::nn::layers::with_init;
 
@@ -79,14 +79,14 @@ class vgg16_model
 
         auto l5_4 = conv_layers(x);
         PPRINT(*l5_4);
-        auto l5_flat = ttl::nn::ops::as_matrix<1, 3>(ref(*l5_4));
+        auto l5_flat = ttl::nn::ops::as_matrix<1, 3>(ttl::view(*l5_4));
         PPRINT(l5_flat);
         auto out = dense_layers(l5_flat);
         PPRINT(*out);
 
         ttl::tensor<R, 1> y(m);
         ttl::tensor<ttl::shape<1>::dimension_type, 1> z(m);
-        (top(m))(ref(y), ref(z), view(*out)[0]);
+        (top(m))(ttl::ref(y), ttl::ref(z), view(*out)[0]);
 
         return std::make_pair(std::move(y), std::move(z));
     }
@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
     auto x = ttl::tensor<float, 4>(1, vgg16.h, vgg16.w, 3);
     read_example_image(ttl::ref(x));
     int m = 5;
-    const auto [y, z] = vgg16(ref(x), m);
+    const auto [y, z] = vgg16(ttl::view(x), m);
     for (auto i : ttl::range(m)) {
         printf("%u: %f %s\n", z.at(i), y.at(i), names[z.at(i)].c_str());
     }

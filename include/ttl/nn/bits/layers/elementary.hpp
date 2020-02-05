@@ -11,7 +11,7 @@ class identity
 
   public:
     template <typename R, rank_t r, typename D>
-    auto operator()(const tensor_ref<R, r, D> &x) const
+    auto operator()(const tensor_view<R, r, D> &x) const
     {
         auto y = ops::new_result<tensor<R, r, D>>(op(), x);
         return make_layer(y);

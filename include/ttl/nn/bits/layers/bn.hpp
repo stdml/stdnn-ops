@@ -19,7 +19,7 @@ class batch_norm<image_order, Act, false>
     template <typename R, typename D,         //
               typename MeanInit = ops::noop,  //
               typename VarInit = ops::noop>
-    auto operator()(const tensor_ref<R, 4, D> &x,
+    auto operator()(const tensor_view<R, 4, D> &x,
                     const MeanInit &mean_init = MeanInit(),
                     const VarInit &var_init = VarInit()) const
     {
@@ -48,7 +48,7 @@ class batch_norm<image_order, Act, true>
               typename VarInit = ops::noop,
               typename BetaInit = ops::noop,  //
               typename GammaInit = ops::noop>
-    auto operator()(const tensor_ref<R, 4, D> &x,  //
+    auto operator()(const tensor_view<R, 4, D> &x,  //
                     const MeanInit &mean_init = MeanInit(),
                     const VarInit &var_init = VarInit(),
                     const BetaInit &beta_init = BetaInit(),

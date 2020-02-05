@@ -110,14 +110,15 @@ class conv<image_order, filter_order, false, Act> : public conv_trait
 
   public:
     template <typename R, typename D, typename Winit = ops::noop>
-    auto operator()(const tensor_ref<R, 4, D> &x,
+    auto operator()(const tensor_view<R, 4, D> &x,
                     const Winit &w_init = Winit()) const
     {
         using T4 = tensor<R, 4, D>;
         auto w = ops::new_parameter<T4>(
             filter_shape<image_order, filter_order>(x.shape()), w_init);
         auto y = ops::new_result<T4>(
-            conv_op(op_trait(ops::image_shape<image_order>(x.shape()))), x, *w);
+            conv_op(op_trait(ops::image_shape<image_order>(x.shape()))),  //
+            x, view(*w));
         Act()(ref(*y), view(*y));
         return make_layer(y, w);
     }
@@ -132,7 +133,8 @@ class conv<image_order, filter_order, true, Act> : public conv_trait
   public:
     template <typename R, typename D, typename Winit = ops::noop,
               typename Binit = ops::noop>
-    auto operator()(const tensor_ref<R, 4, D> &x, const Winit &w_init = Winit(),
+    auto operator()(const tensor_view<R, 4, D> &x,
+                    const Winit &w_init = Winit(),
                     const Binit &b_init = Binit()) const
     {
         using T1 = tensor<R, 1, D>;
@@ -140,7 +142,8 @@ class conv<image_order, filter_order, true, Act> : public conv_trait
         auto w = ops::new_parameter<T4>(
             filter_shape<image_order, filter_order>(x.shape()), w_init);
         auto y = ops::new_result<T4>(
-            conv_op(op_trait(ops::image_shape<image_order>(x.shape()))), x, *w);
+            conv_op(op_trait(ops::image_shape<image_order>(x.shape()))), x,
+            view(*w));
         auto b = ops::new_parameter<T1>(bias_shape(x.shape()), b_init);
         ops::add_bias<image_order>()(ref(*y), view(*y), view(*b));
         Act()(ref(*y), view(*y));

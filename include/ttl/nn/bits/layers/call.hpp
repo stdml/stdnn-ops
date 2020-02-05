@@ -7,7 +7,7 @@ template <typename T, typename Op, typename... Ts>
 T *new_result(const Op &op, const Ts &... args)
 {
     auto y = new T(op(args.shape()...));
-    op(ref(*y), view(args)...);
+    op(ref(*y), args...);
     return y;
 }
 

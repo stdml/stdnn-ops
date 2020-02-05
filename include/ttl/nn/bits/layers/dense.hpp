@@ -30,13 +30,14 @@ class dense : public dense_trait
   public:
     template <typename R, typename D, typename Winit = ops::noop,
               typename Binit = ops::noop>
-    auto operator()(const tensor_ref<R, 2, D> &x, const Winit &w_init = Winit(),
+    auto operator()(const tensor_view<R, 2, D> &x,
+                    const Winit &w_init = Winit(),
                     const Binit &b_init = Binit()) const
     {
         using T1 = tensor<R, 1, D>;
         using T2 = tensor<R, 2, D>;
         auto w = ops::new_parameter<T2>(weight_shape(x.shape()), w_init);
-        auto y = ops::new_result<T2>(ops::matmul(), x, *w);
+        auto y = ops::new_result<T2>(ops::matmul(), x, view(*w));
         auto b = ops::new_parameter<T1>(bias_shape(x.shape()), b_init);
         ops::add_bias<ops::hw>()(ref(*y), view(*y), view(*b));
         Act()(ref(*y), view(*y));
