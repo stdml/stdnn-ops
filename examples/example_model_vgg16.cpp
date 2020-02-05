@@ -99,8 +99,8 @@ int main(int argc, char *argv[])
     const auto names = load_class_names(prefix + "/vgg16-class-names.txt");
     vgg16_model vgg16(prefix + "/vgg16_weights.idx.tar");
     auto x = ttl::tensor<float, 4>(1, vgg16.h, vgg16.w, 3);
-    read_example_image(ttl::ref(x));
-    int m = 5;
+    read_example_image(prefix, ttl::ref(x));
+    const int m = 5;
     const auto [y, z] = vgg16(ttl::view(x), m);
     for (auto i : ttl::range(m)) {
         printf("%u: %f %s\n", z.at(i), y.at(i), names[z.at(i)].c_str());

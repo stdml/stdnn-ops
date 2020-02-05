@@ -94,10 +94,9 @@ int main(int argc, char *argv[])
     const std::string prefix = home + "/var/models/vgg16";
     const auto names = load_class_names(prefix + "/vgg16-class-names.txt");
     auto x = ttl::tensor<float, 4>(1, h, w, 3);
-    read_example_image(ttl::ref(x));
+    read_example_image(prefix, ttl::ref(x));
     const auto [y, z] =
         example_vgg16(ttl::view(x), prefix + "/vgg16_weights.idx.tar");
-
     for (auto i : ttl::range(m)) {
         printf("%u: %f %s\n", z.at(i), y.at(i), names[z.at(i)].c_str());
     }

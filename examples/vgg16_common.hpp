@@ -20,7 +20,8 @@ std::vector<std::string> load_class_names(const std::string &filename)
     return names;
 }
 
-void read_example_image(const ttl::tensor_ref<float, 4> &x)
+void read_example_image(const std::string &prefix,
+                        const ttl::tensor_ref<float, 4> &x)
 {
 #ifdef USE_OPENCV
     if (const int code =
