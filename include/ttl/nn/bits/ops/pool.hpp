@@ -7,55 +7,6 @@
 
 namespace ttl::nn::ops
 {
-namespace internal
-{
-template <typename R>
-class max_accumulator
-{
-    R val;
-
-  public:
-    max_accumulator() : val(std::numeric_limits<R>::lowest()) {}
-
-    void operator()(R x)
-    {
-        if (x > val) { val = x; }
-    }
-
-    operator R() const { return val; }
-};
-
-template <typename R>
-class mean_accumulator
-{
-    R sum;
-    uint32_t n;
-
-  public:
-    mean_accumulator() : sum(0), n(0) {}
-
-    void operator()(R x)
-    {
-        sum += x;
-        ++n;
-    }
-
-    operator R() const { return sum / n; }
-};
-
-template <typename pool_algo, typename R>
-struct accumulator;
-
-template <typename R>
-struct accumulator<traits::pool_max, R> {
-    using type = max_accumulator<R>;
-};
-template <typename R>
-struct accumulator<traits::pool_mean, R> {
-    using type = mean_accumulator<R>;
-};
-}  // namespace internal
-
 template <typename pool_algo, typename image_order>
 class pool;
 
@@ -67,37 +18,14 @@ class pool<pool_algo, hw> : public pool_trait<hw>
   public:
     pool(const pool_trait &t) : pool_trait(t) {}
 
-    shape<2> operator()(const shape<2> &x) const
+    using pool_trait::operator();
+
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 2, D> &y,
+                    const tensor_view<R, 2, D> &x) const
     {
-        return pool_trait<hw>::operator()(x);  // FIXME: auto pass through
-    }
-
-    //   TODO: support strided tensor
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 2> &y,
-                    const ttl::tensor_view<R, 2> &x) const
-    {
-        using accumulator = typename internal::accumulator<pool_algo, R>::type;
-
-        const auto [h, w] = x.shape().dims();
-        const auto [h_, w_] = y.shape().dims();
-        const auto [r, s] = get_ksize().dims();
-
-        for (auto i_ : range(h_)) {
-            for (auto j_ : range(w_)) {
-                accumulator acc;
-                for (auto u : range(r)) {
-                    for (auto v : range(s)) {
-                        const auto i = h_sample_(i_, u);
-                        const auto j = w_sample_(j_, v);
-                        if (h_sample_.inside(i, h) && w_sample_.inside(j, w)) {
-                            acc(x.at(h_sample_.unpad(i), w_sample_.unpad(j)));
-                        }
-                    }
-                }
-                y.at(i_, j_) = acc;
-            }
-        }
+        const pool_trait<hw> &trait = *this;
+        (kernels::pool<D, hw, pool_algo, R>(trait))(y, x);
     }
 };
 
@@ -109,38 +37,14 @@ class pool<pool_algo, hwc> : public pool_trait<hw>
   public:
     pool(const pool_trait &t) : pool_trait(t) {}
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 3> &y,
-                    const ttl::tensor_view<R, 3> &x) const
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 3, D> &y,
+                    const tensor_view<R, 3, D> &x) const
     {
-        using accumulator = typename internal::accumulator<pool_algo, R>::type;
-
-        const auto [h, w, c] = x.shape().dims();
-        const auto [h_, w_, _c] = y.shape().dims();
-        const auto [r, s] = get_ksize().dims();
-        contract_assert_eq(c, _c);
-
-        for (auto k : range(c)) {
-            for (auto i_ : range(h_)) {
-                for (auto j_ : range(w_)) {
-                    accumulator acc;
-                    for (auto u : range(r)) {
-                        for (auto v : range(s)) {
-                            const auto i = h_sample_(i_, u);
-                            const auto j = w_sample_(j_, v);
-                            if (h_sample_.inside(i, h) &&
-                                w_sample_.inside(j, w)) {
-                                acc(x.at(h_sample_.unpad(i), w_sample_.unpad(j),
-                                         k));
-                            }
-                        }
-                    }
-                    y.at(i_, j_, k) = acc;
-                }
-            }
-        }
+        const pool_trait<hw> &trait = *this;
+        (kernels::pool<D, hwc, pool_algo, R>(trait))(y, x);
     }
-};
+};  // namespace ttl::nn::ops
 
 template <typename order, typename PoolTrait>
 shape<4> pooled_shape(const shape<4> &x, const PoolTrait &pt)
