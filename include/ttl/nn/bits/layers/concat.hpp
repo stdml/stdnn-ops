@@ -3,16 +3,17 @@
 
 namespace ttl::nn::layers
 {
-template <typename image_order> class concat_channel4d
+template <typename image_order>
+class concat_channel4d
 {
-    using op = ttl::nn::ops::concat_channel4d<image_order>;
+    using op = ops::concat_channel4d<image_order>;
 
   public:
-    template <typename R, typename... T>
-    auto operator()(const ttl::tensor_ref<R, 4> &x1, const T &... x) const
+    template <typename R, typename D, typename... T>
+    auto operator()(const tensor_ref<R, 4, D> &x0, const T &... xs) const
     {
-        auto y = ttl::nn::ops::new_result<ttl::tensor<R, 4>>(op(), x1, x...);
-        return nn::layers::make_layer(y);
+        auto y = ops::new_result<tensor<R, 4, D>>(op(), x0, xs...);
+        return make_layer(y);
     }
 };
 }  // namespace ttl::nn::layers

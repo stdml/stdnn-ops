@@ -13,18 +13,18 @@ class batch_norm;
 template <typename image_order, typename Act>
 class batch_norm<image_order, Act, false>
 {
-    using bn_op = ttl::nn::ops::batch_norm<image_order>;
+    using bn_op = ops::batch_norm<image_order>;
 
   public:
-    template <typename R,                     //
+    template <typename R, typename D,         //
               typename MeanInit = ops::noop,  //
               typename VarInit = ops::noop>
-    auto operator()(const ttl::tensor_ref<R, 4> &x,
+    auto operator()(const tensor_ref<R, 4, D> &x,
                     const MeanInit &mean_init = MeanInit(),
                     const VarInit &var_init = VarInit()) const
     {
-        using T1 = ttl::tensor<R, 1>;
-        using T4 = ttl::tensor<R, 4>;
+        using T1 = tensor<R, 1, D>;
+        using T4 = tensor<R, 4, D>;
         const auto shp = shape<1>(ops::channel_size<image_order>(x));
 
         auto rolling_mean = ops::new_parameter<T1>(shp, mean_init);
@@ -40,22 +40,22 @@ class batch_norm<image_order, Act, false>
 template <typename image_order, typename Act>
 class batch_norm<image_order, Act, true>
 {
-    using bn_op = ttl::nn::ops::batch_norm_with_bias<image_order>;
+    using bn_op = ops::batch_norm_with_bias<image_order>;
 
   public:
-    template <typename R,                     //
+    template <typename R, typename D,         //
               typename MeanInit = ops::noop,  //
               typename VarInit = ops::noop,
               typename BetaInit = ops::noop,  //
               typename GammaInit = ops::noop>
-    auto operator()(const ttl::tensor_ref<R, 4> &x,  //
+    auto operator()(const tensor_ref<R, 4, D> &x,  //
                     const MeanInit &mean_init = MeanInit(),
                     const VarInit &var_init = VarInit(),
                     const BetaInit &beta_init = BetaInit(),
                     const GammaInit &gamma_init = GammaInit()) const
     {
-        using T1 = ttl::tensor<R, 1>;
-        using T4 = ttl::tensor<R, 4>;
+        using T1 = tensor<R, 1, D>;
+        using T4 = tensor<R, 4, D>;
         const auto shp = shape<1>(ops::channel_size<image_order>(x.shape()));
 
         auto rolling_mean = ops::new_parameter<T1>(shp, mean_init);

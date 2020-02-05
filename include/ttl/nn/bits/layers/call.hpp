@@ -12,11 +12,10 @@ T *new_result(const Op &op, const Ts &... args)
 }
 
 template <typename T, typename Init>
-T *new_parameter(const shape<T::rank> &shp, const Init &init)
+T *new_parameter(const typename T::shape_type &shape, const Init &init)
 {
-    auto w = new T(shp);
+    auto w = new T(shape);
     init(ref(*w));
     return w;
 }
-
 }  // namespace ttl::nn::ops
