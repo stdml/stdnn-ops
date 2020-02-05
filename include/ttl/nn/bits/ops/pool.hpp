@@ -67,12 +67,12 @@ class pool<pool_algo, nhwc> : public pool_trait<hw>
         return pooled_shape<nhwc, pool_trait<hw>>(x, *this);
     }
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 4> &y,
-                    const ttl::tensor_view<R, 4> &x) const
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 4, D> &y,
+                    const tensor_view<R, 4, D> &x) const
     {
         pool<pool_algo, hwc> op(get_ksize(), get_stride());
-        for (auto i : range(x.shape().dims()[0])) { op(y[i], x[i]); }
+        for (auto i : range<0>(x)) { op(y[i], x[i]); }
     }
 };
 
@@ -89,13 +89,13 @@ class pool<pool_algo, nchw> : public pool_trait<hw>
         return pooled_shape<nchw, pool_trait<hw>>(x, *this);
     }
 
-    template <typename R>
-    void operator()(const ttl::tensor_ref<R, 4> &y,
-                    const ttl::tensor_view<R, 4> &x) const
+    template <typename R, typename D>
+    void operator()(const tensor_ref<R, 4, D> &y,
+                    const tensor_view<R, 4, D> &x) const
     {
         pool<pool_algo, hw> op(get_ksize(), get_stride());
-        for (auto i : range(x.shape().dims()[0])) {
-            for (auto j : range(x.shape().dims()[1])) { op(y[i][j], x[i][j]); }
+        for (auto i : range<0>(x)) {
+            for (auto j : range<1>(x)) { op(y[i][j], x[i][j]); }
         }
     }
 };
