@@ -12,7 +12,7 @@ class concat_channel4d
     template <typename... S>
     shape<4> operator()(const S &... s) const
     {
-        constexpr auto pos = channel_position<image_order>;
+        constexpr auto pos = traits::channel_position<image_order>;
         return internal::concat_shape<pos>(s...);
     }
 

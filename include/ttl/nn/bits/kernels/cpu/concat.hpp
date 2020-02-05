@@ -1,5 +1,4 @@
 #pragma once
-#include <ttl/algorithm>
 #include <ttl/device>
 #include <ttl/nn/bits/kernels/concat.hpp>
 #include <ttl/nn/traits>
@@ -17,11 +16,12 @@ class concat_channel4d<host_memory, traits::nchw, 2, R>
     {
         auto [n, c_all, h, w] = t.dims();
         // TODO: check equality
-        auto [_1n, c_1, _1h, _1w] = x.dims();
+        // auto [_1n, c_1, _1h, _1w] = x.dims();
         // auto [_2n, c_2, _2h, _2w] = y.dims();
-
-        const auto c1 = c_1;
+        // const auto c1 = c_1;
         // const auto c2 = c_2;
+        constexpr auto pos = traits::channel_position<traits::nchw>;
+        const auto c1 = std::get<pos>(x.dims());
 
         for (auto l : range(n)) {
             for (auto k : range(c_all)) {
@@ -51,13 +51,15 @@ class concat_channel4d<host_memory, traits::nhwc, 3, R>
     {
         auto [n, h, w, c_all] = t.dims();
         // TODO: check equality
-        auto [_1n, _1h, _1w, c_1] = x.dims();
-        auto [_2n, _2h, _2w, c_2] = y.dims();
+        // auto [_1n, _1h, _1w, c_1] = x.dims();
+        // auto [_2n, _2h, _2w, c_2] = y.dims();
         // auto [_3n, _3h, _3w, c_3] = z.dims();
-
-        const auto c1 = c_1;
-        const auto c2 = c_2;
+        // const auto c1 = c_1;
+        // const auto c2 = c_2;
         // const auto c3 = c_3;
+        constexpr auto pos = traits::channel_position<traits::nhwc>;
+        const auto c1 = std::get<pos>(x.dims());
+        const auto c2 = std::get<pos>(y.dims());
 
         for (auto l : range(n)) {
             for (auto i : range(h)) {
