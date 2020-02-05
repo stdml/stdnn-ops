@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 
+#include <ttl/bits/idx_encoding.hpp>
 #include <ttl/device>
 #include <ttl/nn/bits/kernels/io.hpp>
 #include <ttl/nn/common.hpp>

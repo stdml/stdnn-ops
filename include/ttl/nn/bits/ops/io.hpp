@@ -1,5 +1,4 @@
 #pragma once
-#include <ttl/bits/idx_encoding.hpp>
 #include <ttl/nn/bits/kernels/cpu/io.hpp>
 #include <ttl/nn/bits/ops/io_tar.hpp>
 #include <ttl/nn/common.hpp>
