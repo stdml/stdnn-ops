@@ -1,7 +1,13 @@
 #pragma once
 
-namespace ttl::nn::traits
+namespace ttl
+{
+namespace nn
+{
+namespace traits
 {
 struct pool_max;
 struct pool_mean;
-}  // namespace ttl::nn::traits
+}  // namespace traits
+}  // namespace nn
+}  // namespace ttl
