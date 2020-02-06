@@ -3,7 +3,11 @@
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
 
-namespace ttl::nn::ops
+namespace ttl
+{
+namespace nn
+{
+namespace ops
 {
 template <typename image_order>
 class pool_trait;
@@ -101,4 +105,6 @@ class pool_trait<hw>
         return shape<2>(h_sample_(x.dims()[0]), w_sample_(x.dims()[1]));
     }
 };
-}  // namespace ttl::nn::ops
+}  // namespace ops
+}  // namespace nn
+}  // namespace ttl
