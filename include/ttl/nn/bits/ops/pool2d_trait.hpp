@@ -1,7 +1,8 @@
 #pragma once
+#include <ttl/nn/bits/traits/basic_traits.hpp>
 #include <ttl/nn/bits/traits/multi_linear_sample.hpp>
+#include <ttl/nn/bits/traits/pool_traits.hpp>
 #include <ttl/nn/common.hpp>
-#include <ttl/nn/traits>
 
 namespace ttl
 {
@@ -13,14 +14,14 @@ template <typename image_order>
 class pool_trait;
 
 template <>
-class pool_trait<hw>
+class pool_trait<traits::hw>
 {
   protected:
     struct ksize_trait;
     struct stride_trait;
 
     using dim_t = uint32_t;
-    using sample1d_t_ = linear_sample_trait<dim_t>;
+    using sample1d_t_ = traits::linear_sample_trait<dim_t>;
 
     using padding_1d_t = typename sample1d_t_::padding_t;
     using padding_t = std::array<padding_1d_t, 2>;
