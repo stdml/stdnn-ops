@@ -67,17 +67,17 @@ class pool_trait<ops::hw>
     }
 };
 
-template <typename pool_algo, typename image_order = ops::nhwc>
-class pool : public pool_trait<ops::hw>
+template <typename pool_algo, typename image_order = traits::nhwc>
+class pool : public pool_trait<traits::hw>
 {
     using pool_trait::pool_trait;
     using pool_op = ops::pool<pool_algo, image_order>;
 
   public:
-    template <typename R>
-    auto operator()(const ttl::tensor_ref<R, 4> &x) const
+    template <typename R, typename D>
+    auto operator()(const tensor_view<R, 4, D> &x) const
     {
-        auto y = ops::new_result<ttl::tensor<R, 4>>(
+        auto y = ops::new_result<tensor<R, 4, D>>(
             pool_op(op_trait(ops::image_shape<image_order>(x.shape()))), x);
         return make_layer(y);
     }

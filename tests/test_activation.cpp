@@ -8,5 +8,5 @@ TEST(activation_test, test1)
 
     const int k = 10;
     const auto x = ttl::tensor<float, 1>(k);
-    const auto y = relu_layer()(ref(x));
+    const auto y = relu_layer()(ttl::view(x));
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include <ttl/nn/bits/kernels/cpu/elementary.hpp>
 #include <ttl/nn/bits/kernels/elementary.hpp>
 #include <ttl/nn/bits/ops/std_function.hpp>
 #include <ttl/nn/common.hpp>

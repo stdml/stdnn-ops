@@ -8,4 +8,5 @@
 #include <ttl/nn/bits/layers/conv.hpp>
 #include <ttl/nn/bits/layers/dense.hpp>
 #include <ttl/nn/bits/layers/elementary.hpp>
+#include <ttl/nn/bits/layers/loss.hpp>
 #include <ttl/nn/bits/layers/pool.hpp>

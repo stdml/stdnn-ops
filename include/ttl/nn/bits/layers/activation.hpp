@@ -1,5 +1,4 @@
 #pragma once
-
 #include <ttl/nn/bits/layers/call.hpp>
 #include <ttl/nn/bits/layers/layer.hpp>
 #include <ttl/nn/bits/ops/blas.hpp>
@@ -10,10 +9,10 @@ template <typename Act>
 class activation
 {
   public:
-    template <typename R, ttl::rank_t r>
-    auto operator()(const ttl::tensor_ref<R, r> &x) const
+    template <typename R, rank_t r, typename D>
+    auto operator()(const tensor_view<R, r, D> &x) const
     {
-        auto y = ops::new_result<ttl::tensor<R, r>>(Act(), x);
+        auto y = ops::new_result<tensor<R, r, D>>(Act(), x);
         return make_layer(y);
     }
 };

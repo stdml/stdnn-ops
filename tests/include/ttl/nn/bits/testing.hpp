@@ -16,15 +16,18 @@ void gen_test_tensor(const ttl::tensor<R, r> &x, int &s)
     });
 }
 
-template <typename R> struct assert_eq {
+template <typename R>
+struct assert_eq {
     void operator()(const R &x, const R &y) { ASSERT_EQ(x, y); }
 };
 
-template <> struct assert_eq<float> {
+template <>
+struct assert_eq<float> {
     void operator()(float x, float y) { ASSERT_FLOAT_EQ(x, y); }
 };
 
-template <> struct assert_eq<double> {
+template <>
+struct assert_eq<double> {
     void operator()(double x, double y) { ASSERT_FLOAT_EQ(x, y); }
 };
 
@@ -81,7 +84,8 @@ void assert_bytes_eq(const ttl::tensor_view<R, r> &x,
     ASSERT_TRUE(bytes_eq(x, y));
 }
 
-template <typename T> void pprint(const T &t, const char *name)
+template <typename T>
+void pprint(const T &t, const char *name)
 {
     printf("%s :: %s\n", name, std::to_string(t.shape()).c_str());
 }
@@ -104,3 +108,24 @@ void show_tensor(const ttl::tensor<R, r> &x, const std::string name = "t")
 }
 
 #define PT(e) show_tensor(e, #e);
+
+template <typename F, typename Y, typename... Xs>
+void check_infer(const F &f, const Y &y, const Xs &... xs)
+{
+    const auto shape = f(xs.shape()...);
+    ASSERT_EQ(shape, y.shape());
+}
+
+template <typename N>
+bool fast_is_permutation(const ttl::tensor_view<N, 1> &x)
+{
+    const N n = x.size();
+    std::vector<bool> b(n);
+    std::fill(b.begin(), b.end(), false);
+    for (auto i : ttl::range(n)) {
+        const N j = x.data()[i];
+        if (j < 0 || n <= j || b[j]) { return false; }
+        b[j] = true;
+    }
+    return true;
+}

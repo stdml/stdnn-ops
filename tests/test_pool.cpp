@@ -8,8 +8,9 @@ TEST(pool_test, test_hw)
 
     for (auto i : ttl::range(16)) { x.data()[i] = i; }
 
-    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hw>;
-    pool()(ref(y), view(x));
+    using pool =
+        ttl::nn::ops::pool<ttl::nn::traits::pool_max, ttl::nn::traits::hw>;
+    pool()(ttl::ref(y), ttl::view(x));
 
     ASSERT_EQ(y.at(0, 0), 5);
     ASSERT_EQ(y.at(0, 1), 7);
@@ -32,8 +33,9 @@ TEST(pool_test, test_hwc)
         }
     }
 
-    using pool = ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::hwc>;
-    pool()(ref(y), view(x));
+    using pool =
+        ttl::nn::ops::pool<ttl::nn::traits::pool_max, ttl::nn::traits::hwc>;
+    pool()(ttl::ref(y), ttl::view(x));
 
     for (auto i : ttl::range(n)) {
         ASSERT_EQ(y.at(0, 0, i), 5 + 16 * i);
@@ -51,27 +53,27 @@ TEST(pool_test, test_4d)
     const uint32_t w = 256;
 
     {
-        using max_pool_nhwc =
-            ttl::nn::ops::pool<ttl::nn::ops::pool_max, ttl::nn::ops::nhwc>;
+        using max_pool_nhwc = ttl::nn::ops::pool<ttl::nn::traits::pool_max,
+                                                 ttl::nn::traits::nhwc>;
         const auto x = ttl::tensor<float, 4>(n, h, w, c);
         {
             const auto op = max_pool_nhwc();
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, 64, 128, c));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, 64, 128, c));
+            op(ttl::ref(y), ttl::view(x));
         }
         {
             const auto op = max_pool_nhwc(max_pool_nhwc::ksize(4, 4));
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, 32, 64, c));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, 32, 64, c));
+            op(ttl::ref(y), ttl::view(x));
         }
         {
             const auto op = max_pool_nhwc(max_pool_nhwc::ksize(4, 4),
                                           max_pool_nhwc::stride(2, 2));
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, 63, 127, c));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, 63, 127, c));
+            op(ttl::ref(y), ttl::view(x));
         }
     }
 
@@ -92,8 +94,8 @@ TEST(pool_test, test_4d)
         {
             const auto op = max_pool_nchw();
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, c, 64, 128));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, c, 64, 128));
+            op(ttl::ref(y), ttl::view(x));
             for (auto l : ttl::range(n)) {
                 for (auto k : ttl::range(c)) {
                     for (auto i : ttl::range(64)) {
@@ -109,15 +111,15 @@ TEST(pool_test, test_4d)
         {
             const auto op = max_pool_nchw(max_pool_nchw::ksize(4, 4));
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, c, 32, 64));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, c, 32, 64));
+            op(ttl::ref(y), ttl::view(x));
         }
         {
             const auto op = max_pool_nchw(max_pool_nchw::ksize(4, 4),
                                           max_pool_nchw::stride(2, 2));
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, c, 63, 127));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, c, 63, 127));
+            op(ttl::ref(y), ttl::view(x));
         }
     }
 }
@@ -136,15 +138,15 @@ TEST(pool_test, test_padding)
         {
             const auto op = pool(pool::ksize(3, 3), pool::padding(2, 1));
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, 44, 86, c));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, 44, 86, c));
+            op(ttl::ref(y), ttl::view(x));
         }
         {
             const auto op = pool(pool::ksize(3, 3), pool::padding(1, 1),
                                  pool::stride(1, 1));
             const auto y = ttl::tensor<float, 4>(op(x.shape()));
-            ASSERT_EQ(y.shape(), ttl::internal::basic_shape<4>(n, 128, 256, c));
-            op(ref(y), view(x));
+            ASSERT_EQ(y.shape(), ttl::make_shape(n, 128, 256, c));
+            op(ttl::ref(y), ttl::view(x));
         }
     }
 }
@@ -156,10 +158,10 @@ TEST(pool_test, test_mean)
     const auto x = ttl::tensor<int, 2>(4, 4);
     std::iota(x.data(), x.data() + 16, 0);
     using add = ttl::nn::ops::add;
-    add()(ref(x), view(x), view(x));
+    add()(ttl::ref(x), ttl::view(x), ttl::view(x));
 
     const auto y = ttl::tensor<int, 2>(op(x.shape()));
-    op(ref(y), view(x));
+    op(ttl::ref(y), ttl::view(x));
     ASSERT_EQ(y.data()[0], 5);
     ASSERT_EQ(y.data()[1], 9);
     ASSERT_EQ(y.data()[2], 21);

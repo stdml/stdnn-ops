@@ -10,11 +10,11 @@ class identity
     using op = ops::identity;
 
   public:
-    template <typename R, ttl::rank_t r>
-    auto operator()(const ttl::tensor_ref<R, r> &x) const
+    template <typename R, rank_t r, typename D>
+    auto operator()(const tensor_view<R, r, D> &x) const
     {
-        auto y = ttl::nn::ops::new_result<ttl::tensor<R, r>>(op(), x);
-        return nn::layers::make_layer(y);
+        auto y = ops::new_result<tensor<R, r, D>>(op(), x);
+        return make_layer(y);
     }
 };
 }  // namespace ttl::nn::layers
