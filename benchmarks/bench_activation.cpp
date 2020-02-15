@@ -5,6 +5,25 @@
 #include "common.hpp"
 
 template <int n, int h, int w, int c>
+struct bench_relu {
+    static void run(benchmark::State &state)
+    {
+        using F = ttl::nn::ops::relu;
+        using S4 = ttl::shape<4>;
+        using B = bench<F, float, S4, S4>;
+        B b(F(), S4(n, h, w, c));
+        b.init<0>(ttl::nn::ops::ones());
+        run_bench(state, b);
+    }
+};
+
+static void bench_relu_100_26_26_32(benchmark::State &state)
+{
+    bench_relu<100, 26, 26, 32>::run(state);
+}
+BENCHMARK(bench_relu_100_26_26_32)->Unit(benchmark::kMillisecond);
+
+template <int n, int h, int w, int c>
 struct bench_grad_relu {
     static void run(benchmark::State &state)
     {
