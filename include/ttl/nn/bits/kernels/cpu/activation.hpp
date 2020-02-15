@@ -54,7 +54,7 @@ struct host_scaler_relu_grad {
     template <typename R>
     R operator()(R gy, R x)
     {
-        return gy * (x > 0 ? static_cast<R>(1) : static_cast<R>(0));
+        return x > 0 ? gy : static_cast<R>(0);
     }
 };
 
