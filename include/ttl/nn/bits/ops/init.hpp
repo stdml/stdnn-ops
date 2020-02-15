@@ -4,7 +4,7 @@
 #include <random>
 
 #include <ttl/algorithm>
-#include <ttl/nn/bits/kernels/init.hpp>
+#include <ttl/nn/bits/kernels/cpu/init.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops

@@ -1,5 +1,5 @@
 #pragma once
-#include <ttl/nn/bits/kernels/bias.hpp>
+#include <ttl/nn/bits/kernels/cpu/bias.hpp>
 #include <ttl/nn/bits/ops/elementary.hpp>
 #include <ttl/nn/common.hpp>
 #include <ttl/nn/traits>
