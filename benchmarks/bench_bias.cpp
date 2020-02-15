@@ -13,7 +13,7 @@ struct bench_bias {
         B b(F(), ttl::make_shape(n, h, w, c), ttl::make_shape(c));
         b.init<0>(ttl::nn::ops::ones());
         b.init<1>(ttl::nn::ops::ones());
-        for (auto _ : state) { b(); }
+        run_bench(state, b);
     }
 };
 

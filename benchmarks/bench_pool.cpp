@@ -1,20 +1,22 @@
-#include <ttl/nn/ops>
+#include <ttl/nn/bits/ops/init.hpp>
+#include <ttl/nn/bits/ops/pool.hpp>
 
 #include "benchmark.hpp"
+#include "common.hpp"
 
 template <int d1, int d2, int d3, int k, int p, int s, typename image_order,
           typename pool_algo>
 struct bench_pool {
     static void run(benchmark::State &state)
     {
-        using pool = ttl::nn::ops::pool<pool_algo, image_order>;
-        const auto op =
-            pool(pool::ksize(k, k), pool::padding(p, p), pool::stride(s, s));
-
-        ttl::tensor<float, 4> x(1, d1, d2, d3);
-        ttl::tensor<float, 4> y(op(x.shape()));
-
-        for (auto _ : state) { op(ref(y), view(x)); }
+        using F = ttl::nn::ops::pool<pool_algo, image_order>;
+        const F op(F::ksize(k, k), F::padding(p, p), F::stride(s, s));
+        using B = bench<F, float, ttl::shape<4>, ttl::shape<4>>;
+        B b(op, ttl::make_shape(1, d1, d2, d3));
+        // FIXME:  missing 'template' keyword prior to dependent template name
+        // 'init'
+        b.template init<0>(ttl::nn::ops::ones());
+        run_bench(state, b);
     }
 };
 

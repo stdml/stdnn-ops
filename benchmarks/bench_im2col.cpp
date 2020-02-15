@@ -18,7 +18,7 @@ struct bench_image_to_column {
         using B = bench<F, float, ttl::shape<5>, ttl::shape<3>>;
         B b(f, ttl::make_shape(h, w, c));
         b.init<0>(ttl::nn::ops::ones());
-        for (auto _ : state) { b(); }
+        run_bench(state, b);
     }
 
     static void run_col2im(benchmark::State &state)
@@ -28,7 +28,7 @@ struct bench_image_to_column {
         using B = bench<G, float, ttl::shape<3>, ttl::shape<5>>;
         B b(g, f(ttl::make_shape(h, w, c)));
         b.init<0>(ttl::nn::ops::ones());
-        for (auto _ : state) { b(); }
+        run_bench(state, b);
     }
 };
 
