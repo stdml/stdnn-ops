@@ -49,7 +49,7 @@ class bench
         f(ttl::ref(input<i>()));
     }
 
-    size_t data_size() const
+    size_t data_size() const  // FIXME: compute effective data size
     {
         return y.data_size() +
                ttl::tuple_data_size(xs, std::make_index_sequence<arity>());
