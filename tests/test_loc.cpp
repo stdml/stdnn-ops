@@ -1,11 +1,9 @@
 #include <cstdlib>
 
-#include <filesystem>
 #include <iostream>
 
 #include <gtest/gtest.h>
-
-namespace fs = std::filesystem;
+#include <ttl/filesystem>
 
 int loc(const char *filename)
 {
@@ -22,10 +20,12 @@ int loc(const char *filename)
 void test_dir_loc(const char *path, const int file_limit, const int tot_limit,
                   int &acc)
 {
+    namespace fs = std::filesystem;
+
     int tot = 0;
     int n = 0;
     for (const auto &entry : fs::directory_iterator(path)) {
-        if (entry.is_regular_file()) {
+        if (fs::is_regular_file(entry)) {
             const int ln = loc(entry.path().c_str());
             printf("%4d %s\n", ln, entry.path().c_str());
             ASSERT_TRUE(ln <= file_limit);
