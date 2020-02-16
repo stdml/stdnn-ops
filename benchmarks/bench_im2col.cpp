@@ -57,7 +57,8 @@ struct bench_im2col_nhwc {
         using B = bench<decltype(ff), float, ttl::shape<6>, ttl::shape<4>>;
         ttl::shape<4> shape(n, h, w, c);
         B b(ff, shape);
-        b.init<0>(ttl::nn::ops::ones());
+        // FIXME: error: missing 'template' keyword prior to dependent template
+        b.template init<0>(ttl::nn::ops::ones());
         run_bench(state, b);
     }
 };
