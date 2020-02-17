@@ -6,21 +6,26 @@
 
 namespace ttl::nn::engines
 {
-template <typename R> struct _cblas;
+template <typename R>
+struct _cblas;
 
-template <> struct _cblas<float> {
+template <>
+struct _cblas<float> {
     static constexpr auto axpy = cblas_saxpy;
     static constexpr auto gemm = cblas_sgemm;
     static constexpr auto gemv = cblas_sgemv;
 };
 
-template <> struct _cblas<double> {
+template <>
+struct _cblas<double> {
     static constexpr auto axpy = cblas_daxpy;
     static constexpr auto gemm = cblas_dgemm;
     static constexpr auto gemv = cblas_dgemv;
 };
 
-template <typename R> struct cblas_impl {
+template <typename R>
+class cblas_impl
+{
     static constexpr R alpha = 1;
     static constexpr R beta = 0;
     static constexpr int inc = 1;
@@ -32,14 +37,16 @@ template <typename R> struct cblas_impl {
 
     using blas = _cblas<R>;
 
-    template <typename T> static int len(const T &t)
+    template <typename T>
+    static int len(const T &t)
     {
-        return std::get<0>(t.shape().dims());
+        return std::get<0>(t.dims());
     }
 
-    template <typename T> static int wid(const T &t)
+    template <typename T>
+    static int wid(const T &t)
     {
-        return std::get<1>(t.shape().dims());
+        return std::get<1>(t.dims());
     }
 
     static void _gemm(const m_view_t &a, bool trans_a,  //
@@ -54,6 +61,7 @@ template <typename R> struct cblas_impl {
                    wid(c));
     }
 
+  public:
     // a \times b -> c
     static void mm(const m_view_t &a, const m_view_t &b, const m_ref_t &c)
     {
