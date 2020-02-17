@@ -39,6 +39,12 @@ static void bench_im2col_hwc_hwrsc_256_384_32(benchmark::State &state)
 }
 BENCHMARK(bench_im2col_hwc_hwrsc_256_384_32)->Unit(benchmark::kMillisecond);
 
+static void bench_im2col_hwc_hwrsc_28_28_1(benchmark::State &state)
+{
+    bench_image_to_column<28, 28, 1>::run_im2col(state);
+}
+BENCHMARK(bench_im2col_hwc_hwrsc_28_28_1)->Unit(benchmark::kMillisecond);
+
 static void bench_col2im_hwc_hwrsc_256_384_32(benchmark::State &state)
 {
     bench_image_to_column<256, 384, 32>::run_col2im(state);
