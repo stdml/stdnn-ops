@@ -83,7 +83,6 @@ add_cmake_prefixes() {
 }
 
 add_cmake_flags() {
-    pass_cmake_flag_from_env CMAKE_INSTALL_PREFIX $PREFIX
     pass_cmake_flag_from_env STDTENSOR_GIT_URL
 
     add_cmake_flag EXECUTABLE_OUTPUT_PATH $PWD/bin
@@ -102,6 +101,7 @@ add_cmake_flags() {
     add_cmake_flag BUILD_LIB ${BUILD_LIB}
     add_cmake_flag BUILD_PACKAGES 1
     add_cmake_flag BUILD_TESTS ${BUILD_TESTS}
+    add_cmake_flag CMAKE_INSTALL_PREFIX ${PREFIX}
     add_cmake_flag USE_EXTERN ${USE_EXTERN}
 
     if [ ${USE_EXTERN} -eq 1 ]; then
