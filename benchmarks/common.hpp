@@ -20,7 +20,7 @@ size_t tuple_data_size(const Tuple &tup, std::index_sequence<I...>)
 }  // namespace ttl
 
 template <typename F, typename R, typename S0, typename... Ss>
-class bench
+class kernel_bench
 {
     static constexpr auto arity = sizeof...(Ss);
 
@@ -32,8 +32,8 @@ class bench
     Xs xs;
 
   public:
-    bench(const F &f, const Ss &... s)
-        : f(f), y(f(s...)), xs(ttl::tensor<R, Ss::rank>(s)...)
+    kernel_bench(const F &f, const S0 &s0, const Ss &... s)
+        : f(f), y(s0), xs(ttl::tensor<R, Ss::rank>(s)...)
     {
     }
 
@@ -62,6 +62,15 @@ class bench
             ttl::view_tuple(xs, std::make_index_sequence<arity>()));
         std::apply(f, args);
     }
+};
+
+template <typename F, typename R, typename S0, typename... Ss>
+class bench : public kernel_bench<F, R, S0, Ss...>
+{
+    using P = kernel_bench<F, R, S0, Ss...>;
+
+  public:
+    bench(const F &f, const Ss &... s) : P(f, f(s...), s...) {}
 };
 
 class stop_watch
