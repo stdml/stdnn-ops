@@ -1,3 +1,4 @@
+#include <ttl/device>
 #include <ttl/nn/bits/ops/blas.hpp>
 #include <ttl/nn/bits/ops/init.hpp>
 
@@ -8,11 +9,12 @@ template <int l, int m, int n>
 struct bench_mm {
     static void run(benchmark::State &state)
     {
+        using R = float;
         using F = ttl::nn::ops::matmul;
-        using B = bench<F, float, ttl::shape<2>, ttl::shape<2>, ttl::shape<2>>;
+        using B = bench<F, R, ttl::shape<2>, ttl::shape<2>, ttl::shape<2>>;
         B b(F(), ttl::make_shape(l, m), ttl::make_shape(m, n));
-        b.init<0>(ttl::nn::ops::ones());
-        b.init<1>(ttl::nn::ops::ones());
+        b.template init<0>(ttl::nn::ops::ones());
+        b.template init<1>(ttl::nn::ops::ones());
         run_bench(state, b);
     }
 };
