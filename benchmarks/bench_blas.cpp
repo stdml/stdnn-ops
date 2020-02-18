@@ -5,7 +5,7 @@
 #include "benchmark.hpp"
 #include "common.hpp"
 
-template <int l, int m, int n, typename E = ttl::nn::engines::cblas>
+template <int l, int m, int n, typename E = ttl::nn::engines::default_engine>
 struct bench_mm {
     static void run(benchmark::State &state)
     {
