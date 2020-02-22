@@ -28,9 +28,7 @@ TEST(affine_grad_test, test_1)
     ttl::tensor<R, 1> dz(z.shape());
 
     int seed = 1;
-    for (auto _ : ttl::range(3)) {
-        UNUSED(_);
-
+    for (auto _ [[gnu::unused]] : ttl::range(3)) {
         gen_test_tensor(x, seed);
         gen_test_tensor(y, seed);
         gen_test_tensor(dz, seed);

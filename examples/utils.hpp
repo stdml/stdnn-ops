@@ -1,11 +1,10 @@
+#include <experimental/iterator>
 #include <sstream>
 #include <string>
 
 #include <ttl/debug>
 #include <ttl/nn/ops>
 #include <ttl/tensor>
-
-#include <experimental/iterator>
 
 template <typename T, typename... Ts>
 void show_signature(const T &y, const Ts &... x)
@@ -19,16 +18,10 @@ void show_signature(const T &y, const Ts &... x)
     printf("%s\n", sign.c_str());
 }
 
-template <typename T> void pprint(const T &t, const char *name)
+template <typename T>
+void pprint(const T &t, const char *name)
 {
     printf("%s :: %s\n", name, ttl::to_string(t.shape()).c_str());
 }
 
 #define PPRINT(e) pprint(e, #e);
-
-inline void make_unuse(const void *) {}
-
-#define UNUSED(e)                                                              \
-    {                                                                          \
-        make_unuse(&e);                                                        \
-    }
