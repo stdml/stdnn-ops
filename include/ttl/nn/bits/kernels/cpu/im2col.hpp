@@ -24,7 +24,8 @@ class im2col_idx_map<traits::hwc, traits::hwrsc>
                     const ttl::internal::basic_shape<3, Dim> &x) const
     {
         static_assert(std::is_signed<N>::value, "");
-        const auto [h, w, c] = x.dims();
+        const auto [h, w, _c] = x.dims();
+        static_assert(sizeof(_c) > 0, "");  // unused
         // const auto [h_, w_, r, s, _c] = y.dims();
         const auto &[h_sample, w_sample] = samples_;
         const auto shape = y.shape();
