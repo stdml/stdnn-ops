@@ -46,7 +46,11 @@ class im2col_idx_map<traits::hwc, traits::hwrsc>
     void operator()(const tensor_ref<R, 5> &z, const tensor_view<N, 5> &y,
                     const tensor_view<R, 3> &x) const
     {
-        for (auto i : range(z.size())) { z.data()[i] = x.data()[y.data()[i]]; }
+        for (auto i : range(z.size())) {
+            if (const auto j = y.data()[i]; j >= 0) {
+                z.data()[i] = x.data()[j];
+            }
+        }
     }
 };
 
@@ -148,6 +152,25 @@ class im2col_2d<host_memory, traits::hwc, traits::hwrsc, R>
                 }
             }
         }
+    }
+};
+
+template <typename R>
+class im2col_2d<host_memory, traits::nhwc, traits::nhwrsc, R>
+    : public traits::im2col_trait<traits::hw>
+{
+    using im2col_trait::im2col_trait;
+
+  public:
+    im2col_2d(const im2col_trait &trait) : im2col_trait(trait) {}
+
+    void operator()(const tensor_ref<R, 6> &y, const tensor_view<R, 4> &x) const
+    {
+        const im2col_trait &trait = *this;
+        im2col_idx_map<traits::hwc, traits::hwrsc> idx_map(trait);
+        tensor<int, 5> q(y.shape().subshape());
+        idx_map(ref(q), x.shape().subshape());
+        for (auto i : range<0>(x)) { idx_map(y[i], view(q), x[i]); }
     }
 };
 }  // namespace ttl::nn::kernels

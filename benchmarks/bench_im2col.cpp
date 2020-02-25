@@ -75,4 +75,33 @@ static void bench_im2col_nhwc_100_28_28_1(benchmark::State &state)
 }
 BENCHMARK(bench_im2col_nhwc_100_28_28_1)->Unit(benchmark::kMillisecond);
 
+template <int n, int h, int w, int c>
+struct bench_im2col_nhwc_idx_map {
+    static void run(benchmark::State &state)
+    {
+        using R = float;
+        using F = ttl::nn::ops::im2col<ttl::nn::traits::hwc,  //
+                                       ttl::nn::traits::hwrsc>;
+        using K = ttl::nn::kernels::im2col_2d<ttl::internal::host_memory,
+                                              ttl::nn::traits::nhwc,  //
+                                              ttl::nn::traits::nhwrsc, R>;
+        F f(F::ksize(3, 3));
+        K k(K::ksize(3, 3));
+        using ttl::nn::ops::internal::make_batched;
+        const auto ff = make_batched(f);
+
+        using B = kernel_bench<K, R, ttl::shape<6>, ttl::shape<4>>;
+        ttl::shape<4> shape(n, h, w, c);
+        B b(k, ff(shape), shape);
+        b.template init<0>(ttl::nn::ops::ones());
+        run_bench(state, b);
+    }
+};
+
+static void bench_im2col_nhwc_100_28_28_1_idx_map(benchmark::State &state)
+{
+    bench_im2col_nhwc_idx_map<100, 28, 28, 1>::run(state);
+}
+BENCHMARK(bench_im2col_nhwc_100_28_28_1_idx_map)->Unit(benchmark::kMillisecond);
+
 BENCHMARK_MAIN();
