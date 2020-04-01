@@ -35,23 +35,16 @@ class conv2d<host_memory, traits::nhwc, traits::rscd, R>
         const auto [r, s] =
             traits::filter_shape<traits::rscd>(y.shape()).dims();
         using upper_op = ops::im2col<traits::hwc, traits::hwrsc>;
-        using ops::internal::make_batched;
         upper_op upper1(h_trait_.get_sample(r), w_trait_.get_sample(s));
-        const auto upper = make_batched(upper1);
         tensor<R, 6, D> x_upper(upper(x.shape()));
-        {
-            constexpr bool use_idx_map = true;
-            if (use_idx_map) {
-                const traits::im2col_trait<traits::hw> &trait = upper1;
-                im2col_idx_map<traits::hwc, traits::hwrsc> idx_map(trait);
-                tensor<int, 5> q(x_upper.shape().template subshape<1>());
-                idx_map(ref(q), x.shape().template subshape<1>());
-                for (auto i : range<0>(x)) {
-                    idx_map(x_upper[i], view(q), x[i]);
-                }
-            } else {
-                upper(ref(x_upper), x);
-            }
+        constexpr bool use_idx_map = true;
+        if (use_idx_map) {
+            const im2col_2d<host_memory, traits::nhwc, traits::nhwrsc, R> upper(
+                h_trait_.get_sample(r), w_trait_.get_sample(s));
+            upper(ref(x_upper), x);
+        } else {
+            const auto upper = ops::internal::make_batched(upper1);
+            upper(ref(x_upper), x);
         }
         mm<D, E, R>()(ops::as_matrix<3, 1>(z),
                       ops::as_matrix<3, 3>(view(x_upper)),
