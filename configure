@@ -121,6 +121,7 @@ add_cmake_flags() {
     fi
 
     # FIXME: depend on a tag for release version
+    add_cmake_flag STDTRACER_GIT_TAG $(get_dep stdtracer)
     add_cmake_flag STDTENSOR_GIT_TAG $(get_dep stdtensor)
 
     add_cmake_flag CMAKE_EXPORT_COMPILE_COMMANDS ${VERBOSE}
