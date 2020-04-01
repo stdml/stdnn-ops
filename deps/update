@@ -12,4 +12,5 @@ latest() {
     echo "$commit $tag" | tee $name
 }
 
-latest stdtensor v0.6.1 lgarithm/stdtensor
+latest stdtracer v0.1.0 stdml/stdtracer
+latest stdtensor v0.7.0 stdml/stdtensor

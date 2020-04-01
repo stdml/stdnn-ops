@@ -117,8 +117,7 @@ void train_slp_model(const D &ds,  //
 
     const int n_epochs = 1;
     int step = 0;
-    for (auto _ : ttl::range(n_epochs)) {
-        UNUSED(_);
+    for (auto _ [[gnu::unused]] : ttl::range(n_epochs)) {
         for (auto offset : ttl::range(n / batch_size)) {
             ++step;
             printf("step: %d\n", step);
@@ -195,8 +194,7 @@ int main()
         ttl::nn::ops::writefile("b.idx")(view(b));
         test_slp_model(test, view(w), view(b));
     }
-    int code = system("tar -cf params.idx.tar w.idx b.idx");
-    UNUSED(code);
+    int code [[gnu::unused]] = system("tar -cf params.idx.tar w.idx b.idx");
     {
         TRACE_SCOPE("test");
         ttl::tensor<float, 2> w(28 * 28, k);

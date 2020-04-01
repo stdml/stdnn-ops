@@ -1,6 +1,6 @@
 #pragma once
 #include <ttl/nn/bits/engines/config.hpp>
-#include <ttl/nn/bits/kernels/blas.hpp>
+#include <ttl/nn/bits/kernels/cpu/blas.hpp>
 #include <ttl/nn/common.hpp>
 
 namespace ttl::nn::ops

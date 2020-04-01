@@ -4,12 +4,22 @@
 
 namespace ttl::nn::engines
 {
-template <typename E> struct linag {
-    template <typename R> using m_ref_t = ttl::matrix_ref<R>;
-    template <typename R> using m_view_t = ttl::matrix_view<R>;
-    template <typename R> using v_ref_t = ttl::vector_ref<R>;
-    template <typename R> using v_view_t = ttl::vector_view<R>;
+template <typename E>
+class linag
+{
+    template <typename R>
+    using m_ref_t = ttl::matrix_ref<R>;
 
+    template <typename R>
+    using m_view_t = ttl::matrix_view<R>;
+
+    template <typename R>
+    using v_ref_t = ttl::vector_ref<R>;
+
+    template <typename R>
+    using v_view_t = ttl::vector_view<R>;
+
+  public:
     // a \times b -> c where a[m, n], b[m, n] -> c[m, n]; a.n == b.m
     template <typename R>
     static void mm(const m_view_t<R> &a, const m_view_t<R> &b,

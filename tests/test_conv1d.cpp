@@ -17,7 +17,7 @@ void test_col2im1d(const int n, const int ksize = 1, const int stride = 1,
     ttl::tensor<R, 1> x1(n);
     ttl::tensor<R, 1> c(n);
     const auto [m, _k] = upper(x.shape()).dims();
-    UNUSED(_k);
+    static_assert(sizeof(_k) > 0, "");  // unused
     ttl::tensor<R, 2> x_upper(m, ksize);
 
     const auto x_shape = lower(x_upper.shape());
