@@ -36,6 +36,7 @@ class conv2d<host_memory, traits::nhwc, traits::rscd, R>
             traits::filter_shape<traits::rscd>(y.shape()).dims();
         using upper_op = ops::im2col<traits::hwc, traits::hwrsc>;
         upper_op upper1(h_trait_.get_sample(r), w_trait_.get_sample(s));
+        const auto upper = ops::internal::make_batched(upper1);
         tensor<R, 6, D> x_upper(upper(x.shape()));
         constexpr bool use_idx_map = true;
         if (use_idx_map) {
@@ -43,7 +44,6 @@ class conv2d<host_memory, traits::nhwc, traits::rscd, R>
                 h_trait_.get_sample(r), w_trait_.get_sample(s));
             upper(ref(x_upper), x);
         } else {
-            const auto upper = ops::internal::make_batched(upper1);
             upper(ref(x_upper), x);
         }
         mm<D, E, R>()(ops::as_matrix<3, 1>(z),
