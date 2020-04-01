@@ -1,7 +1,7 @@
 INCLUDE(ExternalProject)
 
 SET(STDTENSOR_GIT_URL
-    https://github.com/lgarithm/stdtensor.git
+    https://github.com/stdml/stdtensor.git
     CACHE STRING "URL for clone stdtensor")
 
 SET(STDTENSOR_GIT_TAG

@@ -25,10 +25,8 @@ int main()
     (reader(filename))(ref(t));
 
     int i = 0;
-    int code = system("mkdir -p images");
-    UNUSED(code);
-    for (auto im : t) {
-        UNUSED(im);
+    int code [[gnu::unused]] = system("mkdir -p images");
+    for (auto im [[gnu::unused]] : t) {
         char name[32];
         sprintf(name, "images/%d.png", ++i);
 #ifdef USE_OPENCV

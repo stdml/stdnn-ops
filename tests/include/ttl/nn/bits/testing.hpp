@@ -44,13 +44,6 @@ int test_all_permutations(const T &t, I... i)
     return p;
 }
 
-inline void unused(const void *) {}
-
-#define UNUSED(e)                                                              \
-    {                                                                          \
-        unused(&e);                                                            \
-    }
-
 template <typename R, ttl::rank_t r>
 void assert_tensor_eq(const ttl::tensor_view<R, r> &x,
                       const ttl::tensor_view<R, r> &y)
