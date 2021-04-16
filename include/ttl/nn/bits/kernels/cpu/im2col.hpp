@@ -49,6 +49,8 @@ class im2col_idx_map<traits::hwc, traits::hwrsc>
         for (auto i : range(z.size())) {
             if (const auto j = y.data()[i]; j >= 0) {
                 z.data()[i] = x.data()[j];
+            } else {
+                z.data()[i] = 0;  // ! important fix
             }
         }
     }
